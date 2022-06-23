@@ -7,8 +7,12 @@ int main(int argc, char** argv)
 
     Intel4004 cpu;
 
-    cpu.set_object_code({0xAB,0xCD,0xEF});
+    cpu.set_object_code({0x00,0x00,0x00});
     cpu.print_status();
+    cpu.simultate();
+    cpu.simultate();
+    cpu.simultate();
+    cpu.simultate();
     cpu.simultate();
     cpu.print_status();
 
