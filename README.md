@@ -1,8 +1,14 @@
 # CPU Simulation
 
+## Ideen
+- 
+
 ## Vorgehen
-- Simulation für Intel 4004
-- Simulation verallgemeinern
+- Intel 4004 bauen
+  - Parsing von assembler-Datei und Konvertireung in object code (hex)
+  - Instructions als Functionen in `include/instructions.hpp` unsetzten
+    - Eine Instruction/Function verändert nur Werte in den privaten Variablen in `include/intel4004.hpp`
+  
 
 
 ## Installation
