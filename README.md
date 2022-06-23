@@ -14,7 +14,11 @@
 ## Installation
 ```bash
 git clone https://github.com/cpu-go-brr/cpu-sim.git
-
-# cmake shit
+mkdir build && cd build
+cmake ..
+make
 ```
 ## Usage
+```bash
+./build/simulator
+```
