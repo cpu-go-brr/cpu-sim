@@ -3,6 +3,7 @@
 #include <vector>
 #include <optional>
 
+//CPU
 class Intel4004
 {
     public:
@@ -25,6 +26,9 @@ class Intel4004
         uint16_t sr1 = 0, sr2 = 0, sr3 = 0; //12 bit stack level registers
         uint8_t acc = 0; //4 bit accumulator
 
+        bool testpin = 0;
+
+        uint8_t reg_ctl = 0; //2b -> chip | 2b -> register | 4b -> addr 
         uint8_t registers[16] = {0}; //16 4 bit registers
         
         std::vector<uint8_t> code;
