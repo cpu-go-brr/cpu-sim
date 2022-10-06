@@ -2,6 +2,8 @@
 #include <map>
 #include <vector>
 #include <optional>
+#include "intel4001.hpp"
+#include "intel4002.hpp"
 
 //CPU
 class Intel4004
@@ -17,13 +19,18 @@ class Intel4004
 
     private:
 
+        Intel4001 rom[16];
+        Intel4002 ram[4];
+
+
         bool carry = false, test = false;
         uint8_t read_rom(unsigned int pos);
 
         typedef void (Intel4004::*op)();
 
         uint16_t pc = 0; //12 bit
-        uint16_t sr1 = 0, sr2 = 0, sr3 = 0; //12 bit stack level registers
+        uint16_t sr[3]; //12 bit stack level registers
+        uint8_t sr_index = 0; //
         uint8_t acc = 0; //4 bit accumulator
 
         bool testpin = 0;

@@ -84,12 +84,10 @@ void Intel4004::inc()
 // Branch Back and Load
 void Intel4004::bbl()
 {
-    // load adresses from stack, set acc
-    pc = sr1;                 // set pc
-    sr1 = sr2;                // push stack up
-    sr2 = sr3;                // push stack up
-    sr3 = 0;                  // void last register
     acc = read_rom(pc) & 0xF; // set acc
+
+    pc = sr[sr_index];
+    sr_index = (sr_index-1 +3) % 3;
 }
 
 // Jump Indirect
@@ -108,7 +106,7 @@ void Intel4004::jin()
 // Send register control
 void Intel4004::src()
 {
-    uint8_t r = read_rom(pc) && 0b1110;
+    uint8_t r = read_rom(pc) & 0b1110;
     reg_ctl = (registers[r] >> 4) | (registers[r + 1]); // set register control to bank
     pc++;
 }
@@ -117,7 +115,7 @@ void Intel4004::src()
 void Intel4004::fin()
 {
     // load rom content of addr specified in reg 0 and reg 1 to register specified by opcode
-    uint8_t r = read_rom(pc) && 0b1110;
+    uint8_t r = read_rom(pc) & 0b1110;
 
     uint8_t ph = (pc & 0xF00) >> 8;
     uint8_t pm = registers[0];
@@ -128,16 +126,18 @@ void Intel4004::fin()
 
     uint16_t rom_addr = ((ph << 8) | (pm << 4) | pl) & 0xFFF; // only 12 bit
 
-    registers[r] = read_rom(rom_addr);
-    registers[r + 1] = read_rom((rom_addr + 1) & 0xFFF);
+    uint8_t first_rom_content = read_rom(rom_addr); 
+    registers[r] = first_rom_content & 0xF;
+    registers[r+1] = (first_rom_content & 0xF0) >> 4;
+    
+    pc++;
 }
 // Jump to Subroutine
 void Intel4004::jms()
 {
-    sr3 = sr2;
-    sr2 = sr1;
-    sr1 = (pc + 1) & 0xFFF;
-    pc = (read_rom(pc) << 8) | read_rom(pc + 1) & 0xFFF;
+    sr[sr_index] = (pc + 1) & 0xFFF;
+    sr_index = (sr_index+1) % 3;
+    pc = ((read_rom(pc) << 8) | read_rom(pc + 1)) & 0xFFF;
 }
 
 // Jump Conditional
@@ -191,32 +191,269 @@ void Intel4004::isz()
 
 }
 
-void Intel4004::rdm() { return; }
-void Intel4004::rd0() { return; }
-void Intel4004::rd1() { return; }
-void Intel4004::rd2() { return; }
-void Intel4004::rd3() { return; }
-void Intel4004::rdr() { return; }
-void Intel4004::wrm() { return; }
-void Intel4004::wr0() { return; }
-void Intel4004::wr1() { return; }
-void Intel4004::wr2() { return; }
-void Intel4004::wr3() { return; }
-void Intel4004::wrr() { return; }
-void Intel4004::wmp() { return; }
-void Intel4004::adm() { return; }
-void Intel4004::sbm() { return; }
-void Intel4004::clb() { return; }
-void Intel4004::clc() { return; }
-void Intel4004::cmc() { return; }
-void Intel4004::stc() { return; }
-void Intel4004::cma() { return; }
-void Intel4004::iac() { return; }
-void Intel4004::dac() { return; }
-void Intel4004::ral() { return; }
-void Intel4004::rar() { return; }
-void Intel4004::tcc() { return; }
-void Intel4004::daa() { return; }
-void Intel4004::tcs() { return; }
-void Intel4004::kbp() { return; }
-void Intel4004::dcl() { return; }
+// Read RAM character
+void Intel4004::rdm() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    uint8_t addr = (reg_ctl & 0b00001111);
+    acc = ram[chip].mem[bank][addr];
+    pc++;
+}
+
+// Read RAM status character 0
+void Intel4004::rd0() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    acc = ram[chip].status[bank][0];
+    pc++;
+}
+
+// Read RAM status character 1
+void Intel4004::rd1() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    acc = ram[chip].status[bank][1];
+    pc++;
+}
+
+// Read RAM status character 2
+void Intel4004::rd2() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    acc = ram[chip].status[bank][2];
+    pc++;
+}
+
+// Read RAM status character 3
+void Intel4004::rd3() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    acc = ram[chip].status[bank][3];
+    pc++;
+}
+
+//void ROM port
+void Intel4004::rdr() 
+{
+    uint8_t chip = (reg_ctl & 0xF0) >> 4;
+    acc = rom[chip].out;
+
+    pc++;
+}
+
+// Write accumulator into RAM character
+void Intel4004::wrm() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    uint8_t addr = (reg_ctl & 0b00001111);
+    ram[chip].mem[bank][addr] = acc & 0xF;
+    pc++;
+
+}
+
+// Write accumulator into RAM status character 0
+void Intel4004::wr0() 
+{ 
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    ram[chip].status[bank][0] = acc & 0xF;
+    pc++;
+}
+
+// Write accumulator into RAM status character 1
+void Intel4004::wr1() 
+{ 
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    ram[chip].status[bank][1] = acc & 0xF;
+    pc++;
+}
+
+// Write accumulator into RAM status character 2
+void Intel4004::wr2() 
+{ 
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    ram[chip].status[bank][2] = acc & 0xF;
+    pc++;
+}
+
+// Write accumulator into RAM status character 3
+void Intel4004::wr3() 
+{ 
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    ram[chip].status[bank][3] = acc & 0xF;
+    pc++;
+}
+
+// Write ROM port
+void Intel4004::wrr() 
+{ 
+    uint8_t chip = (reg_ctl & 0xF0) >> 4;
+    rom[chip].out = acc;
+
+    pc++;
+}
+
+// Write RAM port
+void Intel4004::wmp() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    ram[chip].out = acc;
+
+    pc++;
+}
+
+// Add index register to accumulator with carry
+void Intel4004::adm() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    uint8_t addr = (reg_ctl & 0b00001111);
+    uint8_t val  = ram[chip].mem[bank][addr];
+    uint8_t addition = acc + val + carry;
+    acc = addition & 0xF;
+    carry = (addition & (1 << 4)) > 0;
+    pc++;
+}
+
+// Subtract from memory with borrow
+void Intel4004::sbm() 
+{
+    uint8_t chip = (reg_ctl & 0b11000000) >> 6;
+    uint8_t bank = (reg_ctl & 0b00110000) >> 4;
+    uint8_t addr = (reg_ctl & 0b00001111);
+    uint8_t val  = ram[chip].mem[bank][addr];
+    uint8_t subtraction = acc + ~val + ~((uint8_t)carry);
+    acc = subtraction & 0xF;
+    carry = (subtraction & (1 << 4)) > 0;
+    pc++; 
+}
+
+// Clear both
+void Intel4004::clb() 
+{
+    acc = 0;
+    carry = 0;
+
+    pc++;
+}
+
+// Clear Carry
+void Intel4004::clc() 
+{
+    carry = 0;
+
+    pc++;
+}
+
+// Complement carry
+void Intel4004::cmc() 
+{ 
+    carry = !carry;
+    pc++;
+}
+
+// Set Carry
+void Intel4004::stc() 
+{
+    carry = 1;
+    pc++;
+}
+
+// Complement Accumulator
+void Intel4004::cma() 
+{
+    acc = ~acc;
+    pc++;
+}
+
+// Increment Accumulator
+void Intel4004::iac() 
+{
+    uint8_t sum = acc + 1;
+    acc = sum & 0xF;
+    carry = (sum & 0x10) > 0; 
+
+    pc++;
+}
+
+// Decrement Accumulator
+void Intel4004::dac() 
+{
+    uint8_t sum = acc + 0xF;
+    acc = sum & 0xF;
+    carry = (sum & 0x10) == 0; 
+
+    pc++;
+}
+
+// Rotate left
+void Intel4004::ral() 
+{
+    bool oldcarry = carry;
+    carry = (acc & 0x1000) == 1;
+    acc = ((acc  << 1) | oldcarry) & 0xF;
+
+    pc++;
+}
+
+// Rotate right
+void Intel4004::rar() 
+{
+    bool oldcarry = carry;
+    carry = (acc & 0x1) == 1;
+    acc = ((oldcarry * 0x1F) | acc) >> 1;
+
+    pc++;
+}
+
+// Transmit carry and clear
+void Intel4004::tcc() 
+{
+    acc = carry;
+    carry = 0;
+
+    pc++;
+}
+
+// Decimal adjust accumulator
+void Intel4004::daa() 
+{
+    bool increment = carry || acc > 9;
+
+    pc++;
+    if(!increment) return;
+    uint8_t sum = acc + 6;
+
+    acc = sum & 0xF;
+    carry = (sum & 0x10) > 0;
+}
+
+// Transfer carry subtract
+void Intel4004::tcs() 
+{
+    acc = carry?10:9;
+    carry = 0;
+    pc++;
+}
+
+// Keyboard process
+void Intel4004::kbp() 
+{ 
+    pc++;
+    if(acc == 0 || acc == 1 || acc == 2 || acc == 4 || acc == 8) return;
+    acc = 0xF;
+}
+void Intel4004::dcl() 
+{
+    reg_ctl = reg_ctl & 0b00111111 | (acc & 0b11) << 6;
+    pc++;
+}
