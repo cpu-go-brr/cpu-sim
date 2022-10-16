@@ -44,5 +44,5 @@ void test_cpu(){
 
 void test_parsing(){
     Intel4004Parser parser;
-    parser.parse("input.asm");
+    parser.parse("input2.asm");
 }
