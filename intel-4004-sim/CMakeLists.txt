@@ -39,9 +39,9 @@ file(COPY ${data} DESTINATION resources)
 # This defines the variables Boost_LIBRARIES that containts all library names
 # that we need to link into the program.
 
-#target_link_libraries(example PUBLIC
-  # here you can add any library dependencies
-#)
+target_link_libraries(simulator PUBLIC
+  pthread
+)
 
 ###############################################################################
 ## testing ####################################################################

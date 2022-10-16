@@ -56,7 +56,7 @@ void Intel4004::sub()
 {
     // add complement of register to acc
     uint8_t r = read_rom(pc) & 0xF;
-    uint8_t subtraction = acc + (~registers[r] & 0xF) + carry;
+    uint8_t subtraction = acc + (((~registers[r]) + 1) & 0xF) + (carry?0xF:0);
     acc = subtraction & 0xF;
     carry = (subtraction & (0x10)) > 0;
     pc++;
@@ -86,8 +86,9 @@ void Intel4004::bbl()
 {
     acc = read_rom(pc) & 0xF; // set acc
 
-    pc = sr[sr_index];
     sr_index = (sr_index-1 +3) % 3;
+    pc = sr[sr_index];
+    sr[sr_index] = 0;
 }
 
 // Jump Indirect
@@ -107,7 +108,7 @@ void Intel4004::jin()
 void Intel4004::src()
 {
     uint8_t r = read_rom(pc) & 0b1110;
-    reg_ctl = (registers[r] >> 4) | (registers[r + 1]); // set register control to bank
+    reg_ctl = (registers[r] << 4) | (registers[r + 1]); // set register control to bank
     pc++;
 }
 
@@ -135,7 +136,7 @@ void Intel4004::fin()
 // Jump to Subroutine
 void Intel4004::jms()
 {
-    sr[sr_index] = (pc + 1) & 0xFFF;
+    sr[sr_index] = (pc + 2) & 0xFFF;
     sr_index = (sr_index+1) % 3;
     pc = ((read_rom(pc) << 8) | read_rom(pc + 1)) & 0xFFF;
 }
@@ -331,7 +332,8 @@ void Intel4004::sbm()
     uint8_t bank = (reg_ctl & 0b00110000) >> 4;
     uint8_t addr = (reg_ctl & 0b00001111);
     uint8_t val  = ram[chip].mem[bank][addr];
-    uint8_t subtraction = acc + ~val + ~((uint8_t)carry);
+
+    uint8_t subtraction = acc + (((~val) + 1) & 0xF) + (carry?0xF:0);
     acc = subtraction & 0xF;
     carry = (subtraction & (1 << 4)) > 0;
     pc++; 
@@ -371,7 +373,7 @@ void Intel4004::stc()
 // Complement Accumulator
 void Intel4004::cma() 
 {
-    acc = ~acc;
+    acc = ~acc & 0xF;
     pc++;
 }
 
@@ -399,7 +401,7 @@ void Intel4004::dac()
 void Intel4004::ral() 
 {
     bool oldcarry = carry;
-    carry = (acc & 0x1000) == 1;
+    carry = (acc & 0x1000) > 0;
     acc = ((acc  << 1) | oldcarry) & 0xF;
 
     pc++;
@@ -452,8 +454,10 @@ void Intel4004::kbp()
     if(acc == 0 || acc == 1 || acc == 2 || acc == 4 || acc == 8) return;
     acc = 0xF;
 }
+
+//Designate Command line
 void Intel4004::dcl() 
 {
-    reg_ctl = reg_ctl & 0b00111111 | (acc & 0b11) << 6;
+    reg_ctl = ((acc & 0b11) << 6) | (reg_ctl & 0b00111111);
     pc++;
 }

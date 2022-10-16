@@ -1,3 +1,5 @@
+#pragma once
+
 #include "intel4001.hpp"
 #include "intel4002.hpp"
 #include "intel4004.hpp"

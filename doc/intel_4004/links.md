@@ -14,3 +14,8 @@ http://datasheets.chipdb.org/Intel/MCS-4/datashts/intel-4004.pdf
 -----
 Studienarbeit
 https://tams.informatik.uni-hamburg.de/publications/2003/SA_Ruge/studienarbeit-4004.pdf
+
+
+-----
+6502 Instructionset
+https://www.masswerk.at/6502/6502_instruction_set.html#JAM

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <map>
 #include <vector>
@@ -15,6 +17,7 @@ class Intel4004
 
         void set_object_code(std::vector<uint8_t> code);
         void print_status();
+        std::string get_status();
 
 
     private:
@@ -29,7 +32,7 @@ class Intel4004
         typedef void (Intel4004::*op)();
 
         uint16_t pc = 0; //12 bit
-        uint16_t sr[3]; //12 bit stack level registers
+        uint16_t sr[3] = {0,0,0}; //12 bit stack level registers
         uint8_t sr_index = 0; //
         uint8_t acc = 0; //4 bit accumulator
 
