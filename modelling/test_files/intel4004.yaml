@@ -1,0 +1,37 @@
+name: Intel4004
+description: The Intel 4004 is a 4-bit central processing unit (CPU) released by Intel Corporation in 1971
+
+memory:
+  ACC: 4 # 4 bit
+  CY: 1 # 1 bit
+  ACBR: 4 
+  REGISTER[8]: # implicit 64 bit
+   P{$0}:  # implicit 8 bit
+      R{2*$0}: 4
+      R{2*$0+1}: 4
+  PC: # implicit 6 bit
+    PH: 2    
+    PM: 2    
+    PL: 2
+  CM: 3
+  STACK[3]: 6
+
+
+instructions:
+  NOP:  
+    code: $00
+    description: No Operation
+  LDM:
+    description: "The 4 bits of data, DDDD stored in the OPA field of instruction
+    word are loaded into the accumulator. The previous contents of the 
+    acummulator are lost. The carry/link bit is unaffected."
+    code: 1101 DDDD
+    instructions: 
+      - DDDD --> ACC
+  LD:
+    description: "The 4 bit content of the designated index register (RRRR) 
+    is loaded into accumulator. The previous contents of the accumulator are lost. 
+    The 4 bit content of the index register and the carry/link bit are unaffected."
+    code: 1010 RRRR
+    instructions: 
+      - (RRRR) --> ACC
