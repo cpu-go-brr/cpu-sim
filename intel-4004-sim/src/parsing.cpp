@@ -346,7 +346,7 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
 {
     int address_count = 0;
 
-    std::regex rgx_variabels("^([^=*]+)\s*=\s*\*$");
+    std::regex rgx_variabels("^[^=*]+\s*=\s*[*]$");
     std::smatch matches;
 
     std::vector<std::string> new_instructions = {};
@@ -376,8 +376,9 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
 
             std::string variable_name = trim(var_def.substr(0, var_def.find("=")));
             vars.insert({variable_name, address_count});
-            new_instructions.push_back(current_line);
+            // new_instructions.push_back(current_line);
         }else{
+            // std::cout << split_instruction[0] << "\n";
             vars.insert({split_instruction[0], address_count});
             if(split_instruction.size() > 1)
             {
@@ -390,10 +391,6 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
                 {
                     address_count += 1;
                 }
-                }
-
-            if(split_instruction.size() > 1)
-            {
                 new_instructions.push_back(current_line.substr(current_line.find(split_instruction[1]), current_line.length()));
             }
         }
@@ -421,12 +418,17 @@ std::vector<int> clean_instructions_to_object_code(std::vector<std::string> clea
         }
         else
         {
-            std::cout << split_instruction[0] << "\n";
+            // std::cout << split_instruction[0] << "\n";
+
+            if (split_instruction[0] == ".BYTE"){
+                res.push_back(parse_value_from_argument(split_instruction[1]));
+            }
+            
             /*
              options:
-                1. starts with '.' => pragma
-                2. 'var = *' => new var that equals current pc
-                3. string => new label on current address and op code to bin
+                - 1. starts with '.' => pragma
+                - 2. 'var = *' => new var that equals current pc
+                - 3. string => new label on current address and op code to bin
                 4. '* = num' => pc gets set to num
             */
         }
@@ -436,7 +438,6 @@ std::vector<int> clean_instructions_to_object_code(std::vector<std::string> clea
 
 void Intel4004Parser::parse(std::string file_path)
 {
-    
     std::vector<std::string> cleaned_instructions = get_clean_instructions(file_path);
     cleaned_instructions = parse_labels(cleaned_instructions);
 
@@ -444,8 +445,7 @@ void Intel4004Parser::parse(std::string file_path)
     // for (auto i : vars)
     // {
     //     std::cout << "|" << i.first << "|" << std::hex << i.second << "|" << std::endl;
-    // }
-    
+    // }    
 
     std::vector<int> res = clean_instructions_to_object_code(cleaned_instructions);
     std::cout << "\n\n";
