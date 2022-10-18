@@ -42,6 +42,7 @@ file(COPY ${data} DESTINATION resources)
 target_link_libraries(simulator PUBLIC
   pthread
   yaml-cpp
+  matheval
 )
 
 ###############################################################################
