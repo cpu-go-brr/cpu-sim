@@ -9,7 +9,8 @@ project(intel-4004-sim)            # this sets the project name
 # invoked and put all files that match the pattern in the variables 
 # `sources` and `data`.
 file(GLOB_RECURSE sources src/*.cpp include/*.hpp)
-file(GLOB_RECURSE data resources/*)
+file(GLOB_RECURSE data resources/*.cpp resources/*.hpp)
+#file(GLOB_RECURSE data out/*.cpp out/*.hpp)
 
 # You can use set(sources src/main.cpp) etc if you don't want to
 # use globbing to find files automatically.
@@ -27,6 +28,9 @@ target_compile_options(simulator PUBLIC -std=c++2a -Wall -Wfloat-conversion)
 
 # This allows to include files relative to the root of the src directory with a <> pair
 target_include_directories(simulator PUBLIC src/main)
+target_include_directories(simulator PUBLIC include)
+target_include_directories(simulator PUBLIC resources)
+#target_include_directories(simulator PUBLIC out)
 
 # This copies all resource files in the build directory.
 # We need this, because we want to work with paths relative to the executable.

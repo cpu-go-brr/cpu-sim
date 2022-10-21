@@ -19,19 +19,23 @@ memory:
 
 instructions:
   NOP:  
-    code: $00
+    code: 0000 0000
     description: No Operation
+    instructions:
+      - PC+2 --> PC
   LDM:
     description: "The 4 bits of data, DDDD stored in the OPA field of instruction
     word are loaded into the accumulator. The previous contents of the 
-    acummulator are lost. The carry/link bit is unaffected."
+    accumulator are lost. The carry/link bit is unaffected."
     code: 1101 DDDD
     instructions: 
-      - DDDD --> ACC
+      - D --> ACC
+      - PC+2 --> PC
   LD:
     description: "The 4 bit content of the designated index register (RRRR) 
     is loaded into accumulator. The previous contents of the accumulator are lost. 
     The 4 bit content of the index register and the carry/link bit are unaffected."
     code: 1010 RRRR
     instructions: 
-      - (RRRR) --> ACC
+      - R{R} --> ACC
+      - PC+2 --> PC

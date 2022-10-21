@@ -14,8 +14,9 @@ http://datasheets.chipdb.org/Intel/MCS-4/datashts/intel-4004.pdf
 -----
 Studienarbeit
 https://tams.informatik.uni-hamburg.de/publications/2003/SA_Ruge/studienarbeit-4004.pdf
-
-
+-----
+Pogramming Guide
+http://bitsavers.org/pdf/pro-log/pls_400/The_Designers_Guide_to_Programmed_Logic_for_PLS_400_Systems_Aug73.pdf
 -----
 6502 Instructionset
 https://www.masswerk.at/6502/6502_instruction_set.html

@@ -1,10 +1,10 @@
-#include "yaml-cpp/yaml.h"
 #include "../include/description.hpp"
 #include "../include/matheval.hpp"
 #include <iostream>
 #include <assert.h>
 #include <regex>
 #include <cmath>
+#include <cctype>
 
 Description::CPU::CPU(std::string path)
 {
@@ -15,32 +15,30 @@ Description::CPU::CPU(std::string path)
     description = file["description"].as<std::string>();
 
     auto mem = file["memory"];
-
-    int total_mem = 0;
     for (YAML::const_iterator it = mem.begin(); it != mem.end(); ++it)
     {
-        Memory m(it->first.as<std::string>(), it->second);
-        total_mem +=m.size;
+        Memory m(it->first.as<std::string>(), it->second, total_mem);
+        total_mem += m.size;
         memory.push_back(m);
     }
 
-    for(const auto& m : memory)
+    auto ins = file["instructions"];
+    for (YAML::const_iterator it = ins.begin(); it != ins.end(); ++it)
     {
-        std::cout << m.name << ": " << m.size << "\n";
-        for(const auto& m2 : m.submemory)
-        {
-                    std::cout <<  " "  << m2.name << ": " << m2.size << "\n";
-
-                    for(const auto& m3 : m2.submemory)
-        std::cout << "   " << m3.name << ": " << m3.size << "\n";
-
-
-        }
-
+        Instruction m(it->first.as<std::string>(), it->second);
+        instructions.push_back(m);
     }
 
-
-
+    // for (auto m : memory)
+    // {
+    //     std::cout << m.name << ":" << (m.byteoffset * 8 + m.bitoffset) << "\n";
+    //     for (auto m2 : m.submemory)
+    //     {
+    //         std::cout << m2.name << ":" << (m2.byteoffset * 8 + m2.bitoffset) << "\n";
+    //         for (auto m3 : m2.submemory)
+    //             std::cout << m3.name << ":" << (m3.byteoffset * 8 + m3.bitoffset) << "\n";
+    //     }
+    // }
 }
 
 int parseNumber(std::string number)
@@ -94,25 +92,23 @@ std::string getName(std::string name, std::vector<int> dimensions)
     return name;
 }
 
-
 std::vector<uint8_t> Description::Memory::getBitmask()
 {
     assert(size > 0);
-    assert(offset < 8);
 
-    std::vector<uint8_t> bytes((int)std::ceil(((double)size + (double)offset) / 8.0), 0xFF);
+    std::vector<uint8_t> bytes((int)std::ceil(((double)size + (double)bitoffset) / 8.0), 0xFF);
 
-    int free_bytes = bytes.size() * 8 - (size + offset);
-    uint8_t highest_byte_mask =  ((1 << (8-free_bytes))-1); 
-    uint8_t lowest_byte_mask =~((1 << (offset))-1);
+    int free_bytes = bytes.size() * 8 - (size + bitoffset);
+    uint8_t highest_byte_mask = ((1 << (8 - free_bytes)) - 1);
+    uint8_t lowest_byte_mask = ~((1 << (bitoffset)) - 1);
 
     bytes[0] &= lowest_byte_mask;
-    bytes[bytes.size()-1] &= highest_byte_mask;
+    bytes[bytes.size() - 1] &= highest_byte_mask;
 
     return bytes;
 }
 
-Description::Memory::Memory(std::string key, YAML::Node config, std::vector<int> dimension)
+Description::Memory::Memory(std::string key, YAML::Node config, int total_mem, std::vector<int> dimension)
 {
     auto info = getDimension(key);
     name = getName(info.first, dimension);
@@ -121,7 +117,6 @@ Description::Memory::Memory(std::string key, YAML::Node config, std::vector<int>
     if (config.IsScalar())
     {
         size = config.as<int>();
-        return;
     }
 
     for (YAML::const_iterator it = config.begin(); it != config.end(); ++it)
@@ -131,9 +126,12 @@ Description::Memory::Memory(std::string key, YAML::Node config, std::vector<int>
             std::vector<int> copy(dimension);
             copy.push_back(i);
             std::string n = getName(it->first.as<std::string>(), copy);
-            Memory m(n, it->second, copy);
+            Memory m(n, it->second, total_mem + size, copy);
             size += m.size;
             submemory.push_back(m);
         }
     }
+
+    bitoffset = total_mem % 8;
+    byteoffset = total_mem / 8;
 }
