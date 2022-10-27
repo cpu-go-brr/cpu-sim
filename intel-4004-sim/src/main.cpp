@@ -1,6 +1,6 @@
 #include <iostream>
 #include "../include/intel4004.hpp"
-#include "../include/parsing.hpp"
+#include "../include/assembler/intel4004_assembler.hpp"
 #include "../include/server.hpp"
 
 void test_parsing();
@@ -8,13 +8,13 @@ void test_cpu();
 
 int main(int argc, char** argv)
 {
-    Intel4004 cpu;
+    // Intel4004 cpu;
 
-    auto server = Server(2001, &cpu);
-    server.start();
+    // auto server = Server(2001, &cpu);
+    // server.start();
 
     // test_cpu();
-    // test_parsing();
+    test_parsing();
 
     return 0;
 }
@@ -42,7 +42,16 @@ void test_cpu(){
     }
 }
 
+#include <iomanip>
+#include <vector>
 void test_parsing(){
-    Intel4004Parser parser;
-    parser.parse("input2.asm");
+    Intel4004Assembler assembler;
+    std::vector<int> assembled_code = assembler.assemble("input.asm");
+
+    std::cout << "\n\nAssembled Code:\n";
+    for (size_t i = 0; i < assembled_code.size(); i++)
+    {
+        std::cout << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << assembled_code[i] << " ";
+    }
+    std::cout << "\n\n\n";
 }

@@ -1,4 +1,4 @@
-#include "../include/parsing.hpp"
+#include "../../include/assembler/intel4004_assembler.hpp"
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -6,20 +6,6 @@
 #include <vector>
 #include <algorithm>
 #include <iomanip>
-
-/* actual parsing of string
-        cases to parse:
-            1. Labels and Identifiers
-                1.1 Identifiers
-                    - match Identifiers and values
-                    - extract them
-                    - check if they are in vars map
-                1.2 Labels
-                    - find labels
-                    - do as in 1.1
-            2. Opcodes and Modifiers
-            3. Pragmas
-*/
 
 // array of op codes
 std::vector<std::string> op_codes = {
@@ -112,24 +98,6 @@ std::vector<std::string> split(std::string text)
         text = split_matches.suffix().str();
     }
     return res;
-    // std::vector<std::string> words{};
-    // std::string delim = " ";
-
-    // std::size_t pos = 0;
-    // while (true)
-    // {
-    //     pos = text.find(delim);
-    //     std::cout << pos << "\n";
-    //     if(pos != std::string::npos){
-    //         words.push_back(trim(text.substr(0, pos)));
-    //         text.erase(0, pos + delim.length());
-    //     }else{
-    //         words.push_back(trim(text.substr(0, pos)));
-    //         text.erase(0, pos + delim.length());
-    //         break;
-    //     }
-    // }
-    // return words;
 }
 
 bool in_array(std::string str, const std::vector<std::string> array)
@@ -219,13 +187,6 @@ std::vector<int> single_instruction_to_object_code(std::vector<std::string> inst
 
     if (command == "JCN")
     {
-        // std::cout << "--------------------------------\n";
-        // std::cout << "inst1:" << instruction[1] << "\n";
-        // std::cout << "inst2:" << instruction[2] << "\n\n";
-        // std::cout << "first_arg:" << std::hex << first_arg << "\n";
-        // std::cout << "second_arg:" << std::hex << second_arg << "\n";
-        // std::cout << "--------------------------------\n\n\n";
-
         return std::vector<int>{(0b0001 << 4) + (first_arg & 0b1111), (second_arg & 0b11111111)};
     }
     else if (command == "FIM")
@@ -485,48 +446,20 @@ std::vector<int> clean_instructions_to_object_code(std::vector<std::string> clea
                         }
                         pos++;
                     }
+                }else{
+                    pos = variable_value_int;
                 }
-                // std::cout << cleaned_instructions[i] << "|" << variable_value_int << "\n";
             }
-
-            /*
-             options:
-                - 1. starts with '.' => pragma
-                - 2. 'var = *' => new var that equals current pc
-                - 3. string => new label on current address and op code to bin
-                4. '* = num' => pc gets set to num
-            */
         }
     }
     return res;
 }
 
-void Intel4004Parser::parse(std::string file_path)
+std::vector<int> Intel4004Assembler::assemble(std::string file_path)
 {
     std::vector<std::string> cleaned_instructions = get_clean_instructions(file_path);
     cleaned_instructions = parse_labels(cleaned_instructions);
 
-    // std::cout << "Vars (hex):\n";
-    // for (auto i : vars)
-    // {
-    //     std::cout << "|" << i.first << "|" << std::hex << i.second << "|" << std::endl;
-    // }
-
-    // for (size_t i = 0; i < cleaned_instructions.size(); i++)
-    // {
-    //     std::cout << cleaned_instructions[i] << "\n";
-    // }
-
     std::vector<int> res = clean_instructions_to_object_code(cleaned_instructions);
-    std::cout << "\n\n";
-    for (size_t i = 0; i < res.size(); i++)
-    {
-        std::cout << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << res[i] << " ";
-        // if (i % 2 != 0){
-        //     std::cout << std::hex << res[i] << " ";
-        // }else{
-        //     std::cout << std::hex << res[i];
-        // }
-    }
-    std::cout << "\n\n\n";
+    return res;
 }
