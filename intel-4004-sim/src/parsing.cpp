@@ -388,7 +388,7 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
         else if (std::regex_search(current_line, matches2, rgx_pc))
         {
             new_instructions.push_back(current_line);
-            std::cout << current_line << "\n";
+            // std::cout << current_line << "\n";
         }
         else if (split_instruction[0][0] == '*')
         {
@@ -470,7 +470,7 @@ std::vector<int> clean_instructions_to_object_code(std::vector<std::string> clea
             {
                 std::string variable_value = trim(cleaned_instructions[i].substr(cleaned_instructions[i].find("=") + 1, cleaned_instructions[i].size()));
                 int variable_value_int = parse_value_from_argument(variable_value);
-                std::cout << variable_value << " \n";
+                // std::cout << variable_value << " \n";
                 if (variable_value_int > pos)
                 {
                     while(pos < variable_value_int)
