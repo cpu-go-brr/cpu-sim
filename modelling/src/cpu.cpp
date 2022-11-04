@@ -1,5 +1,5 @@
-#include "../include/description.hpp"
-#include "../include/matheval.hpp"
+#include "cpu.hpp"
+#include "matheval.hpp"
 #include <iostream>
 #include <assert.h>
 #include <regex>
@@ -12,7 +12,8 @@ Description::CPU::CPU(std::string path)
     auto file = YAML::LoadFile(path);
 
     name = file["name"].as<std::string>();
-    description = file["description"].as<std::string>();
+    description = file["description"].as<std::string>("");
+    display = file["display"].as<std::string>("");
 
     auto mem = file["memory"];
     for (YAML::const_iterator it = mem.begin(); it != mem.end(); ++it)
@@ -28,6 +29,9 @@ Description::CPU::CPU(std::string path)
         Instruction m(it->first.as<std::string>(), it->second);
         instructions.push_back(m);
     }
+
+    fetch = Instruction("fetch", file["fetch"]);
+
 
     // for (auto m : memory)
     // {

@@ -1,4 +1,4 @@
-#include "../include/matheval.hpp"
+#include "matheval.hpp"
 #include <matheval.h>
 #include <assert.h>
 #include <iostream>

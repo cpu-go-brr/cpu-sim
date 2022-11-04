@@ -1,15 +1,4 @@
-#pragma once
-
-#include <stdint.h>
-#include "bitset.hpp"
-#include <cmath>
-
-typedef struct AddressInfo
-{
-   uint8_t byte_start = 0;
-   uint8_t bit_offset = 0;
-   uint8_t length = 0;
-} AddressInfo;
+#include "AddressInfo.hpp"
 
 std::size_t bytes(AddressInfo i)
 {
@@ -37,10 +26,11 @@ void set_mem(uint8_t *mem, AddressInfo info, bitset data)
 
    auto mask_vector = std::vector<uint8_t>(bytes(info), 0xFF);
 
-   mask_vector[bytes(info)-1] &= ((1 << (info.length % 8)) -1);
 
    bitset mask{mask_vector, (std::size_t)info.bit_offset + (std::size_t)info.length};
    mask = mask << info.bit_offset;
+   if( (info.length + info.bit_offset) % 8 != 0) // alignment needs masking
+      mask[bytes(info)-1] &= ((1 << ((info.length + info.bit_offset) % 8)) -1);
 
 
    for (std::size_t i = 0; i < bytes(info); i++)

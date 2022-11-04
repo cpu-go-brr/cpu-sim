@@ -207,7 +207,8 @@ instructions:
       main memory character location. The accumulator and carry/link are unaffected.
     code: 1110 0000
     instructions:
-   rar:
+      - ACC --> ram((get(SRC), 0b000))
+  rar:
     description: |
       The content of the accumulator and carry/link are rotated right.
     code: 1111 0110

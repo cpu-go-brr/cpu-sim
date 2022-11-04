@@ -1,6 +1,5 @@
 #include <iostream>
-#include "yaml-cpp/yaml.h"
-#include "description.hpp"
+#include "cpu.hpp"
 #include "matheval.hpp"
 #include "bitset.hpp"
 
@@ -11,9 +10,14 @@
 int main(int argc, char **argv)
 {
 
+    // bitset a{{0b1010}, 4};
+    // bitset b{{1}, 1};
+
+    // std::cout << (a,b).bin() << "\n";
+
     auto desc = Description::CPU(PATH);
     desc.generate();
-
+// 
     // Intel4004 cpu;
 
     // bitset a{{0xFF,0xFF,0xFF}, 20};

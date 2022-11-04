@@ -2,4 +2,5 @@
 .vscode
 build/
 Makefile
-modelling/out/
+modelling/out
+modelling/out2
