@@ -1,4 +1,4 @@
-#include "../include/parsing.hpp"
+#include "../../include/assembler/intel4004_assembler.hpp"
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -6,20 +6,6 @@
 #include <vector>
 #include <algorithm>
 #include <iomanip>
-
-/* actual parsing of string
-        cases to parse:
-            1. Labels and Identifiers
-                1.1 Identifiers
-                    - match Identifiers and values
-                    - extract them
-                    - check if they are in vars map
-                1.2 Labels
-                    - find labels
-                    - do as in 1.1
-            2. Opcodes and Modifiers
-            3. Pragmas
-*/
 
 // array of op codes
 std::vector<std::string> op_codes = {
@@ -112,24 +98,6 @@ std::vector<std::string> split(std::string text)
         text = split_matches.suffix().str();
     }
     return res;
-    // std::vector<std::string> words{};
-    // std::string delim = " ";
-
-    // std::size_t pos = 0;
-    // while (true)
-    // {
-    //     pos = text.find(delim);
-    //     std::cout << pos << "\n";
-    //     if(pos != std::string::npos){
-    //         words.push_back(trim(text.substr(0, pos)));
-    //         text.erase(0, pos + delim.length());
-    //     }else{
-    //         words.push_back(trim(text.substr(0, pos)));
-    //         text.erase(0, pos + delim.length());
-    //         break;
-    //     }
-    // }
-    // return words;
 }
 
 bool in_array(std::string str, const std::vector<std::string> array)
@@ -139,7 +107,7 @@ bool in_array(std::string str, const std::vector<std::string> array)
 
 int parse_value_from_argument(std::string arg)
 {
-    if(arg.find(",") != std::string::npos)
+    if (arg.find(",") != std::string::npos)
     {
         arg = arg.substr(0, arg.find(","));
     }
@@ -175,7 +143,7 @@ int parse_value_from_argument(std::string arg)
         }
         base = 2;
     }
-    else if((30 <= arg[0] <= 39))
+    else if ((30 <= arg[0] <= 39))
     {
         for (size_t i = 0; i < arg.length(); i++)
         {
@@ -188,17 +156,17 @@ int parse_value_from_argument(std::string arg)
         }
     }
 
-    try{
+    try
+    {
         return std::stoi(arg, nullptr, base);
     }
-    catch(std::invalid_argument& exc)
+    catch (std::invalid_argument &exc)
     {
         if (vars.find(arg) != vars.end())
         {
             return vars[arg];
         }
     }
-    
 }
 
 std::vector<int> single_instruction_to_object_code(std::vector<std::string> instruction)
@@ -218,14 +186,7 @@ std::vector<int> single_instruction_to_object_code(std::vector<std::string> inst
     }
 
     if (command == "JCN")
-    {   
-        // std::cout << "--------------------------------\n";
-        // std::cout << "inst1:" << instruction[1] << "\n";
-        // std::cout << "inst2:" << instruction[2] << "\n\n";
-        // std::cout << "first_arg:" << std::hex << first_arg << "\n";
-        // std::cout << "second_arg:" << std::hex << second_arg << "\n";
-        // std::cout << "--------------------------------\n\n\n";
-        
+    {
         return std::vector<int>{(0b0001 << 4) + (first_arg & 0b1111), (second_arg & 0b11111111)};
     }
     else if (command == "FIM")
@@ -315,7 +276,7 @@ std::vector<std::string> get_clean_instructions(std::string file_path)
         }
 
         // regex for variables defined in the asm file
-        std::regex rgx_variabels("^([^=*]+)\s*=\s*([^=*]+)$");
+        std::regex rgx_variabels("^[A-z0-0-_]+\s*=\s*[\$\%]*[0-9]+$");
         std::smatch matches;
 
         // std::regex rgx_spaces("^([^=*]+)\s*=\s*([^=*]+)$");
@@ -324,6 +285,7 @@ std::vector<std::string> get_clean_instructions(std::string file_path)
         if (std::regex_search(asm_instruction, matches, rgx_variabels))
         {
             std::string var_def = matches[0].str();
+            // std::cout << var_def << "\n";
 
             // extract name and variable
             std::string variable_name = trim(var_def.substr(0, var_def.find("=")));
@@ -346,8 +308,10 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
 {
     int address_count = 0;
 
-    std::regex rgx_variabels("^[^=*]+\s*=\s*[*]$");
+    std::regex rgx_variabels("^[A-z0-9-]+\s*=\s*[*]$");
+    std::regex rgx_pc("^[*]\s*=\s*[\$\%]*[0-9]+$");
     std::smatch matches;
+    std::smatch matches2;
 
     std::vector<std::string> new_instructions = {};
 
@@ -358,7 +322,7 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
         if (in_array(split_instruction[0], op_codes))
         {
             std::string tmp_inst = split_instruction[0];
-                if(tmp_inst == "JCN" || tmp_inst == "FIM" || tmp_inst == "JUN" || tmp_inst == "JMS" || tmp_inst == "ISZ")
+            if (tmp_inst == "JCN" || tmp_inst == "FIM" || tmp_inst == "JUN" || tmp_inst == "JMS" || tmp_inst == "ISZ")
             {
                 address_count += 2;
             }
@@ -367,23 +331,43 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
                 address_count += 1;
             }
             new_instructions.push_back(current_line);
-        }else if(current_line.find(".BYTE") != std::string::npos)
+        }
+        else if (current_line.find(".BYTE") != std::string::npos)
         {
             address_count += 1;
             new_instructions.push_back(current_line);
-        }else if (std::regex_search(current_line, matches, rgx_variabels))
-        {   std::string var_def = matches[0].str();
+        }
+        else if (std::regex_search(current_line, matches, rgx_variabels))
+        {
+            std::string var_def = matches[0].str();
 
+            // std::cout << var_def << "\n";
             std::string variable_name = trim(var_def.substr(0, var_def.find("=")));
             vars.insert({variable_name, address_count});
             // new_instructions.push_back(current_line);
-        }else{
+        }
+        else if (std::regex_search(current_line, matches2, rgx_pc))
+        {
+            new_instructions.push_back(current_line);
+            // std::cout << current_line << "\n";
+        }
+        else if (split_instruction[0][0] == '*')
+        {
+            std::string variable_value = trim(cleaned_instructions[i].substr(cleaned_instructions[i].find("=") + 1, cleaned_instructions[i].size()));
+            int variable_value_int = parse_value_from_argument(variable_value);
+            address_count = variable_value_int;
+            
+            // std::cout << current_line << "\n";
+            new_instructions.push_back(current_line);
+        }
+        else
+        {
             // std::cout << split_instruction[0] << "\n";
             vars.insert({split_instruction[0], address_count});
-            if(split_instruction.size() > 1)
+            if (split_instruction.size() > 1)
             {
                 std::string tmp_inst = split_instruction[1];
-                if(tmp_inst == "JCN" || tmp_inst == "FIM" || tmp_inst == "JUN" || tmp_inst == "JMS" || tmp_inst == "ISZ")
+                if (tmp_inst == "JCN" || tmp_inst == "FIM" || tmp_inst == "JUN" || tmp_inst == "JMS" || tmp_inst == "ISZ")
                 {
                     address_count += 2;
                 }
@@ -400,7 +384,9 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
 
 std::vector<int> clean_instructions_to_object_code(std::vector<std::string> cleaned_instructions)
 {
-    std::vector<int> res;
+    std::vector<int> res{};
+    // std::vector<int>::const_iterator position = res.begin();
+    int pos = 0;
 
     for (size_t i = 0; i < cleaned_instructions.size(); i++)
     {
@@ -413,50 +399,67 @@ std::vector<int> clean_instructions_to_object_code(std::vector<std::string> clea
             std::vector<int> tmp = single_instruction_to_object_code(split_instruction);
             for (size_t j = 0; j < tmp.size(); j++)
             {
-                res.push_back(tmp[j]);
+                if (pos >= res.size())
+                {
+                    res.push_back(tmp[j]);
+                }
+                else
+                {
+                    res[pos] = tmp[j];
+                }
+                pos++;
             }
         }
         else
         {
             // std::cout << split_instruction[0] << "\n";
 
-            if (split_instruction[0] == ".BYTE"){
-                res.push_back(parse_value_from_argument(split_instruction[1]));
+            if (split_instruction[0] == ".BYTE")
+            {
+                if (pos >= res.size())
+                {
+                    res.push_back(parse_value_from_argument(split_instruction[1]));
+                }
+                else
+                {
+                    res[pos] = parse_value_from_argument(split_instruction[1]);
+                }
+                pos++;
+                // res.insert(res.begin()+pos, parse_value_from_argument(split_instruction[1]));
             }
-            
-            /*
-             options:
-                - 1. starts with '.' => pragma
-                - 2. 'var = *' => new var that equals current pc
-                - 3. string => new label on current address and op code to bin
-                4. '* = num' => pc gets set to num
-            */
+            else
+            {
+                std::string variable_value = trim(cleaned_instructions[i].substr(cleaned_instructions[i].find("=") + 1, cleaned_instructions[i].size()));
+                int variable_value_int = parse_value_from_argument(variable_value);
+                // std::cout << variable_value << " \n";
+                if (variable_value_int > pos)
+                {
+                    while(pos < variable_value_int)
+                    {
+                        if (pos >= res.size())
+                        {
+                            res.push_back(0);
+                        }
+                        else
+                        {
+                            res[pos] = 0;
+                        }
+                        pos++;
+                    }
+                }else{
+                    pos = variable_value_int;
+                }
+            }
         }
     }
     return res;
 }
 
-void Intel4004Parser::parse(std::string file_path)
+std::vector<int> Intel4004Assembler::assemble(std::string file_path)
 {
     std::vector<std::string> cleaned_instructions = get_clean_instructions(file_path);
     cleaned_instructions = parse_labels(cleaned_instructions);
 
-    // std::cout << "Vars (hex):\n";
-    // for (auto i : vars)
-    // {
-    //     std::cout << "|" << i.first << "|" << std::hex << i.second << "|" << std::endl;
-    // }    
-
     std::vector<int> res = clean_instructions_to_object_code(cleaned_instructions);
-    std::cout << "\n\n";
-    for (size_t i = 0; i < res.size(); i++)
-    {
-        std::cout << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << res[i] << " ";
-        // if (i % 2 != 0){
-        //     std::cout << std::hex << res[i] << " ";
-        // }else{
-        //     std::cout << std::hex << res[i];
-        // }
-    }
-    std::cout << "\n\n\n";
+    return res;
 }
