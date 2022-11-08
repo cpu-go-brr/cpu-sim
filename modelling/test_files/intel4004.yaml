@@ -79,9 +79,9 @@ instructions:
       T = 1 Jump if test signal (pin 10 on 4004) is zero.
     code: 0001 IZOT
     conditions:
-      - zero = Z && (I ^ (ACC!=0))
-      - carry = O && ( I ^ (CY==0))
-      - test = T && (I ^ (TEST!=0))
+      - zero = Z && (I ^ (ACC==0))
+      - carry = O && ( I ^ (CY==1))
+      - test = T && (I ^ (TEST==0))
       - jump = zero + carry + test
       - nextpage = (PM, PL) >= 254
     instructions:
@@ -221,7 +221,7 @@ instructions:
       are loaded to the accumulator.
 
       BBL is used to return from subroutine to main program.
-    code: 0110 DDDD
+    code: 1100 DDDD
     instructions:
       - D --> ACC
       - STACK0 --> PC
@@ -405,27 +405,27 @@ instructions:
     description: Increment Accumulator
     code: 1111 0010
     instructions:
-      - ACC+1 --> ACC
+      - ACC+1 --> {CY,ACC}
       - PC+1 --> PC
   dac:
     description: Decrement Accumulator
     code: 1111 1000
     instructions:
-      - ACC+0b1111 --> ACC
+      - ACC+0b1111 --> {CY,ACC}
       - PC+1 --> PC
   ral:
     description: |
       The content of the accumulator and carry/link are rotated left.
     code: 1111 0110
     instructions:
-      - (ACC,CY) --> {CY,ACC}
+      - (CY,ACC) --> {ACC,CY}
       - PC+1 --> PC
   rar:
     description: |
       The content of the accumulator and carry/link are rotated right.
     code: 1111 0110
     instructions:
-      - (CY,ACC) --> {ACC,CY}
+      - (ACC,CY) --> {CY,ACC}
       - PC+1 --> PC
   tcc:
     description: |
@@ -495,5 +495,4 @@ display: |
   LEVEL 2 0x{STACK1}          R4 R5 0x{R4} 0x{R5}   RA RB 0x{R12} 0x{R13}\n\
   LEVEL 3 0x{STACK2}          R6 R7 0x{R6} 0x{R7}   RA RB 0x{R14} 0x{R15}\n\
   \n\
-  ACCUMULATOR: {ACC} [0b{ACC}]  CARRY: 0b{CY}\n\
-  SRC: 0x{SRC}\n"
+  ACCUMULATOR: {ACC} [0b{ACC}]  CARRY: 0b{CY}\n"

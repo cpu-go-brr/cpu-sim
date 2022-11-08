@@ -291,9 +291,9 @@ bitset operator+(bitset a, bitset const &b)
         uint8_t byte_a = (a.bytes() > i) ? a[i] : 0;
         uint8_t byte_b = (b.bytes() > i) ? b[i] : 0;
 
-        if (a.bytes() - 1 == i)
+        if (a.bytes() - 1 == i && (a.length % 8) != 0)
             byte_a &= (1 << (a.length % 8)) - 1;
-        if (b.bytes() - 1 == i)
+        if (b.bytes() - 1 == i && (b.length % 8) != 0)
             byte_b &= (1 << (b.length % 8)) - 1;
 
         uint16_t addition = byte_a + byte_b + overflow;
