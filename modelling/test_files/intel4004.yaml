@@ -13,7 +13,7 @@ memory:
       PL: 4
       PM: 4
       PH: 4
-    CM: 3
+    CM: 4
     STACK[3]:
       STACK{$0}: 12
     SRC:
@@ -320,6 +320,106 @@ instructions:
     instructions:
       - ram((CM, SRC)) --> ACC
       - PC+1 --> PC
+  rdr:
+    description: |
+      The data present at the input lines of the previously selected ROM chip is transferred to 
+      the accumulator. The carry/link is unaffected. If the I/O option has both inputs and outputs 
+      within the same 4 I/O lines, the user can choose to have either "0" or "1" transferred to the 
+      accumulator for those I/O pins coded as outputs, when an RDR instruction is executed.    
+    code: 1110 1010
+    instructions:
+      - rom_port(X2) --> ACC
+      - PC+1 --> PC
+  adm:
+    description: |
+      The content of the previously selected RAM main memory character is added to the accumulator 
+      with carry. The RAM character is unaffected.
+    code: 1110 1011
+    instructions:
+      - ram((CM, SRC)) + ACC + CY --> {CY,ACC}
+      - PC +1 --> PC
+  rd0:
+    description: |
+      The 4-bits of status character 0 for the previously selected RAM register are transferred 
+      to the accumulator. The carry/link and the status character are unaffected.    
+    code: 1110 1100
+    instructions:
+      - ram_status((X2, 0b00)) --> ACC 
+      - PC +1 --> PC
+  rd1:
+    description: |
+      The 4-bits of status character 1 for the previously selected RAM register are transferred 
+      to the accumulator. The carry/link and the status character are unaffected.    
+    code: 1110 1101
+    instructions:
+      - ram_status((X2, 0b01)) --> ACC 
+      - PC +1 --> PC
+  rd2:
+    description: |
+      The 4-bits of status character 0 for the previously selected RAM register are transferred 
+      to the accumulator. The carry/link and the status character are unaffected.    
+    code: 1110 1110
+    instructions:
+      - ram_status((X2, 0b10)) --> ACC 
+      - PC +1 --> PC
+  rd3:
+    description: |
+      The 4-bits of status character 0 for the previously selected RAM register are transferred 
+      to the accumulator. The carry/link and the status character are unaffected.    
+    code: 1110 1111
+    instructions:
+      - ram_status((X2, 0b11)) --> ACC 
+      - PC +1 --> PC
+  clb:
+    description: Set accumulator and carry/link to 0.
+    code: 1111 0000
+    instructions:
+      - 0 --> ACC
+      - 0 --> CY
+      - PC+1 --> PC
+  clc:
+    description: Clear Carry
+    code: 1111 0001
+    instructions:
+      - 0 --> CY
+      - PC+1 --> PC
+  cmc:
+    description: Complement Carry
+    code: 1111 0011
+    instructions:
+      - ~CY --> CY
+      - PC+1 --> PC
+  stc:
+    description: Set Carry
+    code: 1111 1010
+    instructions:
+      - 1 --> CY
+      - PC+1 --> PC
+  cma:
+    description: Complement Accumulator
+    code: 1111 0100
+    instructions:
+      - ~ACC --> ACC
+      - PC+1 --> PC
+  iac:
+    description: Increment Accumulator
+    code: 1111 0010
+    instructions:
+      - ACC+1 --> ACC
+      - PC+1 --> PC
+  dac:
+    description: Decrement Accumulator
+    code: 1111 1000
+    instructions:
+      - ACC+0b1111 --> ACC
+      - PC+1 --> PC
+  ral:
+    description: |
+      The content of the accumulator and carry/link are rotated left.
+    code: 1111 0110
+    instructions:
+      - (ACC,CY) --> {CY,ACC}
+      - PC+1 --> PC
   rar:
     description: |
       The content of the accumulator and carry/link are rotated right.
@@ -327,7 +427,67 @@ instructions:
     instructions:
       - (CY,ACC) --> {ACC,CY}
       - PC+1 --> PC
-
+  tcc:
+    description: |
+      The accumulator is cleared. The least significant position of 
+      the accumulator is set to the value of the carry/link.
+      The carry/link is set to 0.
+    code: 1111 0111
+    instructions:
+      - 0 --> ACC
+      - CY --> ACC
+      - 0 --> CY
+      - PC+1 --> PC
+  daa:
+    description: |
+      The accumulator is incremented by 6 if either the carry/link is 1 
+      or if the accumulator content is greater than 9.
+      The carry/link is set to a 1 if the result generates a carry, 
+      otherwise it is unaffected.
+    code: 1111 1011
+    conditions:
+      - inc = CY == 1 || ACC > 9
+    instructions:
+      - inc? ACC + 6 --> {CY,ACC}
+  tcs:
+    description: |
+      The accumulator is set to 9 if the carry/link is 0.
+      The accumulator is set to 10 if the carry/link is a 1.
+      The carry/link is set to 0.
+    code: 1111 1001
+    instructions:
+      - CY == 0 ? 0b1001 --> ACC
+      - CY == 1 ? 0b1010 --> ACC
+      - 0 --> CY
+      - PC+1 --> PC
+  kbp:
+    description: The Accumulator will be set to the position of the first bit. If
+      more than one bit is set the Accumulator will be set to 15
+    code: 1111 1100
+    conditions:
+      - keep = ACC < 3
+      - four = ACC == 4
+      - eight = ACC == 8
+      - error = !keep && !four && !eight
+    instructions:
+      - four ? 3 --> ACC
+      - eight ? 4 --> ACC
+      - error ? 15 --> ACC
+      - PC+1 --> PC
+  dcl:
+    description: | 
+      The content of the three least significant accumulator bits is
+      transferred to the CM-RAM output lines on the cpu.
+      This instruction provides RAM bank selection when multiple RAM
+      banks are used. When the CPU is reset, RAM Bank zero is auto-
+      matically selected. DCL remains latched until it is changed or
+      reset.
+    code: 1111 1101
+    instructions:
+      - ACC == 0 ? 1 --> CM
+      - ACC != 0 ? (ACC, 0b0) --> CM
+      - PC+1 --> PC
+      
 display: |
   "         STACK                REGISTERS\n\
        PC 0x{PC}          R0 R1 0x{R0} 0x{R1}   R8 R9 0x{R8} 0x{R9}\n\
