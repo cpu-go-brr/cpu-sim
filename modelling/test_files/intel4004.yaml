@@ -2,24 +2,58 @@ name: Intel4004
 description: The Intel 4004 is a 4-bit central processing unit (CPU) released by Intel Corporation in 1971
 
 memory:
-  ACC: 4 # 4 bit
-  CY: 1 # 1 bit
-  REGISTER[8]: # implicit 64 bit
-   P{$0}:  # implicit 8 bit
-      R{2*$0+1}: 4
-      R{2*$0}: 4
-  PC: # implicit 12 bit
-    PL: 4
-    PM: 4    
-    PH: 4    
-  CM: 3
-  STACK[3]:
-    STACK{$0}: 12
-  SRC:
-    SRC_CHIP: 2
-    SRC_REG: 2
-    SRC_ADDR: 4
-  TEST: 1
+  internal:
+    ACC: 4 # 4 bit
+    CY: 1 # 1 bit
+    REGISTER[8]: # implicit 64 bit
+      P{$0}: # implicit 8 bit
+        R{2*$0+1}: 4
+        R{2*$0}: 4
+    PC: # implicit 12 bit
+      PL: 4
+      PM: 4
+      PH: 4
+    CM: 3
+    STACK[3]:
+      STACK{$0}: 12
+    SRC:
+      X2:
+        SRC_CHIP: 2
+        SRC_REG: 2
+      X3:
+        SRC_ADDR: 4
+    TEST: 1
+  external:
+    rom:
+      words: 4096
+      bits: 8
+    ram:
+      words: 2048
+      bits: 4
+    ram_status:
+      words: 512
+      bits: 4
+    ram_port:
+      words: 32
+      bits: 4
+    rom_port:
+      words: 16
+      bits: 4
+
+modifications:
+    rom_port: 
+      0: # write only
+        write_mask: 1111
+        read_mask: 0000
+        read_values: 0000 # always read zeros
+      1: # read only
+        write_mask: 0000
+        read_mask: 1111
+        read_values: 0000 # always read input
+      2: # mixed
+        write_mask: 0110
+        read_mask: 1001
+        read_values: 0100 # read I11I
 
 fetch:
   conditions:
@@ -27,7 +61,7 @@ fetch:
     - "rom(PC)"
 
 instructions:
-  nop:  
+  nop:
     code: 0000 0000
     description: No Operation
     instructions:
@@ -49,16 +83,18 @@ instructions:
       - carry = O && ( I ^ (CY==0))
       - test = T && (I ^ (TEST!=0))
       - jump = zero + carry + test
+      - nextpage = (PM, PL) >= 254
     instructions:
-      - PC + 2 --> PC
+      - "!jump? PC + 2 --> PC"
       - jump ? rom(PC+1) --> {PM,PL}
+      - jump && nextpage ? PH +1 --> PH
   fim:
     description: |
       Load 8-bits of data which are loaded into the designated index register pair from ROM.
     code: 0010 RRR0
     instructions:
       - rom(PC+1) --> P{R}
-      - PC+2 --> PC  
+      - PC+2 --> PC
   src:
     description: |
       The 8 bit content of the designated index register pair is sent to 
@@ -133,12 +169,12 @@ instructions:
       carry/link are unaffected. If the result is zero, the next instruction after ISZ is 
       executed. If the result is different from 0, program control is transferred to the 
       instruction located at the 8 bit address A2A2A2A2, A1A1A1A1 on the same page (ROM) 
-      where the ISZ instruction is located.    
+      where the ISZ instruction is located.
     code: 0111 RRRR
     instructions:
       - R{R} + 1 --> R{R}
       - R{R} == 0 ? PC +2 --> PC
-      - R{R} != 0 ? rom(PC+1) --> {PM,PL} 
+      - R{R} != 0 ? rom(PC+1) --> {PM,PL}
   add:
     description: |
       The 4 bit content of the designated index register is added to the content of the 
@@ -154,7 +190,7 @@ instructions:
       The 4 bit content of the designated index register is complemented (ones complement) 
       and added to content of the accumulator with borrow and the result is stored in the 
       accumulator. If a borrow is generated, the carry bit is set to 0; otherwise, it is 
-      set to 1. The 4 bit content of the index register is unaffected.    
+      set to 1. The 4 bit content of the index register is unaffected.
     code: 1001 RRRR
     instructions:
       - (~R{R} + ACC + ~CY) --> {CY,ACC}
@@ -165,7 +201,7 @@ instructions:
       accumulator. The previous contents of the accumulator are lost. The 4 bit 
       content of the index register and the carry/link bit are unaffected.
     code: 1010 RRRR
-    instructions: 
+    instructions:
       - R{R} --> ACC
       - PC+1 --> PC
   xch:
@@ -198,7 +234,7 @@ instructions:
       word are loaded into the accumulator. The previous contents of the
       accumulator are lost. The carry/link bit is unaffected.
     code: 1101 DDDD
-    instructions: 
+    instructions:
       - D --> ACC
       - PC+1 --> PC
   wrm:
@@ -207,7 +243,83 @@ instructions:
       main memory character location. The accumulator and carry/link are unaffected.
     code: 1110 0000
     instructions:
-      - ACC --> ram((get(SRC), 0b000))
+      - ACC --> ram((CM, SRC))
+      - PC+1 --> PC
+  wmp:
+    description: |
+      The content of the accumulator is transferred to the RAM output port 
+      of the previously selected RAM chip. The data is available on the 
+      output pins until a new WMP is executed on the same RAM chip. The 
+      content of the ACC and the carry/link are unaramffected. 
+      (The LSB bit of the accumultor appears on O0, Pin 16, of the 4002.)
+    code: 1110 0001
+    instructions:
+      - ACC --> ram_port(CM)
+      - PC+1 --> PC
+  wrr:
+    description: |
+      The content of the accumulator is transferred to the ROM output port of 
+      the previously selected ROM chip. The data is available on the output 
+      pins until a new WRR is executed on the same chip. The ACC content and 
+      carry/link are unaffected. (The LSB bit of the accumulator appears on 
+      I/O0, pin 16, of the 4001). No operation is performed on I/O lines coded 
+      as inputs.    
+    code: 1110 0010
+    instructions:
+      - ACC --> rom_port(X2)
+      - PC+1 --> PC
+  wr0:
+    description: |
+      The content of the accumulator is written into the RAM status character 
+      0 of the previously selected RAM register. The accumulator and the carry/link 
+      are unaffected.
+    code: 1110 0100
+    instructions:
+      - ACC --> ram_status((X2, 0b00))
+      - PC +1 --> PC
+  wr1:
+    description: |
+      The content of the accumulator is written into the RAM status character 
+      1 of the previously selected RAM register. The accumulator and the carry/link 
+      are unaffected.
+    code: 1110 0101
+    instructions:
+      - ACC --> ram_status((X2, 0b01))
+      - PC +1 --> PC
+  wr2:
+    description: |
+      The content of the accumulator is written into the RAM status character 
+      2 of the previously selected RAM register. The accumulator and the carry/link 
+      are unaffected.
+    code: 1110 0110
+    instructions:
+      - ACC --> ram_status((X2, 0b10))
+      - PC +1 --> PC
+  wr3:
+    description: |
+      The content of the accumulator is written into the RAM status character 
+      3 of the previously selected RAM register. The accumulator and the carry/link 
+      are unaffected.
+    code: 1110 0111
+    instructions:
+      - ACC --> ram_status((X2, 0b11))
+      - PC +1 --> PC
+  sbm:
+    description: |
+      The content of the previously selected RAM character is subtracted from the 
+      accumulator with borrow. The RAM character is unaffected.    
+    code: 1110 1000
+    instructions:
+      - (~ram((CM, SRC)) + ACC + ~CY) --> {CY,ACC}
+      - PC +1 --> PC
+  rdm:
+    description: |
+      The content of the previously selected RAM main memory character is transferred 
+      to the accumulator. The carry/link is unaffected. The 4-bit data in memory is unaffected.
+    code: 1110 1001
+    instructions:
+      - ram((CM, SRC)) --> ACC
+      - PC+1 --> PC
   rar:
     description: |
       The content of the accumulator and carry/link are rotated right.
@@ -216,12 +328,12 @@ instructions:
       - (CY,ACC) --> {ACC,CY}
       - PC+1 --> PC
 
-display:  |
-    "         STACK                REGISTERS\n\
-         PC 0x{PC}          R0 R1 0x{R0} 0x{R1}   R8 R9 0x{R8} 0x{R9}\n\
-    LEVEL 1 0x{STACK0}          R2 R3 0x{R2} 0x{R3}   RA RB 0x{R10} 0x{R11}\n\
-    LEVEL 2 0x{STACK1}          R4 R5 0x{R4} 0x{R5}   RA RB 0x{R12} 0x{R13}\n\
-    LEVEL 3 0x{STACK2}          R6 R7 0x{R6} 0x{R7}   RA RB 0x{R14} 0x{R15}\n\
-    \n\
-    ACCUMULATOR: {ACC} [0b{ACC}]  CARRY: 0b{CY}\n\
-    SRC: 0x{SRC}\n"
+display: |
+  "         STACK                REGISTERS\n\
+       PC 0x{PC}          R0 R1 0x{R0} 0x{R1}   R8 R9 0x{R8} 0x{R9}\n\
+  LEVEL 1 0x{STACK0}          R2 R3 0x{R2} 0x{R3}   RA RB 0x{R10} 0x{R11}\n\
+  LEVEL 2 0x{STACK1}          R4 R5 0x{R4} 0x{R5}   RA RB 0x{R12} 0x{R13}\n\
+  LEVEL 3 0x{STACK2}          R6 R7 0x{R6} 0x{R7}   RA RB 0x{R14} 0x{R15}\n\
+  \n\
+  ACCUMULATOR: {ACC} [0b{ACC}]  CARRY: 0b{CY}\n\
+  SRC: 0x{SRC}\n"

@@ -4,7 +4,8 @@
 #include <vector>
 
 #include "instruction.hpp"
-#include "memory.hpp"
+#include "internal_memory.hpp"
+#include "external_memory.hpp"
 
 namespace Description
 {
@@ -14,7 +15,8 @@ namespace Description
     public:
         CPU(std::string path);
         std::string name, description, display;
-        std::vector<Memory> memory;
+        std::vector<InternalMemory> internal_memory;
+        std::vector<ExternalMemory> external_memory;
         std::vector<Instruction> instructions;
         Instruction fetch;
         std::size_t min_opcode_length, max_opcode_length;

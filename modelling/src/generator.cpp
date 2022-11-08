@@ -31,7 +31,7 @@ std::string Description::CPU::generateFunctions()
 
     //TODO: add function
     functions += "   void set(std::vector<AddressInfo> infos, bitset data);\n";
-    functions += "   void set(uint8_t* addr, bitset data);\n";
+    functions += "   void set(bitset& dest, bitset data);\n";
 
     for (auto &i : instructions)
     {
@@ -53,7 +53,7 @@ std::string Description::CPU::generateMemory()
     return ret;
 }
 
-std::string getMemoryNames(Description::Memory m)
+std::string getMemoryNames(Description::InternalMemory m)
 {
     std::string ret = "";
     ret += m.name + ",";
@@ -63,7 +63,7 @@ std::string getMemoryNames(Description::Memory m)
     return ret;
 }
 
-std::string describeMemoryMap(Description::Memory m)
+std::string describeMemoryMap(Description::InternalMemory m)
 {
     std::string ret = "{\"" + m.name + "\", " + m.name + "},\n";
     for (auto mem : m.submemory)
@@ -72,7 +72,7 @@ std::string describeMemoryMap(Description::Memory m)
     return ret;
 }
 
-std::string describeMemory(Description::Memory m)
+std::string describeMemory(Description::InternalMemory m)
 {
     std::string ret = "const AddressInfo " + m.name + "{" + std::to_string(m.byteoffset) + ", " + std::to_string(m.bitoffset) + ", " + std::to_string(m.size) + "};\n";
     for (auto mem : m.submemory)
@@ -86,7 +86,7 @@ std::string Description::CPU::generateAddressInfos()
     std::string ret = "#pragma once\n#include \"AddressInfo.hpp\"\n";
 
     ret += "#include <map>\n\n";
-    for (auto m : memory)
+    for (auto m : internal_memory)
     {
         ret += describeMemory(m);
         ret += "\n\n";
@@ -94,12 +94,12 @@ std::string Description::CPU::generateAddressInfos()
 
     ret += "[[maybe_unused]] const auto mems = {";
 
-    for (auto m : memory)
+    for (auto m : internal_memory)
         ret += getMemoryNames(m);
     ret += "};\n\n";
 
     ret += "inline std::map<std::string, AddressInfo> addresses = {\n";
-    for (auto m : memory)
+    for (auto m : internal_memory)
         ret += describeMemoryMap(m);
 
     ret += "};\n\n";
@@ -123,12 +123,14 @@ std::string Description::CPU::generateClass()
                "\n"
                "void simulate(std::size_t bytes = 1);\n"
                "void display();\n"
-               "bitset fetch();\n"
-               "void flash(std::vector<uint8_t> rom);\n"
-               "bitset rom(bitset val);\n"
-               "uint8_t* ram(bitset val);\n"
-               "std::map<std::size_t,uint8_t> rom_map;\n"
-               "std::map<std::size_t,uint8_t> ram_map;\n"
+               "bitset fetch();\n";
+
+        for(auto m: external_memory)
+        c += m.getDeclaration();
+        
+            //    "bitset rom(bitset val);\n"
+            //    "uint8_t* ram(bitset val);\n"
+            c +=
                "std::string bin(AddressInfo info);\n"
                "std::string hex(AddressInfo info);\n"
                "std::string dec(AddressInfo info);\n"
@@ -249,7 +251,13 @@ void Description::CPU::generate()
             cpp << "      {0b" + code + ", &" + name + "::" + i.name + "<0b" + code + ">},\n";
     }
 
-    cpp << "};\n}\n";
+
+    cpp << "};";
+    for(auto& m: external_memory)
+    {
+        cpp << m.getInit();
+    }
+    cpp << "\n}\n";
 
     cpp << generateDisplay();
 
@@ -266,23 +274,28 @@ void Description::CPU::generate()
                             "}\n";
     cpp << "}\n";
 
-    cpp << "void "+name+"::flash(std::vector<uint8_t> rom)\n"
-    "{\n"
-    "for(std::size_t i = 0; i < rom.size(); i++)"
-        "rom_map[i] = rom[i];\n"
-    "}\n\n";
 
-    cpp << "bitset "+name+"::rom(bitset val)\n"
-    "{\n"
-    "if(rom_map.contains(val.val())) return bitset({rom_map[val.val()]},8);\n"
-    "return bitset({0},8);\n"
-    "}\n";
-    cpp << "uint8_t* "+name+"::ram(bitset val)\n"
-    "{\n"
-    "if(!ram_map.contains(val.val()))\n"
-    "   ram_map[val.val()] = 0;\n"
-    "return &ram_map[val.val()];\n"
-    "}\n";
+    for(auto m : external_memory)
+    {
+        cpp << m.getFunction(name);
+    }
+    // cpp << "void "+name+"::flash(std::vector<uint8_t> rom)\n"
+    // "{\n"
+    // "for(std::size_t i = 0; i < rom.size(); i++)"
+    //     "rom_map[i] = rom[i];\n"
+    // "}\n\n";
+
+    // cpp << "bitset "+name+"::rom(bitset val)\n"
+    // "{\n"
+    // "if(rom_map.contains(val.val())) return bitset({rom_map[val.val()]},8);\n"
+    // "return bitset({0},8);\n"
+    // "}\n";
+    // cpp << "uint8_t* "+name+"::ram(bitset val)\n"
+    // "{\n"
+    // "if(!ram_map.contains(val.val()))\n"
+    // "   ram_map[val.val()] = 0;\n"
+    // "return &ram_map[val.val()];\n"
+    // "}\n";
 
     cpp << "bitset "+name+"::fetch()\n"
     "{\n"
@@ -290,7 +303,7 @@ void Description::CPU::generate()
     "}\n";
 
     cpp << "void "+name+"::set(AddressInfo info, bitset data)\n{\nset_mem(&memory[0], info, data);\n}\n";
-    cpp << "void "+name+"::set(uint8_t * addr, bitset data)\n{\n*addr=data[0];\n}\n";
+    cpp << "void "+name+"::set(bitset& dest, bitset data)\n{\ndest=data;\n}\n";
     cpp << "void "+name+"::set(std::vector<AddressInfo> info, bitset data)\n{\n"
     "for(std::size_t i = info.size(); i --> 0;)\n"    
     "{\n"

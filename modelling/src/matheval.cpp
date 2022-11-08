@@ -5,7 +5,6 @@
 
 double eval(std::string formula, std::vector<std::pair<std::string, double>> vals)
 {
-
     std::vector<char *> cstrings{};
     std::vector<double> nums{};
 
@@ -14,8 +13,10 @@ double eval(std::string formula, std::vector<std::pair<std::string, double>> val
         cstrings.push_back((char*)pair.first.c_str());
         nums.push_back(pair.second);
     }
+// std::cout << formula << "(";
 
     auto f = evaluator_create((char *)formula.c_str());
+    // std::cout << ")\n";
     assert(f);
 
     auto res = evaluator_evaluate(f, vals.size(), cstrings.data(), nums.data());

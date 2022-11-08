@@ -9,5 +9,5 @@ Description::Condition::Condition(std::string cond)
 
 std::string Description::Condition::getCode()
 {
-    return "bool " + std::regex_replace(condition, std::regex("[A-Z\\[0-9\\]]{2,}"), "get($&)") + ";\n";
+    return "bool " + std::regex_replace(condition, std::regex("[A-Z][A-Z\\[0-9\\]]+"), "get($&)") + ";\n";
 }

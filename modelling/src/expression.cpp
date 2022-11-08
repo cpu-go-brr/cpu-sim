@@ -81,6 +81,10 @@ std::string Description::Expression::getCode(std::map<std::string, std::string> 
     left = std::regex_replace(left, vars, "get($&)");
     condition = std::regex_replace(condition, vars, "get($&)");
 
+        const std::regex rightvars("\\(([A-Z\\{\\[\\]\\}]+[0-9]+|[A-Z\\{\\[\\]\\}]{2,}[0-9]*)");
+
+    right = std::regex_replace(right, rightvars, "(get($1)");
+
     std::string ret = "";
     if (right != "")
         ret = "set(" + right + ",(" + left + "));\n";
@@ -91,4 +95,11 @@ std::string Description::Expression::getCode(std::map<std::string, std::string> 
         ret = "if(" + condition + ")\n{\n" + ret + "}\n";
 
     return comment + ret;
+}
+
+Description::Expression::Expression(std::string source_, std::string code_)
+{
+    source = source_;
+    code = code_;
+
 }

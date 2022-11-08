@@ -12,6 +12,10 @@ const std::size_t bitset::val() const
 
     return v;
 }
+bitset::bitset() : length{8}
+{
+    data = {0};
+}
 
 bitset::bitset(std::vector<uint8_t> data_, std::size_t length_) : length{length_}
 {
@@ -142,6 +146,47 @@ bool bitset::operator==(const std::size_t &other)
     return val() == other;
 }
 
+bool bitset::operator==(const bitset &other)
+{
+    return val() == other.val();
+}
+
+
+bool bitset::operator<(const bitset &other)
+{
+    return val() < other.val();
+}
+
+bool bitset::operator<=(const bitset &other)
+{
+    return val() <= other.val();
+}
+bool bitset::operator>=(const bitset &other)
+{
+    return val() >= other.val();
+}
+
+bool bitset::operator>(const int &other)
+{
+    return (int)val() > other;
+}
+
+bool bitset::operator>=(const int &other)
+{
+    return (int)val() >= other;
+}
+
+bool bitset::operator<(const int &other)
+{
+    return (int)val() < other;
+}
+
+bool bitset::operator<=(const int &other)
+{
+    return (int)val() <= other;
+}
+
+
 bitset bitset::operator>>(const bitset c_)
 {
 
@@ -268,4 +313,29 @@ bitset operator~(bitset a)
     bytes[bytes.size() - 1] &= (1 << (a.length % 8)) - 1;
 
     return bitset(bytes, a.length);
+}
+
+bool operator>(bitset const &a, bitset const &b)
+{
+    return a.val() > b.val();
+}
+bool operator<(bitset const &a, bitset const &b)
+{
+    return a.val() < b.val();
+}
+bool operator==(bitset const &a, bitset const &b)
+{
+    return a.val() == b.val();
+}
+bool operator>(bitset const &a, int const &b)
+{
+    return (int)a.val() > b;
+}
+bool operator<(bitset const &a, int const &b)
+{
+    return (int)a.val() < b;
+}
+bool operator==(bitset const &a, int const &b)
+{
+    return (int)a.val() == b;
 }
