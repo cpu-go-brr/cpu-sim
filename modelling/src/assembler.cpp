@@ -262,6 +262,7 @@ std::vector<std::string> first_iteration(std::string asm_file_path)
         else if (line.find(".BYTE") != std::string::npos)
         {
             cleaned_lines.push_back(trim(line));
+            address_counter++;
         }
         else
         {
@@ -310,9 +311,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
 
     for (size_t i = 0; i < cleand_lines.size(); i++)
     {
-        std::cout << cleand_lines[i] << "\n";
         std::vector<std::string> splitted_line = split(cleand_lines[i]);
-        int len = get_length_of_instruction(splitted_line[0]);
 
         std::smatch matches;
         if (std::regex_search(cleand_lines[i], matches, reg_set_pc))
@@ -343,7 +342,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
         }
         else if (splitted_line[0] == ".BYTE")
         {
-            int val = parse_value_from_argument(splitted_line[1], true);
+            int val = (parse_value_from_argument(splitted_line[1], true) & 0xff);
             if (pos >= res.size())
             {
                 res.push_back(val);
@@ -358,31 +357,72 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
         {
             // constructing the binary
             std::string code = get_code_of_instruction(splitted_line[0]);
+            int len = get_length_of_instruction(splitted_line[0]);
+
             std::vector<int> args = {};
             for (size_t j = 1; j < splitted_line.size(); j++)
             {
                 args.push_back(parse_value_from_argument(splitted_line[j], true));
             }
 
-            /*
-                TODO:
-                    - find groups of arguments
-                        - "FIM": "0010RRR0DDDDDDDD"
-                            - "0010", "RRR", "0", "DDDDDDDD"
-                            - std::stoi(arg, nullptr, 2);
-                            - RRR = (arg[0] & 0b111)
-                            - DDDDDDDD = (arg[1] & 0xff)
-                        - Veralgemeinerung finden
-            */
+            std::vector<std::string> code_segments = {};
+            std::vector<int> code_segments_length = {};
+            std::string tmp_code = "";
+            for (size_t j = 0; j < code.length(); j++)
+            {
+                char last_char = tmp_code[tmp_code.length() - 1];
+                if (((last_char == '0' || last_char == '1') && (code[j] == '0' || code[j] == '1')) ||
+                    (!(last_char == '0' || last_char == '1') && !(code[j] == '0' || code[j] == '1') && last_char == code[j]) ||
+                    tmp_code == "")
+                {
+                    tmp_code += code[j];
+                }
+                else
+                {
+                    code_segments.push_back(tmp_code);
+                    code_segments_length.push_back(j);
+                    tmp_code = code[j];
+                }
+            }
+            code_segments.push_back(tmp_code);
+            code_segments_length.push_back(code.length());
 
-            // std::cout << splitted_line[0] << ": ";
-            // for (size_t j = 0; j < args.size(); j++)
-            // {
-            //     std::cout << "\t" << args[j] << " ";
-            // }
-            // std::cout << "\n";
+            int current_argument = 0;
+            int current_value = 0;
+            for (size_t j = 0; j < code_segments.size(); j++)
+            {
+                if (code_segments[j][0] != '0' && code_segments[j][0] != '1' && args.size() >= 1)
+                {
+                    int argument_value = (args[current_argument] & (int)(pow(2, code_segments[j].length()) - 1));
+                    current_value += (argument_value << (code.length() - code_segments_length[j]));
+                    current_argument++;
+                }
+                else
+                {
+                    current_value += (std::stoi(code_segments[j], nullptr, 2) << (code.length() - code_segments_length[j]));
+                }
+            }
+
+            for (size_t j = (int)code.length() / 8; j > 0; j--)
+            {
+                int val = ((current_value >> 8*(j-1)) & 0xff);
+                if (pos >= res.size())
+                {
+                    res.push_back(val);
+                }
+                else
+                {
+                    res[pos] = val;
+                }
+                pos++;
+            }
         }
     }
+    for (size_t i = 0; i < res.size() % 8; i++)
+    {
+        res.push_back(0);
+    }
+    
     return res;
 }
 
@@ -424,7 +464,10 @@ std::vector<int> GenercicAssembler::assemble(std::string asm_file_path, std::str
                             - Zusätzliche Buchstaben sind nur hinter den Werten erlaubt (alles, was nicht in das Zahlenformat passt, wird ignoriert):
                                 - $ffR0 => 255
                                 - %00001111P4 => 15
-                            - Mehrere Argumente müssen durch WHITESPACE getrennt sein
+                            - Mehrere Argumente müssen durch WHITESPACE getrennt sein (Komma ist optional)
+                                - JCN 12, 34 -> OK
+                                - JCN 12 34 -> OK
+                                - JCN 12,34 -> NICHT OK
                         - Placeholder (A und C im Code) ersetzen
                     - Auf *=NUM Achten
                         if (NUM > pos){
@@ -444,34 +487,6 @@ std::vector<int> GenercicAssembler::assemble(std::string asm_file_path, std::str
     instruction_codes = parse_instruction_codes_from_yaml(yaml_file_path);
     std::vector<std::string> cleand_lines = first_iteration(asm_file_path);
     std::vector<int> res = second_iteration(cleand_lines);
-
-    // std::cout << "Instructions:\n";
-    // for (size_t i = 0; i < instruction_codes.size(); i++)
-    // {
-    //     for (auto it = instruction_codes[i].begin(); it != instruction_codes[i].end(); it++)
-    //     {
-    //         std::cout << it->first << ": " << it->second << "\n";
-    //     }
-    //     std::cout << "\n";
-    // }
-
-    // std::cout << "\n#############################################################\n\n";
-
-    // std::cout << "Variables:\n";
-    // for (auto it = vars.begin(); it != vars.end(); it++)
-    // {
-    //     std::cout << std::hex << it->first << ": " << it->second << "\n";
-    // }
-
-    // std::cout << "\n#############################################################\n\n";
-
-    // std::cout << "Cleand lines:\n";
-    // for (size_t i = 0; i < cleand_lines.size(); i++)
-    // {
-    //     std::cout << cleand_lines[i] << "\n";
-    // }
-
-    // std::cout << "\n#############################################################\n\n";
 
     return res;
 }

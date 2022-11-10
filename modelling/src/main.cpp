@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 
 void test_generic_assembler(){
     GenercicAssembler gasm = GenercicAssembler();
-    std::vector<int> assembled_code = gasm.assemble("test_files/input2.asm", "test_files/intel4004.yaml");
+    std::vector<int> assembled_code = gasm.assemble("test_files/input.asm", "test_files/intel4004.yaml");
 
     std::cout << "\n\nAssembled Code:\n";
     for (size_t i = 0; i < assembled_code.size(); i++)
