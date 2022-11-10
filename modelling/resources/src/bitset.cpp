@@ -8,7 +8,14 @@ const std::size_t bitset::val() const
 {
     std::size_t v = 0;
     for (std::size_t i = sizeof(std::size_t) - 1; (int)i != -1; i--)
-        v = (v << 8) | ((i < data.size()) ? data[i] : 0);
+    {
+        auto val = ((i < data.size()) ? data[i] : 0);
+
+        if(length % 8 != 0 && i == data.size() - 1)
+            val &= (1 << (length % 8)) - 1;
+
+        v = (v << 8) | val;
+    }
 
     return v;
 }
@@ -310,7 +317,8 @@ bitset operator~(bitset a)
     for (auto &d : bytes)
         d = ~d;
 
-    bytes[bytes.size() - 1] &= (1 << (a.length % 8)) - 1;
+    if(a.length % 8 != 0)
+        bytes[bytes.size() - 1] &= (1 << (a.length % 8)) - 1;
 
     return bitset(bytes, a.length);
 }

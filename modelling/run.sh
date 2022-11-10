@@ -1,2 +1,2 @@
 ./build.sh
-./build/simulator
+./build/emulator_generator

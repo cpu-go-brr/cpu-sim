@@ -62,9 +62,9 @@ target_link_libraries(emulator_generator PUBLIC
 # we don't add REQUIRED because it's just for testing.
 # People who might want to build the project to use it should not be required
 # to install testing dependencies.
-#find_package(GTest)
 
-
+enable_testing()
+add_subdirectory(tests)
 ###############################################################################
 ## packaging ##################################################################
 ###############################################################################

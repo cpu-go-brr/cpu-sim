@@ -10,11 +10,16 @@
 int main(int argc, char **argv)
 {
 
+    bitset three_initialized{3,1};
+
+    std::cout << three_initialized.val() << "\n";
+
+
     // bitset a{{0b1010}, 4};
     // bitset b{{1}, 1};
-
-    // std::cout << (a,b).bin() << "\n";
-
+    
+        // std::cout << (a,b).bin() << "\n";
+    std::cout << PATH << "\n";
     auto desc = Description::CPU(PATH);
     desc.generate();
 // 

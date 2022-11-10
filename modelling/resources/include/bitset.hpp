@@ -3,7 +3,6 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
-#include <bitset>
 
 class bitset
 {
@@ -44,6 +43,8 @@ public:
 
     bitset operator<<(const bitset c);
     bitset operator>>(const bitset c);
+
+
 
     bitset& operator=(const bitset& other);
     bool operator==(const int& other);
