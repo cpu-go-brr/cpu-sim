@@ -63,6 +63,7 @@ fetch:
 instructions:
   nop:
     code: 0000 0000
+    asm: 00000000
     description: No Operation
     instructions:
       - PC + 1 --> PC
@@ -78,6 +79,7 @@ instructions:
       O = 1 Jump if the carry/link content is 1
       T = 1 Jump if test signal (pin 10 on 4004) is zero.
     code: 0001 IZOT
+    asm: 0001CCCC AAAAAAAA
     conditions:
       - zero = Z && (I ^ (ACC==0))
       - carry = O && ( I ^ (CY==1))
@@ -92,6 +94,7 @@ instructions:
     description: |
       Load 8-bits of data which are loaded into the designated index register pair from ROM.
     code: 0010 RRR0
+    asm: 0010RRR0 DDDDDDDD
     instructions:
       - rom(PC+1) --> P{R}
       - PC+2 --> PC
@@ -108,6 +111,7 @@ instructions:
       in ROM or RAM is not cleared until the next SRC instruction is executed. 
       The 8 bit content of the index register is unaffected.
     code: 0010 RRR1
+    asm: 0010RRR1
     instructions:
       - P{R} --> SRC
       - PC+1 --> PC
@@ -120,6 +124,7 @@ instructions:
       instruction in sequence will be addressed. The content of the 0 index 
       register pair is unaltered unless index register 0 was designated.
     code: 0011 RRR0
+    asm: 0011RRR0
     instructions:
       - PC+1 --> PC
       - rom((PH, P0)) --> P{R}
@@ -130,6 +135,7 @@ instructions:
       is transferred to the instruction at that address on the same page (same ROM) 
       where the JIN instruction is located. The 8 bit content of the index register is unaffected.
     code: 0011 RRR1
+    asm: 0011RRR1
     instructions:
       - PC +1 --> PC
       - R{2*R} --> PM
@@ -137,9 +143,9 @@ instructions:
   jun:
     description: Jump unconditional
     code: 0100 AAAA
+    asm: 0100AAAA AAAAAAAA
     instructions:
       - (A, rom(PC+1))--> PC
-
   jms:
     description: |
       The address of the next instruction in sequence following JMS (return address)
@@ -150,6 +156,7 @@ instructions:
       the last JMS. The push down stack has 4 registers. One of them is used as the program 
       counter, therefore nesting of JMS can occur up to 3 levels.
     code: 0101 AAAA
+    asm: 0101AAAA AAAAAAAA
     instructions:
       - STACK1 --> STACK2
       - STACK0 --> STACK1
@@ -160,6 +167,7 @@ instructions:
       The 4 bit content of the designated index register is incremented by 1. 
       The index register is set to zero in case of overflow. The carry/link is unaffected.
     code: 0110 RRRR
+    asm: 0110RRRR
     instructions:
       - R{R} + 1 --> R{R}
       - PC +1 --> PC
@@ -171,6 +179,7 @@ instructions:
       instruction located at the 8 bit address A2A2A2A2, A1A1A1A1 on the same page (ROM) 
       where the ISZ instruction is located.
     code: 0111 RRRR
+    asm: 0111RRRR AAAAAAAA
     instructions:
       - R{R} + 1 --> R{R}
       - R{R} == 0 ? PC +2 --> PC
@@ -182,6 +191,7 @@ instructions:
       set to 1 if a sum greater than 15 was generated to indicate a carry out; otherwise, 
       the carry/link is set to 0. The 4 bit content of the index register is unaffected.
     code: 1000 RRRR
+    asm: 1000RRRR
     instructions:
       - R{R} + ACC + CY --> {CY,ACC}
       - PC +1 --> PC
@@ -192,6 +202,7 @@ instructions:
       accumulator. If a borrow is generated, the carry bit is set to 0; otherwise, it is 
       set to 1. The 4 bit content of the index register is unaffected.
     code: 1001 RRRR
+    asm: 1001RRRR
     instructions:
       - (~R{R} + ACC + ~CY) --> {CY,ACC}
       - PC +1 --> PC
@@ -201,6 +212,7 @@ instructions:
       accumulator. The previous contents of the accumulator are lost. The 4 bit 
       content of the index register and the carry/link bit are unaffected.
     code: 1010 RRRR
+    asm: 1010RRRR
     instructions:
       - R{R} --> ACC
       - PC+1 --> PC
@@ -210,6 +222,7 @@ instructions:
       The prior content of the accumulator is loaded into the designed register. 
       The carry/link bit is unaffected.
     code: 1011 RRRR
+    asm: 1011RRRR
     instructions:
       - (ACC, R{R}) --> {R{R}, ACC}
       - PC +1 --> PC
@@ -222,6 +235,7 @@ instructions:
 
       BBL is used to return from subroutine to main program.
     code: 1100 DDDD
+    asm: 1100DDDD
     instructions:
       - D --> ACC
       - STACK0 --> PC
@@ -234,6 +248,7 @@ instructions:
       word are loaded into the accumulator. The previous contents of the
       accumulator are lost. The carry/link bit is unaffected.
     code: 1101 DDDD
+    asm: 1101DDDD
     instructions:
       - D --> ACC
       - PC+1 --> PC
@@ -242,6 +257,7 @@ instructions:
       The accumulator content is written into the previously selected RAM 
       main memory character location. The accumulator and carry/link are unaffected.
     code: 1110 0000
+    asm: 11100000
     instructions:
       - ACC --> ram((CM, SRC))
       - PC+1 --> PC
@@ -253,6 +269,7 @@ instructions:
       content of the ACC and the carry/link are unaramffected. 
       (The LSB bit of the accumultor appears on O0, Pin 16, of the 4002.)
     code: 1110 0001
+    asm: 11100001
     instructions:
       - ACC --> ram_port(CM)
       - PC+1 --> PC
@@ -265,6 +282,7 @@ instructions:
       I/O0, pin 16, of the 4001). No operation is performed on I/O lines coded 
       as inputs.    
     code: 1110 0010
+    asm: 11100010
     instructions:
       - ACC --> rom_port(X2)
       - PC+1 --> PC
@@ -274,6 +292,7 @@ instructions:
       0 of the previously selected RAM register. The accumulator and the carry/link 
       are unaffected.
     code: 1110 0100
+    asm: 11100100
     instructions:
       - ACC --> ram_status((X2, 0b00))
       - PC +1 --> PC
@@ -283,6 +302,7 @@ instructions:
       1 of the previously selected RAM register. The accumulator and the carry/link 
       are unaffected.
     code: 1110 0101
+    asm: 11100101
     instructions:
       - ACC --> ram_status((X2, 0b01))
       - PC +1 --> PC
@@ -292,6 +312,7 @@ instructions:
       2 of the previously selected RAM register. The accumulator and the carry/link 
       are unaffected.
     code: 1110 0110
+    asm: 11100110
     instructions:
       - ACC --> ram_status((X2, 0b10))
       - PC +1 --> PC
@@ -301,6 +322,7 @@ instructions:
       3 of the previously selected RAM register. The accumulator and the carry/link 
       are unaffected.
     code: 1110 0111
+    asm: 11100111
     instructions:
       - ACC --> ram_status((X2, 0b11))
       - PC +1 --> PC
@@ -309,6 +331,7 @@ instructions:
       The content of the previously selected RAM character is subtracted from the 
       accumulator with borrow. The RAM character is unaffected.    
     code: 1110 1000
+    asm: 11101000
     instructions:
       - (~ram((CM, SRC)) + ACC + ~CY) --> {CY,ACC}
       - PC +1 --> PC
@@ -317,6 +340,7 @@ instructions:
       The content of the previously selected RAM main memory character is transferred 
       to the accumulator. The carry/link is unaffected. The 4-bit data in memory is unaffected.
     code: 1110 1001
+    asm: 11101001
     instructions:
       - ram((CM, SRC)) --> ACC
       - PC+1 --> PC
@@ -327,6 +351,7 @@ instructions:
       within the same 4 I/O lines, the user can choose to have either "0" or "1" transferred to the 
       accumulator for those I/O pins coded as outputs, when an RDR instruction is executed.    
     code: 1110 1010
+    asm: 11101010
     instructions:
       - rom_port(X2) --> ACC
       - PC+1 --> PC
@@ -335,6 +360,7 @@ instructions:
       The content of the previously selected RAM main memory character is added to the accumulator 
       with carry. The RAM character is unaffected.
     code: 1110 1011
+    asm: 11101011
     instructions:
       - ram((CM, SRC)) + ACC + CY --> {CY,ACC}
       - PC +1 --> PC
@@ -343,6 +369,7 @@ instructions:
       The 4-bits of status character 0 for the previously selected RAM register are transferred 
       to the accumulator. The carry/link and the status character are unaffected.    
     code: 1110 1100
+    asm: 11101100
     instructions:
       - ram_status((X2, 0b00)) --> ACC 
       - PC +1 --> PC
@@ -351,6 +378,7 @@ instructions:
       The 4-bits of status character 1 for the previously selected RAM register are transferred 
       to the accumulator. The carry/link and the status character are unaffected.    
     code: 1110 1101
+    asm: 11101101
     instructions:
       - ram_status((X2, 0b01)) --> ACC 
       - PC +1 --> PC
@@ -359,6 +387,7 @@ instructions:
       The 4-bits of status character 0 for the previously selected RAM register are transferred 
       to the accumulator. The carry/link and the status character are unaffected.    
     code: 1110 1110
+    asm: 11101110
     instructions:
       - ram_status((X2, 0b10)) --> ACC 
       - PC +1 --> PC
@@ -367,12 +396,14 @@ instructions:
       The 4-bits of status character 0 for the previously selected RAM register are transferred 
       to the accumulator. The carry/link and the status character are unaffected.    
     code: 1110 1111
+    asm: 11101111
     instructions:
       - ram_status((X2, 0b11)) --> ACC 
       - PC +1 --> PC
   clb:
     description: Set accumulator and carry/link to 0.
     code: 1111 0000
+    asm: 11110000
     instructions:
       - 0 --> ACC
       - 0 --> CY
@@ -380,36 +411,42 @@ instructions:
   clc:
     description: Clear Carry
     code: 1111 0001
+    asm: 11110001
     instructions:
       - 0 --> CY
       - PC+1 --> PC
   cmc:
     description: Complement Carry
     code: 1111 0011
+    asm: 11110011
     instructions:
       - ~CY --> CY
       - PC+1 --> PC
   stc:
     description: Set Carry
     code: 1111 1010
+    asm: 11111010
     instructions:
       - 1 --> CY
       - PC+1 --> PC
   cma:
     description: Complement Accumulator
     code: 1111 0100
+    asm: 11110100
     instructions:
       - ~ACC --> ACC
       - PC+1 --> PC
   iac:
     description: Increment Accumulator
     code: 1111 0010
+    asm: 11110010
     instructions:
       - ACC+1 --> {CY,ACC}
       - PC+1 --> PC
   dac:
     description: Decrement Accumulator
     code: 1111 1000
+    asm: 11111000
     instructions:
       - ACC+0b1111 --> {CY,ACC}
       - PC+1 --> PC
@@ -417,6 +454,7 @@ instructions:
     description: |
       The content of the accumulator and carry/link are rotated left.
     code: 1111 0110
+    asm: 11110110
     instructions:
       - (CY,ACC) --> {ACC,CY}
       - PC+1 --> PC
@@ -424,6 +462,7 @@ instructions:
     description: |
       The content of the accumulator and carry/link are rotated right.
     code: 1111 0110
+    asm: 11110110
     instructions:
       - (ACC,CY) --> {CY,ACC}
       - PC+1 --> PC
@@ -433,6 +472,7 @@ instructions:
       the accumulator is set to the value of the carry/link.
       The carry/link is set to 0.
     code: 1111 0111
+    asm: 11110111
     instructions:
       - 0 --> ACC
       - CY --> ACC
@@ -445,6 +485,7 @@ instructions:
       The carry/link is set to a 1 if the result generates a carry, 
       otherwise it is unaffected.
     code: 1111 1011
+    asm: 11111011
     conditions:
       - inc = CY == 1 || ACC > 9
     instructions:
@@ -455,6 +496,7 @@ instructions:
       The accumulator is set to 10 if the carry/link is a 1.
       The carry/link is set to 0.
     code: 1111 1001
+    asm: 11111001
     instructions:
       - CY == 0 ? 0b1001 --> ACC
       - CY == 1 ? 0b1010 --> ACC
@@ -464,6 +506,7 @@ instructions:
     description: The Accumulator will be set to the position of the first bit. If
       more than one bit is set the Accumulator will be set to 15
     code: 1111 1100
+    asm: 11111100
     conditions:
       - keep = ACC < 3
       - four = ACC == 4
@@ -483,6 +526,7 @@ instructions:
       matically selected. DCL remains latched until it is changed or
       reset.
     code: 1111 1101
+    asm: 11111101
     instructions:
       - ACC == 0 ? 1 --> CM
       - ACC != 0 ? (ACC, 0b0) --> CM
