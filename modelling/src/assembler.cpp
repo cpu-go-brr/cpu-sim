@@ -259,6 +259,10 @@ std::vector<std::string> first_iteration(std::string asm_file_path)
             address_counter = parse_value_from_argument(variable_value, false);
             cleaned_lines.push_back(line);
         }
+        else if (line.find(".BYTE") != std::string::npos)
+        {
+            cleaned_lines.push_back(trim(line));
+        }
         else
         {
             std::vector<std::string> splitted_line = split(line);
@@ -302,14 +306,19 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
 {
     int pos = 0;
     std::vector<int> res = {};
+    std::regex reg_set_pc("\\*[ \t]*=[ \t]*[^ ]+");
 
     for (size_t i = 0; i < cleand_lines.size(); i++)
     {
+        std::cout << cleand_lines[i] << "\n";
         std::vector<std::string> splitted_line = split(cleand_lines[i]);
         int len = get_length_of_instruction(splitted_line[0]);
-        if (len == -1)
+
+        std::smatch matches;
+        if (std::regex_search(cleand_lines[i], matches, reg_set_pc))
         {
-            std::string variable_value = trim(cleand_lines[i].substr(cleand_lines[i].find("=") + 1, cleand_lines[i].length()));
+            std::string var_def = matches[0].str();
+            std::string variable_value = trim(var_def.substr(var_def.find("=") + 1, var_def.size()));
             int num = parse_value_from_argument(variable_value, false);
 
             if (pos < num)
@@ -332,6 +341,19 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
                 pos = num;
             }
         }
+        else if (splitted_line[0] == ".BYTE")
+        {
+            int val = parse_value_from_argument(splitted_line[1], true);
+            if (pos >= res.size())
+            {
+                res.push_back(val);
+            }
+            else
+            {
+                res[pos] = val;
+            }
+            pos++;
+        }
         else
         {
             // constructing the binary
@@ -341,7 +363,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
             {
                 args.push_back(parse_value_from_argument(splitted_line[j], true));
             }
-            
+
             /*
                 TODO:
                     - find groups of arguments

@@ -12,7 +12,7 @@ START   FIM 4P, 0
         JUN START
         NOP
 *=104
-
+.BYTE 5
 AND     CLB
         XCH 2
         LDM 4
