@@ -52,7 +52,20 @@ int get_length_of_instruction(std::string inst_name)
     return -1;
 }
 
-int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variables = true)
+std::string get_code_of_instruction(std::string inst_name)
+{
+    transform(inst_name.begin(), inst_name.end(), inst_name.begin(), ::tolower);
+    for (size_t i = 0; i < instruction_codes.size(); i++)
+    {
+        if (instruction_codes[i].find(inst_name) != instruction_codes[i].end())
+        {
+            return instruction_codes[i][inst_name];
+        }
+    }
+    std::cout << "ERROR in get_code_of_instruction(). No instruction with name '" << inst_name << "'.\n";
+}
+
+int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variables)
 {
     if (arg.find(",") != std::string::npos)
     {
@@ -166,7 +179,7 @@ std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yam
             }
             catch (const YAML::TypedBadConversion<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>> e)
             {
-                std::cout << "No 'asm' entry in '" << key_str << "' instruction"
+                std::cout << "ERROR in parse_instruction_codes_from_yaml(). No 'asm' entry in '" << key_str << "' instruction"
                           << "\n";
                 return res;
             }
@@ -178,6 +191,13 @@ std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yam
 
 std::vector<std::string> first_iteration(std::string asm_file_path)
 {
+    /*
+        This function does the following:
+            - parsing all variables and labels from the asm-file
+                - variables and labels are being written to the vars-map
+            - cleaning up the remaining lines
+                - return thes lines
+    */
     std::string line;
     std::vector<std::string> cleaned_lines;
     int address_counter = 0;
@@ -278,6 +298,72 @@ std::vector<std::string> first_iteration(std::string asm_file_path)
     return cleaned_lines;
 }
 
+std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
+{
+    int pos = 0;
+    std::vector<int> res = {};
+
+    for (size_t i = 0; i < cleand_lines.size(); i++)
+    {
+        std::vector<std::string> splitted_line = split(cleand_lines[i]);
+        int len = get_length_of_instruction(splitted_line[0]);
+        if (len == -1)
+        {
+            std::string variable_value = trim(cleand_lines[i].substr(cleand_lines[i].find("=") + 1, cleand_lines[i].length()));
+            int num = parse_value_from_argument(variable_value, false);
+
+            if (pos < num)
+            {
+                while (pos < num)
+                {
+                    if (pos >= res.size())
+                    {
+                        res.push_back(0);
+                    }
+                    else
+                    {
+                        res[pos] = 0;
+                    }
+                    pos++;
+                }
+            }
+            else
+            {
+                pos = num;
+            }
+        }
+        else
+        {
+            // constructing the binary
+            std::string code = get_code_of_instruction(splitted_line[0]);
+            std::vector<int> args = {};
+            for (size_t j = 1; j < splitted_line.size(); j++)
+            {
+                args.push_back(parse_value_from_argument(splitted_line[j], true));
+            }
+            
+            /*
+                TODO:
+                    - find groups of arguments
+                        - "FIM": "0010RRR0DDDDDDDD"
+                            - "0010", "RRR", "0", "DDDDDDDD"
+                            - std::stoi(arg, nullptr, 2);
+                            - RRR = (arg[0] & 0b111)
+                            - DDDDDDDD = (arg[1] & 0xff)
+                        - Veralgemeinerung finden
+            */
+
+            // std::cout << splitted_line[0] << ": ";
+            // for (size_t j = 0; j < args.size(); j++)
+            // {
+            //     std::cout << "\t" << args[j] << " ";
+            // }
+            // std::cout << "\n";
+        }
+    }
+    return res;
+}
+
 std::vector<int> GenercicAssembler::assemble(std::string asm_file_path, std::string yaml_file_path)
 {
     /*
@@ -302,6 +388,8 @@ std::vector<int> GenercicAssembler::assemble(std::string asm_file_path, std::str
                     - Variablen mit Wert in vars (auf VAR=* achten)
                     - Namen von Labels/Variablen mit Instruction-Namen gegen checken
                         - Generelle regex für Namen von Labels und Variablen: "^[A-Za-z][A-Za-z0-9_]*$"
+                        - Groß- / Kleinschreibung ist egal bei Variablen und Labels
+                            - START == start == sTaRt
                 - Zweites iterieren:
                     - Instruction-Name übersetzen mit Argumenten
                         - Anzahl von Argumenten aus Code parsen
@@ -333,6 +421,7 @@ std::vector<int> GenercicAssembler::assemble(std::string asm_file_path, std::str
 
     instruction_codes = parse_instruction_codes_from_yaml(yaml_file_path);
     std::vector<std::string> cleand_lines = first_iteration(asm_file_path);
+    std::vector<int> res = second_iteration(cleand_lines);
 
     // std::cout << "Instructions:\n";
     // for (size_t i = 0; i < instruction_codes.size(); i++)
@@ -344,7 +433,7 @@ std::vector<int> GenercicAssembler::assemble(std::string asm_file_path, std::str
     //     std::cout << "\n";
     // }
 
-    std::cout << "\n#############################################################\n\n";
+    // std::cout << "\n#############################################################\n\n";
 
     // std::cout << "Variables:\n";
     // for (auto it = vars.begin(); it != vars.end(); it++)
@@ -352,17 +441,15 @@ std::vector<int> GenercicAssembler::assemble(std::string asm_file_path, std::str
     //     std::cout << std::hex << it->first << ": " << it->second << "\n";
     // }
 
-    std::cout << "\n#############################################################\n\n";
+    // std::cout << "\n#############################################################\n\n";
 
-    std::cout << "Cleand lines:\n";
-    for (size_t i = 0; i < cleand_lines.size(); i++)
-    {
-        std::cout << cleand_lines[i] << "\n";
-    }
+    // std::cout << "Cleand lines:\n";
+    // for (size_t i = 0; i < cleand_lines.size(); i++)
+    // {
+    //     std::cout << cleand_lines[i] << "\n";
+    // }
 
-    std::cout << "\n#############################################################\n\n";
+    // std::cout << "\n#############################################################\n\n";
 
-    std::vector<std::map<std::string, std::string>> asdf;
-    std::vector<int> res = {0xAB, 0xCD};
     return res;
 }
