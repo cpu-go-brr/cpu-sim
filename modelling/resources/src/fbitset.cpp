@@ -1,5 +1,4 @@
 #include "fbitset.hpp"
-
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
 // returns the bitmask by length
@@ -33,7 +32,7 @@ void fbitset::set(const storage_t &val)
 fbitset::fbitset(int data_, fbitset::bits_t bits)
     : bits{!bits ? (bits_t)(8 * sizeof(data_)) : bits} // set length to maximum if it is 0
 {
-    set((storage_t)data); // assign value
+    set((storage_t)data_); // assign value
 }
 
 fbitset::fbitset(storage_t data_, fbitset::bits_t bits)
@@ -121,6 +120,16 @@ fbitset fbitset::operator>>(const fbitset c)
 {
     return fbitset(data >> c.data, bits);
 }
+
+fbitset fbitset::operator<<(const int& c)
+{
+    return fbitset(data << c, bits);
+}
+fbitset fbitset::operator>>(const int& c)
+{
+    return fbitset(data >> c, bits);
+}
+
 
 bool fbitset::operator==(const int &other)
 {
