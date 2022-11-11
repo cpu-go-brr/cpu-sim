@@ -1,4 +1,4 @@
-#include "../include/assembler.hpp"
+#include "../include/gasm.hpp"
 #include "yaml-cpp/yaml.h"
 #include <vector>
 #include <regex>
@@ -424,7 +424,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
     return res;
 }
 
-std::vector<int> GenercicAssembler::assemble(std::string asm_file_path, std::string yaml_file_path)
+std::vector<int> GeneralAssembler::assemble(std::string asm_file_path, std::string yaml_file_path)
 {
     /*
         Notes:
