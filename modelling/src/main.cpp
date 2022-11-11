@@ -3,24 +3,20 @@
 #include "cpu.hpp"
 #include "matheval.hpp"
 #include "bitset.hpp"
-#include "assembler.hpp"
 
 #define PATH "test_files/intel4004.yaml"
 
-#include <bitset>
-
-void test_generic_assembler();
 
 int main(int argc, char **argv)
 {
-    test_generic_assembler();
+    // test_generic_assembler();
     // bitset a{{0b1010}, 4};
     // bitset b{{1}, 1};
 
     // std::cout << (a,b).bin() << "\n";
 
-    // auto desc = Description::CPU(PATH);
-    // desc.generate();
+    auto desc = Description::CPU(PATH);
+    desc.generate();
 // 
     // Intel4004 cpu;
 
@@ -54,16 +50,4 @@ int main(int argc, char **argv)
     //     std::cout << std::bitset<8>(a) << '\n';
     // }
     return 0;
-}
-
-void test_generic_assembler(){
-    GenercicAssembler gasm = GenercicAssembler();
-    std::vector<int> assembled_code = gasm.assemble("test_files/input.asm", "test_files/intel4004.yaml");
-
-    std::cout << "\n\nAssembled Code:\n";
-    for (size_t i = 0; i < assembled_code.size(); i++)
-    {
-        std::cout << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << assembled_code[i] << " ";
-    }
-    std::cout << "\n\n\n";
 }
