@@ -11,9 +11,8 @@ typedef struct AddressInfo
    std::size_t length = 0;
 } AddressInfo;
 
+std::size_t bytes_needed(const AddressInfo &i);
 
-std::size_t bytes(AddressInfo i);
+bitset get_mem(uint8_t *mem, const AddressInfo &info);
 
-bitset get_mem(uint8_t *mem, AddressInfo info);
-
-void set_mem(uint8_t *mem, AddressInfo info, bitset data);
+void set_mem(uint8_t *mem, const AddressInfo &info, const bitset &data);

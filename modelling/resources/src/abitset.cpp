@@ -1,17 +1,17 @@
-#include "bitset.hpp"
-
+#include "abitset.hpp"
+#include "AddressInfo.hpp"
 #include <cmath>
 #include <iomanip>
 #include <sstream>
 
-const std::size_t bitset::val() const
+const std::size_t abitset::val() const
 {
     std::size_t v = 0;
     for (std::size_t i = sizeof(std::size_t) - 1; (int)i != -1; i--)
     {
         auto val = ((i < data.size()) ? data[i] : 0);
 
-        if(length % 8 != 0 && i == data.size() - 1)
+        if (length % 8 != 0 && i == data.size() - 1)
             val &= (1 << (length % 8)) - 1;
 
         v = (v << 8) | val;
@@ -19,24 +19,30 @@ const std::size_t bitset::val() const
 
     return v;
 }
-bitset::bitset() : length{8}
+abitset::abitset() : length{8}
 {
     data = {0};
 }
 
-bitset::bitset(std::vector<uint8_t> data_, std::size_t length_) : length{length_}
+abitset::abitset(std::vector<uint8_t> data_, std::size_t length_) : length{length_}
 {
     for (std::size_t i = 0; i < bytes(); i++)
         data.push_back((data_.size() > i) ? data_[i] : 0);
 }
 
-bitset::bitset(bitset data_, std::size_t length_) : length{length_}
+abitset::abitset(uint8_t* data_, bits_t length_): length{length_}
 {
-    for (std::size_t i = 0; i < std::ceil(length / 8.0); i++)
-        data.push_back((data_.size() > i) ? data_[bitset(i)] : 0);
+    for (std::size_t i = 0; i < bytes(); i++)
+        data.push_back(data_[i]);
 }
 
-bitset::bitset(std::size_t data_, std::size_t length_)
+abitset::abitset(abitset data_, std::size_t length_) : length{length_}
+{
+    for (std::size_t i = 0; i < std::ceil(length / 8.0); i++)
+        data.push_back((data_.size() > i) ? data_[abitset(i)] : 0);
+}
+
+abitset::abitset(std::size_t data_, std::size_t length_)
 {
 
     if (length_ == 0)
@@ -50,7 +56,7 @@ bitset::bitset(std::size_t data_, std::size_t length_)
     }
 }
 
-bitset::bitset(std::string data_, std::size_t length_)
+abitset::abitset(std::string data_, std::size_t length_)
 {
     uint16_t num = 0;
 
@@ -70,7 +76,7 @@ bitset::bitset(std::string data_, std::size_t length_)
         length = length_;
 }
 
-bitset::bitset(int data_, std::size_t length_)
+abitset::abitset(int data_, std::size_t length_)
 {
     if (length_ == 0)
         length = 8 * sizeof(int);
@@ -84,7 +90,7 @@ bitset::bitset(int data_, std::size_t length_)
     }
 }
 
-bitset::bitset(long data_, std::size_t length_)
+abitset::abitset(long data_, std::size_t length_)
 {
     if (length_ == 0)
         length = 8 * sizeof(long);
@@ -97,12 +103,12 @@ bitset::bitset(long data_, std::size_t length_)
     }
 }
 
-const std::size_t bitset::bytes() const
+const std::size_t abitset::bytes() const
 {
     return (std::size_t)std::ceil(length / 8.0);
 }
 
-const std::string bitset::bin() const
+const std::string abitset::bin() const
 {
     std::string ret = "";
     for (auto i : data)
@@ -116,7 +122,7 @@ const std::string bitset::bin() const
     return ret.substr(ret.length() - length, length);
 }
 
-const std::string bitset::hex() const
+const std::string abitset::hex() const
 {
     std::string ret = "";
     for (auto i : data)
@@ -131,70 +137,68 @@ const std::string bitset::hex() const
     return ret;
 }
 
-const std::string bitset::dec() const
+const std::string abitset::dec() const
 {
     return std::to_string(val());
 }
 
-bitset &bitset::operator=(const bitset &other)
+abitset &abitset::operator=(const abitset &other)
 {
     this->data = other.data;
     this->length = other.length;
     return *this;
 }
 
-bool bitset::operator==(const int &other)
+bool abitset::operator==(const int &other)
 {
     return val() == (std::size_t)other;
 }
 
-bool bitset::operator==(const std::size_t &other)
+bool abitset::operator==(const std::size_t &other)
 {
     return val() == other;
 }
 
-bool bitset::operator==(const bitset &other)
+bool abitset::operator==(const abitset &other)
 {
     return val() == other.val();
 }
 
-
-bool bitset::operator<(const bitset &other)
+bool abitset::operator<(const abitset &other)
 {
     return val() < other.val();
 }
 
-bool bitset::operator<=(const bitset &other)
+bool abitset::operator<=(const abitset &other)
 {
     return val() <= other.val();
 }
-bool bitset::operator>=(const bitset &other)
+bool abitset::operator>=(const abitset &other)
 {
     return val() >= other.val();
 }
 
-bool bitset::operator>(const int &other)
+bool abitset::operator>(const int &other)
 {
     return (int)val() > other;
 }
 
-bool bitset::operator>=(const int &other)
+bool abitset::operator>=(const int &other)
 {
     return (int)val() >= other;
 }
 
-bool bitset::operator<(const int &other)
+bool abitset::operator<(const int &other)
 {
     return (int)val() < other;
 }
 
-bool bitset::operator<=(const int &other)
+bool abitset::operator<=(const int &other)
 {
     return (int)val() <= other;
 }
 
-
-bitset bitset::operator>>(const bitset c_)
+abitset abitset::operator>>(const abitset c_)
 {
 
     const std::size_t c = c_.val();
@@ -233,10 +237,10 @@ bitset bitset::operator>>(const bitset c_)
     uint8_t mask = (1 << allowed_bits) - 1;
     ret[new_bytes] &= mask;
 
-    return bitset(ret, length);
+    return abitset(ret, length);
 }
 
-bitset bitset::operator<<(const bitset c_)
+abitset abitset::operator<<(const abitset c_)
 {
     const std::size_t c = c_.val();
     std::vector<uint8_t> ret;
@@ -266,18 +270,18 @@ bitset bitset::operator<<(const bitset c_)
         ret[transfer_index] |= (shift >> 8) & 0xFF;
     }
 
-    return bitset(ret, length);
+    return abitset(ret, length);
 }
 
-bitset operator,(bitset a, bitset const &b)
+abitset operator,(abitset a, abitset const &b)
 {
     auto s = a.length + b.length;
-    bitset ret(std::vector<uint8_t>((int)std::ceil(s / 8), 0), s);
+    abitset ret(std::vector<uint8_t>((int)std::ceil(s / 8), 0), s);
 
     return ((ret + a) << b.length) + b;
 }
 
-bitset operator^(bitset a, bitset const &b)
+abitset operator^(abitset a, abitset const &b)
 {
     for (std::size_t i = 0; i < std::min(a.bytes(), b.bytes()); i++)
         a[i] ^= b[i];
@@ -285,7 +289,7 @@ bitset operator^(bitset a, bitset const &b)
     return a;
 }
 
-bitset operator+(bitset a, bitset const &b)
+abitset operator+(abitset a, abitset const &b)
 {
     bool overflow = 0;
     std::size_t res_bits = std::max(a.size(), b.size()) + 1;
@@ -307,43 +311,61 @@ bitset operator+(bitset a, bitset const &b)
         overflow = 0x100 & addition;
         bytes.push_back(addition & 0xFF);
     }
-    return bitset(bytes, res_bits);
+    return abitset(bytes, res_bits);
 }
 
-bitset operator~(bitset a)
+abitset operator~(abitset a)
 {
     std::vector<uint8_t> bytes{a.data};
 
     for (auto &d : bytes)
         d = ~d;
 
-    if(a.length % 8 != 0)
+    if (a.length % 8 != 0)
         bytes[bytes.size() - 1] &= (1 << (a.length % 8)) - 1;
 
-    return bitset(bytes, a.length);
+    return abitset(bytes, a.length);
 }
 
-bool operator>(bitset const &a, bitset const &b)
+bool operator>(abitset const &a, abitset const &b)
 {
     return a.val() > b.val();
 }
-bool operator<(bitset const &a, bitset const &b)
+bool operator<(abitset const &a, abitset const &b)
 {
     return a.val() < b.val();
 }
-bool operator==(bitset const &a, bitset const &b)
+bool operator==(abitset const &a, abitset const &b)
 {
     return a.val() == b.val();
 }
-bool operator>(bitset const &a, int const &b)
+bool operator>(abitset const &a, int const &b)
 {
     return (int)a.val() > b;
 }
-bool operator<(bitset const &a, int const &b)
+bool operator<(abitset const &a, int const &b)
 {
     return (int)a.val() < b;
 }
-bool operator==(bitset const &a, int const &b)
+bool operator==(abitset const &a, int const &b)
 {
     return (int)a.val() == b;
+}
+
+void abitset::write(uint8_t *mem, const AddressInfo &info) const
+{
+    abitset shifted{*this, (bitset::bits_t)(info.length + info.bit_offset)};
+    shifted = shifted << info.bit_offset;
+    auto mask_vector = std::vector<uint8_t>(bytes_needed(info), 0xFF);
+    abitset mask{mask_vector, (abitset::bits_t)(info.bit_offset + info.length)};
+    mask = mask << info.bit_offset;
+
+    if ((info.length + info.bit_offset) % 8 != 0) // alignment needs masking
+        mask[bytes_needed(info) - 1] &= ((1 << ((info.length + info.bit_offset) % 8)) - 1);
+
+    for (std::size_t i = 0; i < bytes_needed(info); i++)
+    {
+        uint8_t original_data = mem[info.byte_start + i];
+        mem[info.byte_start + i] = (original_data & ~mask[i]) | (shifted[i] & mask[i]);
+    }
 }

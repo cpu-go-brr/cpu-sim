@@ -1,13 +1,16 @@
 #pragma once
 
 #include <cstdint>
+//fast bitset
+
+class AddressInfo;
 
 class fbitset
 {
+public:
     typedef std::size_t storage_t;
     typedef uint8_t bits_t; //datatype exceeds 8*sizeof(storage_t)
     typedef uint8_t byte_t; //datatype must exceed sizeof(storage_t)
-public:
     fbitset() = default;
     fbitset(int data, bits_t length = 0);
     fbitset(storage_t data, bits_t length = 0);
@@ -32,8 +35,11 @@ public:
     const storage_t val() const;
     //get mask for current bitlength
     const storage_t mask() const;
+    void apply_mask();
     // set the current value whilst applying the bitmask
     void set(const storage_t& data);
+
+    void write(uint8_t* addr, const AddressInfo& info) const;
 
     fbitset operator+(fbitset const &b);
     fbitset operator,(fbitset const &b);
@@ -62,6 +68,8 @@ public:
     bool operator==(const int& other);
     bool operator==(const storage_t& other);
     bool operator==(const fbitset& other);
+
+    fbitset& operator=(const fbitset& other);
 
 private:
     storage_t data = 0;
