@@ -357,8 +357,6 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
         {
             // constructing the binary
             std::string code = get_code_of_instruction(splitted_line[0]);
-            int len = get_length_of_instruction(splitted_line[0]);
-
             std::vector<int> args = {};
             for (size_t j = 1; j < splitted_line.size(); j++)
             {
