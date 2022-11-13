@@ -7,7 +7,12 @@
 //  0 -> 0; 1 -> 1; 2 -> 11; 3 -> 111...
 const fbitset::storage_t fbitset::mask() const
 {
-    return ((1 << bits) - 1);
+    return ((1ul << bits) - 1);
+}
+
+const fbitset::storage_t fbitset::mask(bits_t b) const
+{
+    return ((1ul << b) - 1);
 }
 
 const fbitset::storage_t fbitset::val() const
@@ -41,30 +46,31 @@ void fbitset::set(const storage_t &val)
     data = (storage_t)val & mask(); // assign value
 }
 
-fbitset::fbitset(int data_, fbitset::bits_t bits)
-    : bits{!bits ? (bits_t)(8 * sizeof(data_)) : bits} // set length to maximum if it is 0
+fbitset::fbitset(int data_, fbitset::bits_t bits_)
+    : bits{!bits_ ? (bits_t)(8 * sizeof(data_)) : bits_} // set length to maximum if it is 0
 {
     set((storage_t)data_); // assign value
 }
 
-fbitset::fbitset(storage_t data_, fbitset::bits_t bits)
-    : bits{!bits ? (bits_t)(8 * sizeof(data_)) : bits} // set length to maximum if it is 0
+fbitset::fbitset(storage_t data_, fbitset::bits_t bits_)
+    : bits{!bits_ ? (bits_t)(8 * sizeof(data_)) : bits_} // set length to maximum if it is 0
 {
     set(data_); // assign value
 }
 
-fbitset::fbitset(fbitset data_, fbitset::bits_t bits)
-    : bits{bits}
+fbitset::fbitset(fbitset data_, fbitset::bits_t bits_)
+    : bits{bits_}
 {
     set(data_.data); // assign value
 }
 
-fbitset::fbitset(uint8_t *data_, fbitset::bits_t bits)
+fbitset::fbitset(uint8_t *data_,fbitset::bits_t len, fbitset::bits_t bits)
     : bits{bits}
 {
     storage_t buffer = 0;
-    for (uint8_t byte = bytes(bits) - 1; byte-- > 0;)
-        buffer = buffer << 8 | data_[byte];
+    for (uint8_t byte = 0; byte <  len; byte++)
+        buffer = buffer << 8 | data_[len - byte -1];
+    
     set(buffer);
 }
 
@@ -160,47 +166,93 @@ bool fbitset::operator==(const fbitset &other)
 fbitset &fbitset::operator=(const fbitset &other)
 {
     this->data = other.data;
+    this->bits = other.bits;
     return *this;
 }
 
 void fbitset::write(uint8_t *mem, const AddressInfo &info) const
 {
-    auto m = mask() << info.bit_offset;
+    auto m = mask(info.length) << info.bit_offset;
     uint8_t m_overflow = data >> ((sizeof(storage_t) - 1) * 8 - info.bit_offset); // we need an extra byte for our overflow
+
 
     auto d = data << info.bit_offset;
     uint8_t d_overflow = data >> ((sizeof(storage_t) - 1) * 8 - info.bit_offset); // we need an extra byte for our overflow
 
-    for (auto i = 0u; i < bytes_needed(info); i++)
+    auto needed_bytes = bytes_needed(info); 
+    for (auto i = 0u; i < needed_bytes; i++)
     {
+
+        std::size_t index = info.byte_start  + i;
         if (i > sizeof(storage_t))
         {
-            mem[i + info.bit_offset] = 0;
+            mem[index] = (mem[index] & ~m);
         }
         else if (i == sizeof(storage_t))
         {
-            mem[i + info.bit_offset] = (mem[i + info.bit_offset] & ~m_overflow) | (d_overflow & m_overflow);
+            mem[index] = (mem[index] & ~m_overflow) | (d_overflow & m_overflow);
         }
         else
         {
-            mem[i + info.bit_offset] = (mem[i + info.bit_offset] & ~m) | (d & m);
+            mem[index] = (mem[index] & ~m) | (d & m);
             d >>= 8;
             m >>= 8;
         }
     }
 }
 // print value as bin
-const char *fbitset::bin() const
+const char *fbitset::bin()
 {
-    return NULL;
+    if(str == NULL) 
+        str = (char*)malloc(bits+1);
+
+    str[bits] = '\0';
+    storage_t cpy = data;
+    for(std::size_t i = 0; i < bits; i++)
+    {
+        str[bits-1-i] = (cpy&1)?'1':'0';
+        cpy >>= 1;
+    }
+    return str;
 }
 // print value as hex
-const char *fbitset::hex() const
+const char *fbitset::hex()
 {
-    return NULL;
+    if(str == NULL) 
+        str = (char*)malloc(bits+1);
+
+    storage_t cpy = data;
+    std::size_t chars = (bits / 4) + ((bits%4)?1:0);
+    for(std::size_t i = 0; i < chars; i++)
+    {
+        char val = cpy&0b1111;
+        str[chars-i-1] = val + ((val <= 9)? '0': ('A'-10));
+        cpy >>=4;
+    }
+    str[chars] = '\0';
+    return str;
 }
 // print value as dec
-const char *fbitset::dec() const
+const char *fbitset::dec()
 {
-    return NULL;
+    if(str == NULL) 
+        str = (char*)malloc(bits+1);
+
+    storage_t cpy = data;
+    ;
+    std::size_t i = 0;
+    for(storage_t m = mask(); m > 0; m /= 10) i++;
+
+    str[i] = '\0';
+    for(; i-->0;)
+    {
+        str[i] =cpy % 10 + '0';
+        cpy /= 10;
+    }
+    return str;
+}
+
+fbitset::operator bool() const
+{
+    return data > 0;
 }

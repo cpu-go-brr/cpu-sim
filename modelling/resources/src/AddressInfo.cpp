@@ -7,11 +7,7 @@ std::size_t bytes_needed(const AddressInfo& i)
 
 bitset get_mem(uint8_t *mem, const AddressInfo& info)
 {
-   uint8_t data[bytes_needed(info)];
-   for (std::size_t i = 0; i < bytes_needed(info); i++)
-      data[i] = mem[info.byte_start + i];
-   
-   bitset ret{data, (bitset::bits_t)(info.length + info.bit_offset)};
+   bitset ret{&mem[info.byte_start], (bitset::bits_t)bytes_needed(info), (bitset::bits_t)(info.length + info.bit_offset)};
    return bitset(ret >> info.bit_offset, info.length);
 }
 

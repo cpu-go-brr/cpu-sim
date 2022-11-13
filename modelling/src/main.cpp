@@ -6,7 +6,6 @@
 
 int main(int argc, char **argv)
 {
-
     std::cout << PATH << "\n";
     auto desc = Description::CPU(PATH);
     desc.generate();

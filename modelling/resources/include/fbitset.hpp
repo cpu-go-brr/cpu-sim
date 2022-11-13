@@ -15,7 +15,7 @@ public:
     fbitset(int data, bits_t length = 0);
     fbitset(storage_t data, bits_t length = 0);
     fbitset(fbitset data, bits_t length);
-    fbitset(byte_t* data, bits_t length);
+    fbitset(byte_t* data, bits_t bytes, bits_t length);
     
 
     //get bytes needed to store a value of given bitlength
@@ -25,16 +25,17 @@ public:
     //get bitlength
     const bits_t size() const;
     //print value as binary
-    const char* bin() const;
+    const char* bin();
     //print value as hex
-    const char* hex() const;
+    const char* hex();
     //print value as dec
-    const char* dec() const;
+    const char* dec();
 
     //get value
     const storage_t val() const;
     //get mask for current bitlength
     const storage_t mask() const;
+    const storage_t mask(bits_t bits) const;
     void apply_mask();
     // set the current value whilst applying the bitmask
     void set(const storage_t& data);
@@ -45,6 +46,7 @@ public:
     fbitset operator,(fbitset const &b);
     fbitset operator^(fbitset const &b);
     fbitset operator~();
+    explicit operator bool() const;
 
     bool operator>(const fbitset &other);
     bool operator<(const fbitset &other);
@@ -73,5 +75,6 @@ public:
 
 private:
     storage_t data = 0;
-    const bits_t bits = 0; // number of bits
+    bits_t bits = 0; // number of bits
+    char* str = 0;
 };

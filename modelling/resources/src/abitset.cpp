@@ -30,10 +30,10 @@ abitset::abitset(std::vector<uint8_t> data_, std::size_t length_) : length{lengt
         data.push_back((data_.size() > i) ? data_[i] : 0);
 }
 
-abitset::abitset(uint8_t* data_, bits_t length_): length{length_}
+abitset::abitset(uint8_t* data_, bits_t bytes_, bits_t length_) : length{length_}
 {
     for (std::size_t i = 0; i < bytes(); i++)
-        data.push_back(data_[i]);
+        data.push_back((bytes_ > i) ? data_[i] : 0);
 }
 
 abitset::abitset(abitset data_, std::size_t length_) : length{length_}
@@ -356,6 +356,7 @@ void abitset::write(uint8_t *mem, const AddressInfo &info) const
 {
     abitset shifted{*this, (bitset::bits_t)(info.length + info.bit_offset)};
     shifted = shifted << info.bit_offset;
+
     auto mask_vector = std::vector<uint8_t>(bytes_needed(info), 0xFF);
     abitset mask{mask_vector, (abitset::bits_t)(info.bit_offset + info.length)};
     mask = mask << info.bit_offset;
@@ -366,6 +367,12 @@ void abitset::write(uint8_t *mem, const AddressInfo &info) const
     for (std::size_t i = 0; i < bytes_needed(info); i++)
     {
         uint8_t original_data = mem[info.byte_start + i];
+
         mem[info.byte_start + i] = (original_data & ~mask[i]) | (shifted[i] & mask[i]);
     }
+}
+
+abitset::operator bool() const
+{
+    return val() > 0;
 }

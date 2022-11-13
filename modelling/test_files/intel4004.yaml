@@ -56,7 +56,6 @@ modifications:
         read_values: 0100 # read I11I
 
 fetch:
-  conditions:
   instructions:
     - "rom(PC)"
 

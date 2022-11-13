@@ -16,9 +16,9 @@ public:
     typedef std::size_t byte_t; //datatype must exceed sizeof(storage_t)
     abitset();
     abitset(std::vector<uint8_t> data, bits_t length);
-    abitset(uint8_t* data, bits_t length);
     abitset(abitset data, bits_t length);
     abitset(std::vector<uint8_t> data);
+    abitset(uint8_t* data, bits_t bytes, bits_t length);
     abitset(int data, bits_t length = 0);
     abitset(long data, bits_t length = 0);
     abitset(std::size_t data, bits_t length = 0);
@@ -37,7 +37,7 @@ public:
     friend abitset operator~(abitset a);
     friend abitset operator,(abitset a, abitset const &b);
     friend abitset operator^(abitset a, abitset const &b);
-
+    explicit operator bool() const;
 
     bool operator>(const abitset &other);
     bool operator<(const abitset &other);

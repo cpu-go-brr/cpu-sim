@@ -42,7 +42,7 @@ std::string Description::Instruction::getCode(std::string c)
 
         
         for (auto [key, param] : params)
-            ret += "[[maybe_unused]] constexpr std::size_t " + key + " = 0b" + param + ";\n";
+            ret += "[[maybe_unused]] bitset " + key + "{0b" + param + ", "+ std::to_string(param.size())+"};\n";
 
         for (auto c : conditions)
             ret += c.getCode();

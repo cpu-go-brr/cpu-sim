@@ -2,6 +2,6 @@
 
 #include "abitset.hpp"
 #include "fbitset.hpp"
-typedef abitset bitset;
+typedef fbitset bitset;
 
 #include "AddressInfo.hpp"
