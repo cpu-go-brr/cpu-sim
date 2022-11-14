@@ -1,3 +1,6 @@
+#include "settings.hpp"
+#ifndef C_ONLY
+
 #include "abitset.hpp"
 #include "AddressInfo.hpp"
 #include <cmath>
@@ -376,3 +379,6 @@ abitset::operator bool() const
 {
     return val() > 0;
 }
+
+
+#endif

@@ -1,17 +1,17 @@
 #pragma once
 
-#include <stdint.h>
 #include "bitset.hpp"
-#include <cmath>
+#include "size_t.hpp"
+
 
 typedef struct AddressInfo
 {
-   std::size_t byte_start = 0;
-   std::size_t bit_offset = 0;
-   std::size_t length = 0;
+   SIZE_T byte_start = 0;
+   SIZE_T bit_offset = 0;
+   SIZE_T length = 0;
 } AddressInfo;
 
-std::size_t bytes_needed(const AddressInfo &i);
+SIZE_T bytes_needed(const AddressInfo &i);
 
 bitset get_mem(uint8_t *mem, const AddressInfo &info);
 

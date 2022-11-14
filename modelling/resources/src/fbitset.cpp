@@ -1,6 +1,7 @@
 #include "fbitset.hpp"
 #include "AddressInfo.hpp"
-
+#include <stddef.h>
+#include <stdlib.h>
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
 // returns the bitmask by length
@@ -182,8 +183,7 @@ void fbitset::write(uint8_t *mem, const AddressInfo &info) const
     auto needed_bytes = bytes_needed(info); 
     for (auto i = 0u; i < needed_bytes; i++)
     {
-
-        std::size_t index = info.byte_start  + i;
+        SIZE_T index = info.byte_start  + i;
         if (i > sizeof(storage_t))
         {
             mem[index] = (mem[index] & ~m);
@@ -239,7 +239,6 @@ const char *fbitset::dec()
         str = (char*)malloc(bits+1);
 
     storage_t cpy = data;
-    ;
     std::size_t i = 0;
     for(storage_t m = mask(); m > 0; m /= 10) i++;
 

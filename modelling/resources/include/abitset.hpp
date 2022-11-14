@@ -1,5 +1,9 @@
 #pragma once
 
+#include "settings.hpp"
+
+#ifndef C_ONLY
+
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -70,3 +74,5 @@ private:
     std::vector<uint8_t> data = {};
     std::size_t length = 0;
 };
+
+#endif

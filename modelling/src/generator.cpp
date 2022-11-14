@@ -63,14 +63,6 @@ std::string getMemoryNames(Description::InternalMemory m)
     return ret;
 }
 
-std::string describeMemoryMap(Description::InternalMemory m)
-{
-    std::string ret = "{\"" + m.name + "\", " + m.name + "},\n";
-    for (auto mem : m.submemory)
-        ret += describeMemoryMap(mem);
-
-    return ret;
-}
 
 std::string describeMemory(Description::InternalMemory m)
 {
@@ -85,24 +77,11 @@ std::string Description::CPU::generateAddressInfos()
 {
     std::string ret = "#pragma once\n#include \"AddressInfo.hpp\"\n";
 
-    ret += "#include <map>\n\n";
     for (auto m : internal_memory)
     {
         ret += describeMemory(m);
         ret += "\n\n";
     }
-
-    ret += "[[maybe_unused]] const auto mems = {";
-
-    for (auto m : internal_memory)
-        ret += getMemoryNames(m);
-    ret += "};\n\n";
-
-    ret += "inline std::map<std::string, AddressInfo> addresses = {\n";
-    for (auto m : internal_memory)
-        ret += describeMemoryMap(m);
-
-    ret += "};\n\n";
 
     return ret;
 }
