@@ -24,38 +24,53 @@ class Intel4004
    //function pointer
    typedef void (Intel4004::*op)();
 
-void simulate(std::size_t bytes = 1);
+void simulate(SIZE_T bytes = 1);
 void display();
 bitset fetch();
 /* rom */
 bitset rom_mem[4096];
 bitset& rom(AddressInfo info);
 bitset& rom(bitset index);
+#ifndef C_ONLY
 void flash_rom(std::vector<bitset> data);
+#endif
+void flash_rom(bitset* data, SIZE_T length);
 
 /* ram */
 bitset ram_mem[2048];
 bitset& ram(AddressInfo info);
 bitset& ram(bitset index);
+#ifndef C_ONLY
 void flash_ram(std::vector<bitset> data);
+#endif
+void flash_ram(bitset* data, SIZE_T length);
 
 /* ram_status */
 bitset ram_status_mem[512];
 bitset& ram_status(AddressInfo info);
 bitset& ram_status(bitset index);
+#ifndef C_ONLY
 void flash_ram_status(std::vector<bitset> data);
+#endif
+void flash_ram_status(bitset* data, SIZE_T length);
 
 /* ram_port */
 bitset ram_port_mem[32];
 bitset& ram_port(AddressInfo info);
 bitset& ram_port(bitset index);
+#ifndef C_ONLY
 void flash_ram_port(std::vector<bitset> data);
+#endif
+void flash_ram_port(bitset* data, SIZE_T length);
 
 /* rom_port */
 bitset rom_port_mem[16];
 bitset& rom_port(AddressInfo info);
 bitset& rom_port(bitset index);
+#ifndef C_ONLY
 void flash_rom_port(std::vector<bitset> data);
+#endif
+void flash_rom_port(bitset* data, SIZE_T length);
 
 const char* bin(AddressInfo info);
 const char* hex(AddressInfo info);

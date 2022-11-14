@@ -100,7 +100,7 @@ std::string Description::CPU::generateClass()
                "   typedef void (" +
         name + "::*op)();\n"
                "\n"
-               "void simulate(std::size_t bytes = 1);\n"
+               "void simulate(SIZE_T bytes = 1);\n"
                "void display();\n"
                "bitset fetch();\n";
 
@@ -220,6 +220,8 @@ void Description::CPU::generate()
 
     std::ofstream cpp("out/src/" + name + ".cpp", std::ios::trunc);
     cpp << "#include \"" + name + ".hpp\"\n";
+    cpp << "#include <stddef.h>\n";
+    cpp << "#include <stdio.h>\n";
 
     cpp << "bitset " + name + "::get(AddressInfo info)\n"
                               "{\n"
@@ -265,7 +267,7 @@ void Description::CPU::generate()
 
     cpp << generateDisplay();
 
-    cpp << "void " + name + "::simulate(std::size_t i)\n{\n"
+    cpp << "void " + name + "::simulate(SIZE_T i)\n{\n"
                             "for (;i-->0;)\n"
                             "{\n"
                             "   auto val = fetch();\n"

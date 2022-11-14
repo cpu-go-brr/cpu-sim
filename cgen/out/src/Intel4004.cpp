@@ -1,4 +1,6 @@
 #include "Intel4004.hpp"
+#include <stddef.h>
+#include <stdio.h>
 bitset Intel4004::get(AddressInfo info)
 {
    return get_mem(&memory[0], info);
@@ -3475,7 +3477,7 @@ void Intel4004::display()
 {
 #ifndef NO_PRINT
 printf("         STACK                REGISTERS\n\
-     PC %s          R0 R1 %s %s   R8 R9 %s %s\n\
+    PC %s          R0 R1 %s %s   R8 R9 %s %s\n\
 LEVEL 1 %s          R2 R3 %s %s   RA RB %s %s\n\
 LEVEL 2 %s          R4 R5 %s %s   RA RB %s %s\n\
 LEVEL 3 %s          R6 R7 %s %s   RA RB %s %s\n\
@@ -3483,7 +3485,7 @@ LEVEL 3 %s          R6 R7 %s %s   RA RB %s %s\n\
 ACCUMULATOR: %s [%s]  CARRY: %s\n",hex(PC),hex(R0),hex(R1),hex(R8),hex(R9),hex(STACK0),hex(R2),hex(R3),hex(R10),hex(R11),hex(STACK1),hex(R4),hex(R5),hex(R12),hex(R13),hex(STACK2),hex(R6),hex(R7),hex(R14),hex(R15),dec(ACC),bin(ACC),bin(CY));
 #endif
 }
-void Intel4004::simulate(std::size_t i)
+void Intel4004::simulate(SIZE_T i)
 {
 for (;i-->0;)
 {
@@ -3507,9 +3509,17 @@ bitset& Intel4004::rom(bitset index)
 {
 return rom_mem[index.val()];
 }
+#ifndef C_ONLY
 void Intel4004::flash_rom(std::vector<bitset> data)
 {
 for(auto i = 0ul; i < data.size(); i++)
+rom_mem[i] = bitset(data[i], 8);
+}
+
+#endif
+void Intel4004::flash_rom(bitset* data, SIZE_T len)
+{
+for(auto i = 0ul; i < len; i++)
 rom_mem[i] = bitset(data[i], 8);
 }
 
@@ -3522,9 +3532,17 @@ bitset& Intel4004::ram(bitset index)
 {
 return ram_mem[index.val()];
 }
+#ifndef C_ONLY
 void Intel4004::flash_ram(std::vector<bitset> data)
 {
 for(auto i = 0ul; i < data.size(); i++)
+ram_mem[i] = bitset(data[i], 4);
+}
+
+#endif
+void Intel4004::flash_ram(bitset* data, SIZE_T len)
+{
+for(auto i = 0ul; i < len; i++)
 ram_mem[i] = bitset(data[i], 4);
 }
 
@@ -3537,9 +3555,17 @@ bitset& Intel4004::ram_status(bitset index)
 {
 return ram_status_mem[index.val()];
 }
+#ifndef C_ONLY
 void Intel4004::flash_ram_status(std::vector<bitset> data)
 {
 for(auto i = 0ul; i < data.size(); i++)
+ram_status_mem[i] = bitset(data[i], 4);
+}
+
+#endif
+void Intel4004::flash_ram_status(bitset* data, SIZE_T len)
+{
+for(auto i = 0ul; i < len; i++)
 ram_status_mem[i] = bitset(data[i], 4);
 }
 
@@ -3552,9 +3578,17 @@ bitset& Intel4004::ram_port(bitset index)
 {
 return ram_port_mem[index.val()];
 }
+#ifndef C_ONLY
 void Intel4004::flash_ram_port(std::vector<bitset> data)
 {
 for(auto i = 0ul; i < data.size(); i++)
+ram_port_mem[i] = bitset(data[i], 4);
+}
+
+#endif
+void Intel4004::flash_ram_port(bitset* data, SIZE_T len)
+{
+for(auto i = 0ul; i < len; i++)
 ram_port_mem[i] = bitset(data[i], 4);
 }
 
@@ -3567,9 +3601,17 @@ bitset& Intel4004::rom_port(bitset index)
 {
 return rom_port_mem[index.val()];
 }
+#ifndef C_ONLY
 void Intel4004::flash_rom_port(std::vector<bitset> data)
 {
 for(auto i = 0ul; i < data.size(); i++)
+rom_port_mem[i] = bitset(data[i], 4);
+}
+
+#endif
+void Intel4004::flash_rom_port(bitset* data, SIZE_T len)
+{
+for(auto i = 0ul; i < len; i++)
 rom_port_mem[i] = bitset(data[i], 4);
 }
 
