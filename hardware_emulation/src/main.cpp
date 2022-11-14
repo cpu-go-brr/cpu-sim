@@ -1,20 +1,17 @@
 #include <zephyr.h>
-uint32_t led = (1u << 27);
+
+#include "fbitset.hpp"
+#include <stdio.h>
+#include <stdlib.h>
 
 void main(void)
 {
 
-    REG_PIOB_OER = led;
+    fbitset a {0b101,3};
 
-    printk("Hello there, %s\n", CONFIG_BOARD);
+    printf("program begin\n");
+    printf("data: %p\n",a.bin());
 
-    while (true)
-    {
-        REG_PIOB_SODR = led; // Set Output Data Register, turns LED on
-        k_sleep({10000});    // wait for a second
-        printk("ON\n");
-        REG_PIOB_CODR = led; // Clear Output Data Register, turns LED off
-        k_sleep({10000});    // wait for a second
-        printk("OFF\n");
-    }
+
+    printf("program end\n");
 }
