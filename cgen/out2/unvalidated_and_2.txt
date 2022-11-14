@@ -1,0 +1,5 @@
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/kurt/Documents/DHBW/cpu-sim/modelling/out2/build
+Consolidate compiler generated dependencies of target simulator
+[ 20%] Linking CXX executable simulator
