@@ -85,7 +85,7 @@ instructions:
       - nextpage = (PM, PL) >= 254
     instructions:
       - "!jump? PC + 2 --> PC"
-      - jump ? rom(PC+1) --> {PM,PL}
+      - jump ? rom(PC+1) --> PM,PL
       - jump && nextpage ? PH +1 --> PH
   fim:
     description: |
@@ -173,7 +173,7 @@ instructions:
     instructions:
       - R{R} + 1 --> R{R}
       - R{R} == 0 ? PC +2 --> PC
-      - R{R} != 0 ? rom(PC+1) --> {PM,PL}
+      - R{R} != 0 ? rom(PC+1) --> PM,PL
   add:
     description: |
       The 4 bit content of the designated index register is added to the content of the 
@@ -182,7 +182,7 @@ instructions:
       the carry/link is set to 0. The 4 bit content of the index register is unaffected.
     code: 1000 RRRR
     instructions:
-      - R{R} + ACC + CY --> {CY,ACC}
+      - R{R} + ACC + CY --> CY,ACC
       - PC +1 --> PC
   sub:
     description: |
@@ -192,7 +192,7 @@ instructions:
       set to 1. The 4 bit content of the index register is unaffected.
     code: 1001 RRRR
     instructions:
-      - (~R{R} + ACC + ~CY) --> {CY,ACC}
+      - (~R{R} + ACC + ~CY) --> CY,ACC
       - PC +1 --> PC
   ld:
     description: |
@@ -210,7 +210,7 @@ instructions:
       The carry/link bit is unaffected.
     code: 1011 RRRR
     instructions:
-      - (ACC, R{R}) --> {R{R}, ACC}
+      - (ACC, R{R}) --> R{R}, ACC
       - PC +1 --> PC
   bbl:
     description: |
@@ -309,7 +309,7 @@ instructions:
       accumulator with borrow. The RAM character is unaffected.    
     code: 1110 1000
     instructions:
-      - (~ram((CM, SRC)) + ACC + ~CY) --> {CY,ACC}
+      - (~ram((CM, SRC)) + ACC + ~CY) --> CY,ACC
       - PC +1 --> PC
   rdm:
     description: |
@@ -335,7 +335,7 @@ instructions:
       with carry. The RAM character is unaffected.
     code: 1110 1011
     instructions:
-      - ram((CM, SRC)) + ACC + CY --> {CY,ACC}
+      - ram((CM, SRC)) + ACC + CY --> CY,ACC
       - PC +1 --> PC
   rd0:
     description: |
@@ -404,27 +404,27 @@ instructions:
     description: Increment Accumulator
     code: 1111 0010
     instructions:
-      - ACC+1 --> {CY,ACC}
+      - ACC+1 --> CY,ACC
       - PC+1 --> PC
   dac:
     description: Decrement Accumulator
     code: 1111 1000
     instructions:
-      - ACC+0b1111 --> {CY,ACC}
+      - ACC+0b1111 --> CY,ACC
       - PC+1 --> PC
   ral:
     description: |
       The content of the accumulator and carry/link are rotated left.
     code: 1111 0110
     instructions:
-      - (CY,ACC) --> {ACC,CY}
+      - (CY,ACC) --> ACC,CY
       - PC+1 --> PC
   rar:
     description: |
       The content of the accumulator and carry/link are rotated right.
     code: 1111 0110
     instructions:
-      - (ACC,CY) --> {CY,ACC}
+      - (ACC,CY) --> CY,ACC
       - PC+1 --> PC
   tcc:
     description: |
@@ -447,7 +447,7 @@ instructions:
     conditions:
       - inc = CY == 1 || ACC > 9
     instructions:
-      - inc? ACC + 6 --> {CY,ACC}
+      - inc? ACC + 6 --> CY,ACC
   tcs:
     description: |
       The accumulator is set to 9 if the carry/link is 0.
@@ -487,11 +487,11 @@ instructions:
       - ACC != 0 ? (ACC, 0b0) --> CM
       - PC+1 --> PC
       
-display: |
-  "         STACK                REGISTERS\n\
-       PC 0x{PC}          R0 R1 0x{R0} 0x{R1}   R8 R9 0x{R8} 0x{R9}\n\
-  LEVEL 1 0x{STACK0}          R2 R3 0x{R2} 0x{R3}   RA RB 0x{R10} 0x{R11}\n\
-  LEVEL 2 0x{STACK1}          R4 R5 0x{R4} 0x{R5}   RA RB 0x{R12} 0x{R13}\n\
-  LEVEL 3 0x{STACK2}          R6 R7 0x{R6} 0x{R7}   RA RB 0x{R14} 0x{R15}\n\
-  \n\
-  ACCUMULATOR: {ACC} [0b{ACC}]  CARRY: 0b{CY}\n"
+display: 
+    "         STACK                REGISTERS\n\
+        PC 0x{PC}          R0 R1 0x{R0} 0x{R1}   R8 R9 0x{R8} 0x{R9}\n\
+    LEVEL 1 0x{STACK0}          R2 R3 0x{R2} 0x{R3}   RA RB 0x{R10} 0x{R11}\n\
+    LEVEL 2 0x{STACK1}          R4 R5 0x{R4} 0x{R5}   RA RB 0x{R12} 0x{R13}\n\
+    LEVEL 3 0x{STACK2}          R6 R7 0x{R6} 0x{R7}   RA RB 0x{R14} 0x{R15}\n\
+    \n\
+    ACCUMULATOR: {ACC} [0b{ACC}]  CARRY: 0b{CY}\n"

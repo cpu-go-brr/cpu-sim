@@ -1,4 +1,3 @@
-./build.sh
-./build/simulator
+./run.sh
 cd out
 ./build.sh

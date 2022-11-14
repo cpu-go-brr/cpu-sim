@@ -3,7 +3,7 @@
 #include <regex>
 #include "bitset.hpp"
 #include "matheval.hpp"
-
+#include <iostream>
 #include "expression.hpp"
 
 std::string Description::Expression::getCode(std::map<std::string, std::string> params)
@@ -85,9 +85,38 @@ std::string Description::Expression::getCode(std::map<std::string, std::string> 
 
     right = std::regex_replace(right, rightvars, "(get($1)");
 
+    std::vector<std::string> infos;
+
+    std::size_t pos = 0;
+    int level = 0;
+    for(std::size_t p = 0; p < right.size(); p++)
+    {
+        if(right[p] == '(') level++;
+        if(right[p] == ')') level--;
+        if(level == 0 && right[p] == ',')
+        {
+            infos.push_back(right.substr(pos, p - pos));
+            pos = p+1;
+        }
+    }
+
+    infos.push_back(right.substr(pos));
+    
+    if(infos.size() > 1) 
+    {
+        std::string r2 = std::to_string(infos.size()) + ",";
+        
+        for(auto i = infos.size(); i --> 0;)
+            r2 += infos[i] + ",";
+
+        right = r2.substr(0,r2.size()-1);
+
+    }
+        // std::cout << right << "\n";
+
     std::string ret = "";
     if (right != "")
-        ret = "set(" + right + ",(" + left + "));\n";
+        ret = "set((" + left + "), "+ right +");\n";
     else
         ret = "return " + left + ";\n";
 

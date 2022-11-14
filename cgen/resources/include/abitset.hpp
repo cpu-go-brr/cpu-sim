@@ -65,9 +65,9 @@ public:
     bool operator==(const abitset& other);
 
     const std::size_t bytes() const;
-    const std::string bin() const;
-    const std::string hex() const;
-    const std::string dec() const;
+    const char* bin() const;
+    const char* hex() const;
+    const char* dec() const;
     const std::size_t val() const;
 
 private:

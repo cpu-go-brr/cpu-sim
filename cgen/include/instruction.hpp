@@ -26,6 +26,7 @@ namespace Description
         std::string name = "", description = "", code = "";
         std::vector<Expression> expressions;
         std::vector<Condition> conditions;
+        unsigned int bits;
 
     };
 }

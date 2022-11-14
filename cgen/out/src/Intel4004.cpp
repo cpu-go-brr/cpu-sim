@@ -8,7 +8,7 @@ template <>
 void Intel4004::nop<0b00000000>()
 {
 /* PC + 1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -37,17 +37,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -66,17 +66,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -95,17 +95,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -124,17 +124,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -153,17 +153,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -182,17 +182,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -211,17 +211,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -240,17 +240,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -269,17 +269,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -298,17 +298,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -327,17 +327,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -356,17 +356,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -385,17 +385,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -414,17 +414,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -443,17 +443,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -472,17 +472,17 @@ bool nextpage=(get(PM),get(PL))>=254;
 /* !jump? PC + 2 --> PC*/
 if(!jump)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* jump ? rom(PC+1) --> {PM,PL}*/
+/* jump ? rom(PC+1) --> PM,PL*/
 if(jump)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 /* jump && nextpage ? PH +1 --> PH*/
 if(jump&&nextpage)
 {
-set(PH,(get(PH)+1));
+set((get(PH)+1), PH);
 }
 }
 
@@ -494,9 +494,9 @@ void Intel4004::fim<0b00100000>()
 {
 [[maybe_unused]] bitset R{0b000, 3};
 /* rom(PC+1) --> P{R}*/
-set(P0,(rom(get(PC)+1)));
+set((rom(get(PC)+1)), P0);
 /* PC+2 --> PC*/
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
 
 template <>
@@ -504,9 +504,9 @@ void Intel4004::fim<0b00100010>()
 {
 [[maybe_unused]] bitset R{0b001, 3};
 /* rom(PC+1) --> P{R}*/
-set(P1,(rom(get(PC)+1)));
+set((rom(get(PC)+1)), P1);
 /* PC+2 --> PC*/
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
 
 template <>
@@ -514,9 +514,9 @@ void Intel4004::fim<0b00100100>()
 {
 [[maybe_unused]] bitset R{0b010, 3};
 /* rom(PC+1) --> P{R}*/
-set(P2,(rom(get(PC)+1)));
+set((rom(get(PC)+1)), P2);
 /* PC+2 --> PC*/
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
 
 template <>
@@ -524,9 +524,9 @@ void Intel4004::fim<0b00100110>()
 {
 [[maybe_unused]] bitset R{0b011, 3};
 /* rom(PC+1) --> P{R}*/
-set(P3,(rom(get(PC)+1)));
+set((rom(get(PC)+1)), P3);
 /* PC+2 --> PC*/
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
 
 template <>
@@ -534,9 +534,9 @@ void Intel4004::fim<0b00101000>()
 {
 [[maybe_unused]] bitset R{0b100, 3};
 /* rom(PC+1) --> P{R}*/
-set(P4,(rom(get(PC)+1)));
+set((rom(get(PC)+1)), P4);
 /* PC+2 --> PC*/
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
 
 template <>
@@ -544,9 +544,9 @@ void Intel4004::fim<0b00101010>()
 {
 [[maybe_unused]] bitset R{0b101, 3};
 /* rom(PC+1) --> P{R}*/
-set(P5,(rom(get(PC)+1)));
+set((rom(get(PC)+1)), P5);
 /* PC+2 --> PC*/
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
 
 template <>
@@ -554,9 +554,9 @@ void Intel4004::fim<0b00101100>()
 {
 [[maybe_unused]] bitset R{0b110, 3};
 /* rom(PC+1) --> P{R}*/
-set(P6,(rom(get(PC)+1)));
+set((rom(get(PC)+1)), P6);
 /* PC+2 --> PC*/
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
 
 template <>
@@ -564,9 +564,9 @@ void Intel4004::fim<0b00101110>()
 {
 [[maybe_unused]] bitset R{0b111, 3};
 /* rom(PC+1) --> P{R}*/
-set(P7,(rom(get(PC)+1)));
+set((rom(get(PC)+1)), P7);
 /* PC+2 --> PC*/
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
 
 
@@ -586,9 +586,9 @@ void Intel4004::src<0b00100001>()
 {
 [[maybe_unused]] bitset R{0b000, 3};
 /* P{R} --> SRC*/
-set(SRC,(get(P0)));
+set((get(P0)), SRC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -596,9 +596,9 @@ void Intel4004::src<0b00100011>()
 {
 [[maybe_unused]] bitset R{0b001, 3};
 /* P{R} --> SRC*/
-set(SRC,(get(P1)));
+set((get(P1)), SRC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -606,9 +606,9 @@ void Intel4004::src<0b00100101>()
 {
 [[maybe_unused]] bitset R{0b010, 3};
 /* P{R} --> SRC*/
-set(SRC,(get(P2)));
+set((get(P2)), SRC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -616,9 +616,9 @@ void Intel4004::src<0b00100111>()
 {
 [[maybe_unused]] bitset R{0b011, 3};
 /* P{R} --> SRC*/
-set(SRC,(get(P3)));
+set((get(P3)), SRC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -626,9 +626,9 @@ void Intel4004::src<0b00101001>()
 {
 [[maybe_unused]] bitset R{0b100, 3};
 /* P{R} --> SRC*/
-set(SRC,(get(P4)));
+set((get(P4)), SRC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -636,9 +636,9 @@ void Intel4004::src<0b00101011>()
 {
 [[maybe_unused]] bitset R{0b101, 3};
 /* P{R} --> SRC*/
-set(SRC,(get(P5)));
+set((get(P5)), SRC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -646,9 +646,9 @@ void Intel4004::src<0b00101101>()
 {
 [[maybe_unused]] bitset R{0b110, 3};
 /* P{R} --> SRC*/
-set(SRC,(get(P6)));
+set((get(P6)), SRC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -656,9 +656,9 @@ void Intel4004::src<0b00101111>()
 {
 [[maybe_unused]] bitset R{0b111, 3};
 /* P{R} --> SRC*/
-set(SRC,(get(P7)));
+set((get(P7)), SRC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -674,9 +674,9 @@ void Intel4004::fin<0b00110000>()
 {
 [[maybe_unused]] bitset R{0b000, 3};
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* rom((PH, P0)) --> P{R}*/
-set(P0,(rom((get(PH),get(P0)))));
+set((rom((get(PH),get(P0)))), P0);
 }
 
 template <>
@@ -684,9 +684,9 @@ void Intel4004::fin<0b00110010>()
 {
 [[maybe_unused]] bitset R{0b001, 3};
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* rom((PH, P0)) --> P{R}*/
-set(P1,(rom((get(PH),get(P0)))));
+set((rom((get(PH),get(P0)))), P1);
 }
 
 template <>
@@ -694,9 +694,9 @@ void Intel4004::fin<0b00110100>()
 {
 [[maybe_unused]] bitset R{0b010, 3};
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* rom((PH, P0)) --> P{R}*/
-set(P2,(rom((get(PH),get(P0)))));
+set((rom((get(PH),get(P0)))), P2);
 }
 
 template <>
@@ -704,9 +704,9 @@ void Intel4004::fin<0b00110110>()
 {
 [[maybe_unused]] bitset R{0b011, 3};
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* rom((PH, P0)) --> P{R}*/
-set(P3,(rom((get(PH),get(P0)))));
+set((rom((get(PH),get(P0)))), P3);
 }
 
 template <>
@@ -714,9 +714,9 @@ void Intel4004::fin<0b00111000>()
 {
 [[maybe_unused]] bitset R{0b100, 3};
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* rom((PH, P0)) --> P{R}*/
-set(P4,(rom((get(PH),get(P0)))));
+set((rom((get(PH),get(P0)))), P4);
 }
 
 template <>
@@ -724,9 +724,9 @@ void Intel4004::fin<0b00111010>()
 {
 [[maybe_unused]] bitset R{0b101, 3};
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* rom((PH, P0)) --> P{R}*/
-set(P5,(rom((get(PH),get(P0)))));
+set((rom((get(PH),get(P0)))), P5);
 }
 
 template <>
@@ -734,9 +734,9 @@ void Intel4004::fin<0b00111100>()
 {
 [[maybe_unused]] bitset R{0b110, 3};
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* rom((PH, P0)) --> P{R}*/
-set(P6,(rom((get(PH),get(P0)))));
+set((rom((get(PH),get(P0)))), P6);
 }
 
 template <>
@@ -744,9 +744,9 @@ void Intel4004::fin<0b00111110>()
 {
 [[maybe_unused]] bitset R{0b111, 3};
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* rom((PH, P0)) --> P{R}*/
-set(P7,(rom((get(PH),get(P0)))));
+set((rom((get(PH),get(P0)))), P7);
 }
 
 
@@ -760,11 +760,11 @@ void Intel4004::jin<0b00110001>()
 {
 [[maybe_unused]] bitset R{0b000, 3};
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* R{2*R} --> PM*/
-set(PM,(get(R0)));
+set((get(R0)), PM);
 /* R{2*R+1} --> PL*/
-set(PL,(get(R1)));
+set((get(R1)), PL);
 }
 
 template <>
@@ -772,11 +772,11 @@ void Intel4004::jin<0b00110011>()
 {
 [[maybe_unused]] bitset R{0b001, 3};
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* R{2*R} --> PM*/
-set(PM,(get(R2)));
+set((get(R2)), PM);
 /* R{2*R+1} --> PL*/
-set(PL,(get(R3)));
+set((get(R3)), PL);
 }
 
 template <>
@@ -784,11 +784,11 @@ void Intel4004::jin<0b00110101>()
 {
 [[maybe_unused]] bitset R{0b010, 3};
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* R{2*R} --> PM*/
-set(PM,(get(R4)));
+set((get(R4)), PM);
 /* R{2*R+1} --> PL*/
-set(PL,(get(R5)));
+set((get(R5)), PL);
 }
 
 template <>
@@ -796,11 +796,11 @@ void Intel4004::jin<0b00110111>()
 {
 [[maybe_unused]] bitset R{0b011, 3};
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* R{2*R} --> PM*/
-set(PM,(get(R6)));
+set((get(R6)), PM);
 /* R{2*R+1} --> PL*/
-set(PL,(get(R7)));
+set((get(R7)), PL);
 }
 
 template <>
@@ -808,11 +808,11 @@ void Intel4004::jin<0b00111001>()
 {
 [[maybe_unused]] bitset R{0b100, 3};
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* R{2*R} --> PM*/
-set(PM,(get(R8)));
+set((get(R8)), PM);
 /* R{2*R+1} --> PL*/
-set(PL,(get(R9)));
+set((get(R9)), PL);
 }
 
 template <>
@@ -820,11 +820,11 @@ void Intel4004::jin<0b00111011>()
 {
 [[maybe_unused]] bitset R{0b101, 3};
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* R{2*R} --> PM*/
-set(PM,(get(R10)));
+set((get(R10)), PM);
 /* R{2*R+1} --> PL*/
-set(PL,(get(R11)));
+set((get(R11)), PL);
 }
 
 template <>
@@ -832,11 +832,11 @@ void Intel4004::jin<0b00111101>()
 {
 [[maybe_unused]] bitset R{0b110, 3};
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* R{2*R} --> PM*/
-set(PM,(get(R12)));
+set((get(R12)), PM);
 /* R{2*R+1} --> PL*/
-set(PL,(get(R13)));
+set((get(R13)), PL);
 }
 
 template <>
@@ -844,11 +844,11 @@ void Intel4004::jin<0b00111111>()
 {
 [[maybe_unused]] bitset R{0b111, 3};
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 /* R{2*R} --> PM*/
-set(PM,(get(R14)));
+set((get(R14)), PM);
 /* R{2*R+1} --> PL*/
-set(PL,(get(R15)));
+set((get(R15)), PL);
 }
 
 
@@ -858,7 +858,7 @@ void Intel4004::jun<0b01000000>()
 {
 [[maybe_unused]] bitset A{0b0000, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -866,7 +866,7 @@ void Intel4004::jun<0b01000001>()
 {
 [[maybe_unused]] bitset A{0b0001, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -874,7 +874,7 @@ void Intel4004::jun<0b01000010>()
 {
 [[maybe_unused]] bitset A{0b0010, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -882,7 +882,7 @@ void Intel4004::jun<0b01000011>()
 {
 [[maybe_unused]] bitset A{0b0011, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -890,7 +890,7 @@ void Intel4004::jun<0b01000100>()
 {
 [[maybe_unused]] bitset A{0b0100, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -898,7 +898,7 @@ void Intel4004::jun<0b01000101>()
 {
 [[maybe_unused]] bitset A{0b0101, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -906,7 +906,7 @@ void Intel4004::jun<0b01000110>()
 {
 [[maybe_unused]] bitset A{0b0110, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -914,7 +914,7 @@ void Intel4004::jun<0b01000111>()
 {
 [[maybe_unused]] bitset A{0b0111, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -922,7 +922,7 @@ void Intel4004::jun<0b01001000>()
 {
 [[maybe_unused]] bitset A{0b1000, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -930,7 +930,7 @@ void Intel4004::jun<0b01001001>()
 {
 [[maybe_unused]] bitset A{0b1001, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -938,7 +938,7 @@ void Intel4004::jun<0b01001010>()
 {
 [[maybe_unused]] bitset A{0b1010, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -946,7 +946,7 @@ void Intel4004::jun<0b01001011>()
 {
 [[maybe_unused]] bitset A{0b1011, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -954,7 +954,7 @@ void Intel4004::jun<0b01001100>()
 {
 [[maybe_unused]] bitset A{0b1100, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -962,7 +962,7 @@ void Intel4004::jun<0b01001101>()
 {
 [[maybe_unused]] bitset A{0b1101, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -970,7 +970,7 @@ void Intel4004::jun<0b01001110>()
 {
 [[maybe_unused]] bitset A{0b1110, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -978,7 +978,7 @@ void Intel4004::jun<0b01001111>()
 {
 [[maybe_unused]] bitset A{0b1111, 4};
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 
@@ -995,13 +995,13 @@ void Intel4004::jms<0b01010000>()
 {
 [[maybe_unused]] bitset A{0b0000, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1009,13 +1009,13 @@ void Intel4004::jms<0b01010001>()
 {
 [[maybe_unused]] bitset A{0b0001, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1023,13 +1023,13 @@ void Intel4004::jms<0b01010010>()
 {
 [[maybe_unused]] bitset A{0b0010, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1037,13 +1037,13 @@ void Intel4004::jms<0b01010011>()
 {
 [[maybe_unused]] bitset A{0b0011, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1051,13 +1051,13 @@ void Intel4004::jms<0b01010100>()
 {
 [[maybe_unused]] bitset A{0b0100, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1065,13 +1065,13 @@ void Intel4004::jms<0b01010101>()
 {
 [[maybe_unused]] bitset A{0b0101, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1079,13 +1079,13 @@ void Intel4004::jms<0b01010110>()
 {
 [[maybe_unused]] bitset A{0b0110, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1093,13 +1093,13 @@ void Intel4004::jms<0b01010111>()
 {
 [[maybe_unused]] bitset A{0b0111, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1107,13 +1107,13 @@ void Intel4004::jms<0b01011000>()
 {
 [[maybe_unused]] bitset A{0b1000, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1121,13 +1121,13 @@ void Intel4004::jms<0b01011001>()
 {
 [[maybe_unused]] bitset A{0b1001, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1135,13 +1135,13 @@ void Intel4004::jms<0b01011010>()
 {
 [[maybe_unused]] bitset A{0b1010, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1149,13 +1149,13 @@ void Intel4004::jms<0b01011011>()
 {
 [[maybe_unused]] bitset A{0b1011, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1163,13 +1163,13 @@ void Intel4004::jms<0b01011100>()
 {
 [[maybe_unused]] bitset A{0b1100, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1177,13 +1177,13 @@ void Intel4004::jms<0b01011101>()
 {
 [[maybe_unused]] bitset A{0b1101, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1191,13 +1191,13 @@ void Intel4004::jms<0b01011110>()
 {
 [[maybe_unused]] bitset A{0b1110, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 template <>
@@ -1205,13 +1205,13 @@ void Intel4004::jms<0b01011111>()
 {
 [[maybe_unused]] bitset A{0b1111, 4};
 /* STACK1 --> STACK2*/
-set(STACK2,(get(STACK1)));
+set((get(STACK1)), STACK2);
 /* STACK0 --> STACK1*/
-set(STACK1,(get(STACK0)));
+set((get(STACK0)), STACK1);
 /* PC + 2 --> STACK0*/
-set(STACK0,(get(PC)+2));
+set((get(PC)+2), STACK0);
 /* (A, rom(PC+1))--> PC*/
-set(PC,((A,rom(get(PC)+1))));
+set(((A,rom(get(PC)+1))), PC);
 }
 
 
@@ -1223,9 +1223,9 @@ void Intel4004::inc<0b01100000>()
 {
 [[maybe_unused]] bitset R{0b0000, 4};
 /* R{R} + 1 --> R{R}*/
-set(R0,(get(R0)+1));
+set((get(R0)+1), R0);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1233,9 +1233,9 @@ void Intel4004::inc<0b01100001>()
 {
 [[maybe_unused]] bitset R{0b0001, 4};
 /* R{R} + 1 --> R{R}*/
-set(R1,(get(R1)+1));
+set((get(R1)+1), R1);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1243,9 +1243,9 @@ void Intel4004::inc<0b01100010>()
 {
 [[maybe_unused]] bitset R{0b0010, 4};
 /* R{R} + 1 --> R{R}*/
-set(R2,(get(R2)+1));
+set((get(R2)+1), R2);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1253,9 +1253,9 @@ void Intel4004::inc<0b01100011>()
 {
 [[maybe_unused]] bitset R{0b0011, 4};
 /* R{R} + 1 --> R{R}*/
-set(R3,(get(R3)+1));
+set((get(R3)+1), R3);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1263,9 +1263,9 @@ void Intel4004::inc<0b01100100>()
 {
 [[maybe_unused]] bitset R{0b0100, 4};
 /* R{R} + 1 --> R{R}*/
-set(R4,(get(R4)+1));
+set((get(R4)+1), R4);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1273,9 +1273,9 @@ void Intel4004::inc<0b01100101>()
 {
 [[maybe_unused]] bitset R{0b0101, 4};
 /* R{R} + 1 --> R{R}*/
-set(R5,(get(R5)+1));
+set((get(R5)+1), R5);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1283,9 +1283,9 @@ void Intel4004::inc<0b01100110>()
 {
 [[maybe_unused]] bitset R{0b0110, 4};
 /* R{R} + 1 --> R{R}*/
-set(R6,(get(R6)+1));
+set((get(R6)+1), R6);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1293,9 +1293,9 @@ void Intel4004::inc<0b01100111>()
 {
 [[maybe_unused]] bitset R{0b0111, 4};
 /* R{R} + 1 --> R{R}*/
-set(R7,(get(R7)+1));
+set((get(R7)+1), R7);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1303,9 +1303,9 @@ void Intel4004::inc<0b01101000>()
 {
 [[maybe_unused]] bitset R{0b1000, 4};
 /* R{R} + 1 --> R{R}*/
-set(R8,(get(R8)+1));
+set((get(R8)+1), R8);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1313,9 +1313,9 @@ void Intel4004::inc<0b01101001>()
 {
 [[maybe_unused]] bitset R{0b1001, 4};
 /* R{R} + 1 --> R{R}*/
-set(R9,(get(R9)+1));
+set((get(R9)+1), R9);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1323,9 +1323,9 @@ void Intel4004::inc<0b01101010>()
 {
 [[maybe_unused]] bitset R{0b1010, 4};
 /* R{R} + 1 --> R{R}*/
-set(R10,(get(R10)+1));
+set((get(R10)+1), R10);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1333,9 +1333,9 @@ void Intel4004::inc<0b01101011>()
 {
 [[maybe_unused]] bitset R{0b1011, 4};
 /* R{R} + 1 --> R{R}*/
-set(R11,(get(R11)+1));
+set((get(R11)+1), R11);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1343,9 +1343,9 @@ void Intel4004::inc<0b01101100>()
 {
 [[maybe_unused]] bitset R{0b1100, 4};
 /* R{R} + 1 --> R{R}*/
-set(R12,(get(R12)+1));
+set((get(R12)+1), R12);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1353,9 +1353,9 @@ void Intel4004::inc<0b01101101>()
 {
 [[maybe_unused]] bitset R{0b1101, 4};
 /* R{R} + 1 --> R{R}*/
-set(R13,(get(R13)+1));
+set((get(R13)+1), R13);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1363,9 +1363,9 @@ void Intel4004::inc<0b01101110>()
 {
 [[maybe_unused]] bitset R{0b1110, 4};
 /* R{R} + 1 --> R{R}*/
-set(R14,(get(R14)+1));
+set((get(R14)+1), R14);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -1373,9 +1373,9 @@ void Intel4004::inc<0b01101111>()
 {
 [[maybe_unused]] bitset R{0b1111, 4};
 /* R{R} + 1 --> R{R}*/
-set(R15,(get(R15)+1));
+set((get(R15)+1), R15);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -1390,16 +1390,16 @@ void Intel4004::isz<0b01110000>()
 {
 [[maybe_unused]] bitset R{0b0000, 4};
 /* R{R} + 1 --> R{R}*/
-set(R0,(get(R0)+1));
+set((get(R0)+1), R0);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R0)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R0)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1408,16 +1408,16 @@ void Intel4004::isz<0b01110001>()
 {
 [[maybe_unused]] bitset R{0b0001, 4};
 /* R{R} + 1 --> R{R}*/
-set(R1,(get(R1)+1));
+set((get(R1)+1), R1);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R1)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R1)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1426,16 +1426,16 @@ void Intel4004::isz<0b01110010>()
 {
 [[maybe_unused]] bitset R{0b0010, 4};
 /* R{R} + 1 --> R{R}*/
-set(R2,(get(R2)+1));
+set((get(R2)+1), R2);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R2)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R2)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1444,16 +1444,16 @@ void Intel4004::isz<0b01110011>()
 {
 [[maybe_unused]] bitset R{0b0011, 4};
 /* R{R} + 1 --> R{R}*/
-set(R3,(get(R3)+1));
+set((get(R3)+1), R3);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R3)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R3)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1462,16 +1462,16 @@ void Intel4004::isz<0b01110100>()
 {
 [[maybe_unused]] bitset R{0b0100, 4};
 /* R{R} + 1 --> R{R}*/
-set(R4,(get(R4)+1));
+set((get(R4)+1), R4);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R4)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R4)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1480,16 +1480,16 @@ void Intel4004::isz<0b01110101>()
 {
 [[maybe_unused]] bitset R{0b0101, 4};
 /* R{R} + 1 --> R{R}*/
-set(R5,(get(R5)+1));
+set((get(R5)+1), R5);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R5)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R5)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1498,16 +1498,16 @@ void Intel4004::isz<0b01110110>()
 {
 [[maybe_unused]] bitset R{0b0110, 4};
 /* R{R} + 1 --> R{R}*/
-set(R6,(get(R6)+1));
+set((get(R6)+1), R6);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R6)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R6)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1516,16 +1516,16 @@ void Intel4004::isz<0b01110111>()
 {
 [[maybe_unused]] bitset R{0b0111, 4};
 /* R{R} + 1 --> R{R}*/
-set(R7,(get(R7)+1));
+set((get(R7)+1), R7);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R7)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R7)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1534,16 +1534,16 @@ void Intel4004::isz<0b01111000>()
 {
 [[maybe_unused]] bitset R{0b1000, 4};
 /* R{R} + 1 --> R{R}*/
-set(R8,(get(R8)+1));
+set((get(R8)+1), R8);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R8)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R8)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1552,16 +1552,16 @@ void Intel4004::isz<0b01111001>()
 {
 [[maybe_unused]] bitset R{0b1001, 4};
 /* R{R} + 1 --> R{R}*/
-set(R9,(get(R9)+1));
+set((get(R9)+1), R9);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R9)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R9)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1570,16 +1570,16 @@ void Intel4004::isz<0b01111010>()
 {
 [[maybe_unused]] bitset R{0b1010, 4};
 /* R{R} + 1 --> R{R}*/
-set(R10,(get(R10)+1));
+set((get(R10)+1), R10);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R10)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R10)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1588,16 +1588,16 @@ void Intel4004::isz<0b01111011>()
 {
 [[maybe_unused]] bitset R{0b1011, 4};
 /* R{R} + 1 --> R{R}*/
-set(R11,(get(R11)+1));
+set((get(R11)+1), R11);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R11)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R11)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1606,16 +1606,16 @@ void Intel4004::isz<0b01111100>()
 {
 [[maybe_unused]] bitset R{0b1100, 4};
 /* R{R} + 1 --> R{R}*/
-set(R12,(get(R12)+1));
+set((get(R12)+1), R12);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R12)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R12)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1624,16 +1624,16 @@ void Intel4004::isz<0b01111101>()
 {
 [[maybe_unused]] bitset R{0b1101, 4};
 /* R{R} + 1 --> R{R}*/
-set(R13,(get(R13)+1));
+set((get(R13)+1), R13);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R13)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R13)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1642,16 +1642,16 @@ void Intel4004::isz<0b01111110>()
 {
 [[maybe_unused]] bitset R{0b1110, 4};
 /* R{R} + 1 --> R{R}*/
-set(R14,(get(R14)+1));
+set((get(R14)+1), R14);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R14)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R14)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1660,16 +1660,16 @@ void Intel4004::isz<0b01111111>()
 {
 [[maybe_unused]] bitset R{0b1111, 4};
 /* R{R} + 1 --> R{R}*/
-set(R15,(get(R15)+1));
+set((get(R15)+1), R15);
 /* R{R} == 0 ? PC +2 --> PC*/
 if(get(R15)==0)
 {
-set(PC,(get(PC)+2));
+set((get(PC)+2), PC);
 }
-/* R{R} != 0 ? rom(PC+1) --> {PM,PL}*/
+/* R{R} != 0 ? rom(PC+1) --> PM,PL*/
 if(get(R15)!=0)
 {
-set({PM,PL},(rom(get(PC)+1)));
+set((rom(get(PC)+1)), 2,PL,PM);
 }
 }
 
@@ -1683,160 +1683,160 @@ template <>
 void Intel4004::add<0b10000000>()
 {
 [[maybe_unused]] bitset R{0b0000, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R0)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R0)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10000001>()
 {
 [[maybe_unused]] bitset R{0b0001, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R1)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R1)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10000010>()
 {
 [[maybe_unused]] bitset R{0b0010, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R2)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R2)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10000011>()
 {
 [[maybe_unused]] bitset R{0b0011, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R3)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R3)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10000100>()
 {
 [[maybe_unused]] bitset R{0b0100, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R4)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R4)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10000101>()
 {
 [[maybe_unused]] bitset R{0b0101, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R5)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R5)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10000110>()
 {
 [[maybe_unused]] bitset R{0b0110, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R6)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R6)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10000111>()
 {
 [[maybe_unused]] bitset R{0b0111, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R7)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R7)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10001000>()
 {
 [[maybe_unused]] bitset R{0b1000, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R8)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R8)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10001001>()
 {
 [[maybe_unused]] bitset R{0b1001, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R9)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R9)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10001010>()
 {
 [[maybe_unused]] bitset R{0b1010, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R10)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R10)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10001011>()
 {
 [[maybe_unused]] bitset R{0b1011, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R11)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R11)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10001100>()
 {
 [[maybe_unused]] bitset R{0b1100, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R12)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R12)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10001101>()
 {
 [[maybe_unused]] bitset R{0b1101, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R13)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R13)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10001110>()
 {
 [[maybe_unused]] bitset R{0b1110, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R14)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R14)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::add<0b10001111>()
 {
 [[maybe_unused]] bitset R{0b1111, 4};
-/* R{R} + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(get(R15)+get(ACC)+get(CY)));
+/* R{R} + ACC + CY --> CY,ACC*/
+set((get(R15)+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -1849,160 +1849,160 @@ template <>
 void Intel4004::sub<0b10010000>()
 {
 [[maybe_unused]] bitset R{0b0000, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R0)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R0)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10010001>()
 {
 [[maybe_unused]] bitset R{0b0001, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R1)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R1)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10010010>()
 {
 [[maybe_unused]] bitset R{0b0010, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R2)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R2)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10010011>()
 {
 [[maybe_unused]] bitset R{0b0011, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R3)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R3)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10010100>()
 {
 [[maybe_unused]] bitset R{0b0100, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R4)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R4)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10010101>()
 {
 [[maybe_unused]] bitset R{0b0101, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R5)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R5)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10010110>()
 {
 [[maybe_unused]] bitset R{0b0110, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R6)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R6)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10010111>()
 {
 [[maybe_unused]] bitset R{0b0111, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R7)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R7)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10011000>()
 {
 [[maybe_unused]] bitset R{0b1000, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R8)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R8)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10011001>()
 {
 [[maybe_unused]] bitset R{0b1001, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R9)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R9)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10011010>()
 {
 [[maybe_unused]] bitset R{0b1010, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R10)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R10)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10011011>()
 {
 [[maybe_unused]] bitset R{0b1011, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R11)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R11)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10011100>()
 {
 [[maybe_unused]] bitset R{0b1100, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R12)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R12)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10011101>()
 {
 [[maybe_unused]] bitset R{0b1101, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R13)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R13)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10011110>()
 {
 [[maybe_unused]] bitset R{0b1110, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R14)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R14)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::sub<0b10011111>()
 {
 [[maybe_unused]] bitset R{0b1111, 4};
-/* (~R{R} + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~get(R15)+get(ACC)+~get(CY))));
+/* (~R{R} + ACC + ~CY) --> CY,ACC*/
+set(((~get(R15)+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2015,9 +2015,9 @@ void Intel4004::ld<0b10100000>()
 {
 [[maybe_unused]] bitset R{0b0000, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R0)));
+set((get(R0)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2025,9 +2025,9 @@ void Intel4004::ld<0b10100001>()
 {
 [[maybe_unused]] bitset R{0b0001, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R1)));
+set((get(R1)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2035,9 +2035,9 @@ void Intel4004::ld<0b10100010>()
 {
 [[maybe_unused]] bitset R{0b0010, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R2)));
+set((get(R2)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2045,9 +2045,9 @@ void Intel4004::ld<0b10100011>()
 {
 [[maybe_unused]] bitset R{0b0011, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R3)));
+set((get(R3)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2055,9 +2055,9 @@ void Intel4004::ld<0b10100100>()
 {
 [[maybe_unused]] bitset R{0b0100, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R4)));
+set((get(R4)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2065,9 +2065,9 @@ void Intel4004::ld<0b10100101>()
 {
 [[maybe_unused]] bitset R{0b0101, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R5)));
+set((get(R5)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2075,9 +2075,9 @@ void Intel4004::ld<0b10100110>()
 {
 [[maybe_unused]] bitset R{0b0110, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R6)));
+set((get(R6)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2085,9 +2085,9 @@ void Intel4004::ld<0b10100111>()
 {
 [[maybe_unused]] bitset R{0b0111, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R7)));
+set((get(R7)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2095,9 +2095,9 @@ void Intel4004::ld<0b10101000>()
 {
 [[maybe_unused]] bitset R{0b1000, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R8)));
+set((get(R8)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2105,9 +2105,9 @@ void Intel4004::ld<0b10101001>()
 {
 [[maybe_unused]] bitset R{0b1001, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R9)));
+set((get(R9)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2115,9 +2115,9 @@ void Intel4004::ld<0b10101010>()
 {
 [[maybe_unused]] bitset R{0b1010, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R10)));
+set((get(R10)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2125,9 +2125,9 @@ void Intel4004::ld<0b10101011>()
 {
 [[maybe_unused]] bitset R{0b1011, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R11)));
+set((get(R11)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2135,9 +2135,9 @@ void Intel4004::ld<0b10101100>()
 {
 [[maybe_unused]] bitset R{0b1100, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R12)));
+set((get(R12)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2145,9 +2145,9 @@ void Intel4004::ld<0b10101101>()
 {
 [[maybe_unused]] bitset R{0b1101, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R13)));
+set((get(R13)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2155,9 +2155,9 @@ void Intel4004::ld<0b10101110>()
 {
 [[maybe_unused]] bitset R{0b1110, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R14)));
+set((get(R14)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2165,9 +2165,9 @@ void Intel4004::ld<0b10101111>()
 {
 [[maybe_unused]] bitset R{0b1111, 4};
 /* R{R} --> ACC*/
-set(ACC,(get(R15)));
+set((get(R15)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2179,160 +2179,160 @@ template <>
 void Intel4004::xch<0b10110000>()
 {
 [[maybe_unused]] bitset R{0b0000, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R0,ACC},((get(ACC),get(R0))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R0))), 2,ACC,R0);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10110001>()
 {
 [[maybe_unused]] bitset R{0b0001, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R1,ACC},((get(ACC),get(R1))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R1))), 2,ACC,R1);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10110010>()
 {
 [[maybe_unused]] bitset R{0b0010, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R2,ACC},((get(ACC),get(R2))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R2))), 2,ACC,R2);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10110011>()
 {
 [[maybe_unused]] bitset R{0b0011, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R3,ACC},((get(ACC),get(R3))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R3))), 2,ACC,R3);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10110100>()
 {
 [[maybe_unused]] bitset R{0b0100, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R4,ACC},((get(ACC),get(R4))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R4))), 2,ACC,R4);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10110101>()
 {
 [[maybe_unused]] bitset R{0b0101, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R5,ACC},((get(ACC),get(R5))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R5))), 2,ACC,R5);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10110110>()
 {
 [[maybe_unused]] bitset R{0b0110, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R6,ACC},((get(ACC),get(R6))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R6))), 2,ACC,R6);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10110111>()
 {
 [[maybe_unused]] bitset R{0b0111, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R7,ACC},((get(ACC),get(R7))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R7))), 2,ACC,R7);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10111000>()
 {
 [[maybe_unused]] bitset R{0b1000, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R8,ACC},((get(ACC),get(R8))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R8))), 2,ACC,R8);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10111001>()
 {
 [[maybe_unused]] bitset R{0b1001, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R9,ACC},((get(ACC),get(R9))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R9))), 2,ACC,R9);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10111010>()
 {
 [[maybe_unused]] bitset R{0b1010, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R10,ACC},((get(ACC),get(R10))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R10))), 2,ACC,R10);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10111011>()
 {
 [[maybe_unused]] bitset R{0b1011, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R11,ACC},((get(ACC),get(R11))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R11))), 2,ACC,R11);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10111100>()
 {
 [[maybe_unused]] bitset R{0b1100, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R12,ACC},((get(ACC),get(R12))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R12))), 2,ACC,R12);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10111101>()
 {
 [[maybe_unused]] bitset R{0b1101, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R13,ACC},((get(ACC),get(R13))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R13))), 2,ACC,R13);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10111110>()
 {
 [[maybe_unused]] bitset R{0b1110, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R14,ACC},((get(ACC),get(R14))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R14))), 2,ACC,R14);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
 void Intel4004::xch<0b10111111>()
 {
 [[maybe_unused]] bitset R{0b1111, 4};
-/* (ACC, R{R}) --> {R{R}, ACC}*/
-set({R15,ACC},((get(ACC),get(R15))));
+/* (ACC, R{R}) --> R{R}, ACC*/
+set(((get(ACC),get(R15))), 2,ACC,R15);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2348,15 +2348,15 @@ void Intel4004::bbl<0b11000000>()
 {
 [[maybe_unused]] bitset D{0b0000, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2364,15 +2364,15 @@ void Intel4004::bbl<0b11000001>()
 {
 [[maybe_unused]] bitset D{0b0001, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2380,15 +2380,15 @@ void Intel4004::bbl<0b11000010>()
 {
 [[maybe_unused]] bitset D{0b0010, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2396,15 +2396,15 @@ void Intel4004::bbl<0b11000011>()
 {
 [[maybe_unused]] bitset D{0b0011, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2412,15 +2412,15 @@ void Intel4004::bbl<0b11000100>()
 {
 [[maybe_unused]] bitset D{0b0100, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2428,15 +2428,15 @@ void Intel4004::bbl<0b11000101>()
 {
 [[maybe_unused]] bitset D{0b0101, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2444,15 +2444,15 @@ void Intel4004::bbl<0b11000110>()
 {
 [[maybe_unused]] bitset D{0b0110, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2460,15 +2460,15 @@ void Intel4004::bbl<0b11000111>()
 {
 [[maybe_unused]] bitset D{0b0111, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2476,15 +2476,15 @@ void Intel4004::bbl<0b11001000>()
 {
 [[maybe_unused]] bitset D{0b1000, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2492,15 +2492,15 @@ void Intel4004::bbl<0b11001001>()
 {
 [[maybe_unused]] bitset D{0b1001, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2508,15 +2508,15 @@ void Intel4004::bbl<0b11001010>()
 {
 [[maybe_unused]] bitset D{0b1010, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2524,15 +2524,15 @@ void Intel4004::bbl<0b11001011>()
 {
 [[maybe_unused]] bitset D{0b1011, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2540,15 +2540,15 @@ void Intel4004::bbl<0b11001100>()
 {
 [[maybe_unused]] bitset D{0b1100, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2556,15 +2556,15 @@ void Intel4004::bbl<0b11001101>()
 {
 [[maybe_unused]] bitset D{0b1101, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2572,15 +2572,15 @@ void Intel4004::bbl<0b11001110>()
 {
 [[maybe_unused]] bitset D{0b1110, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 template <>
@@ -2588,15 +2588,15 @@ void Intel4004::bbl<0b11001111>()
 {
 [[maybe_unused]] bitset D{0b1111, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* STACK0 --> PC*/
-set(PC,(get(STACK0)));
+set((get(STACK0)), PC);
 /* STACK1 --> STACK0*/
-set(STACK0,(get(STACK1)));
+set((get(STACK1)), STACK0);
 /* STACK2 --> STACK1*/
-set(STACK1,(get(STACK2)));
+set((get(STACK2)), STACK1);
 /* 0 --> STACK2*/
-set(STACK2,(0));
+set((0), STACK2);
 }
 
 
@@ -2609,9 +2609,9 @@ void Intel4004::ldm<0b11010000>()
 {
 [[maybe_unused]] bitset D{0b0000, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2619,9 +2619,9 @@ void Intel4004::ldm<0b11010001>()
 {
 [[maybe_unused]] bitset D{0b0001, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2629,9 +2629,9 @@ void Intel4004::ldm<0b11010010>()
 {
 [[maybe_unused]] bitset D{0b0010, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2639,9 +2639,9 @@ void Intel4004::ldm<0b11010011>()
 {
 [[maybe_unused]] bitset D{0b0011, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2649,9 +2649,9 @@ void Intel4004::ldm<0b11010100>()
 {
 [[maybe_unused]] bitset D{0b0100, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2659,9 +2659,9 @@ void Intel4004::ldm<0b11010101>()
 {
 [[maybe_unused]] bitset D{0b0101, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2669,9 +2669,9 @@ void Intel4004::ldm<0b11010110>()
 {
 [[maybe_unused]] bitset D{0b0110, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2679,9 +2679,9 @@ void Intel4004::ldm<0b11010111>()
 {
 [[maybe_unused]] bitset D{0b0111, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2689,9 +2689,9 @@ void Intel4004::ldm<0b11011000>()
 {
 [[maybe_unused]] bitset D{0b1000, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2699,9 +2699,9 @@ void Intel4004::ldm<0b11011001>()
 {
 [[maybe_unused]] bitset D{0b1001, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2709,9 +2709,9 @@ void Intel4004::ldm<0b11011010>()
 {
 [[maybe_unused]] bitset D{0b1010, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2719,9 +2719,9 @@ void Intel4004::ldm<0b11011011>()
 {
 [[maybe_unused]] bitset D{0b1011, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2729,9 +2729,9 @@ void Intel4004::ldm<0b11011100>()
 {
 [[maybe_unused]] bitset D{0b1100, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2739,9 +2739,9 @@ void Intel4004::ldm<0b11011101>()
 {
 [[maybe_unused]] bitset D{0b1101, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2749,9 +2749,9 @@ void Intel4004::ldm<0b11011110>()
 {
 [[maybe_unused]] bitset D{0b1110, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 template <>
@@ -2759,9 +2759,9 @@ void Intel4004::ldm<0b11011111>()
 {
 [[maybe_unused]] bitset D{0b1111, 4};
 /* D --> ACC*/
-set(ACC,(D));
+set((D), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2772,9 +2772,9 @@ template <>
 void Intel4004::wrm<0b11100000>()
 {
 /* ACC --> ram((CM, SRC))*/
-set(ram((get(CM),SRC)),(get(ACC)));
+set((get(ACC)), ram((get(CM),SRC)));
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2788,9 +2788,9 @@ template <>
 void Intel4004::wmp<0b11100001>()
 {
 /* ACC --> ram_port(CM)*/
-set(ram_port(get(CM)),(get(ACC)));
+set((get(ACC)), ram_port(get(CM)));
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2805,9 +2805,9 @@ template <>
 void Intel4004::wrr<0b11100010>()
 {
 /* ACC --> rom_port(X2)*/
-set(rom_port(get(X2)),(get(ACC)));
+set((get(ACC)), rom_port(get(X2)));
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2819,9 +2819,9 @@ template <>
 void Intel4004::wr0<0b11100100>()
 {
 /* ACC --> ram_status((X2, 0b00))*/
-set(ram_status((get(X2),bitset(0,2))),(get(ACC)));
+set((get(ACC)), ram_status((get(X2),bitset(0,2))));
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2833,9 +2833,9 @@ template <>
 void Intel4004::wr1<0b11100101>()
 {
 /* ACC --> ram_status((X2, 0b01))*/
-set(ram_status((get(X2),bitset(1,2))),(get(ACC)));
+set((get(ACC)), ram_status((get(X2),bitset(1,2))));
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2847,9 +2847,9 @@ template <>
 void Intel4004::wr2<0b11100110>()
 {
 /* ACC --> ram_status((X2, 0b10))*/
-set(ram_status((get(X2),bitset(2,2))),(get(ACC)));
+set((get(ACC)), ram_status((get(X2),bitset(2,2))));
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2861,9 +2861,9 @@ template <>
 void Intel4004::wr3<0b11100111>()
 {
 /* ACC --> ram_status((X2, 0b11))*/
-set(ram_status((get(X2),bitset(3,2))),(get(ACC)));
+set((get(ACC)), ram_status((get(X2),bitset(3,2))));
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2873,10 +2873,10 @@ accumulator with borrow. The RAM character is unaffected.
 template <>
 void Intel4004::sbm<0b11101000>()
 {
-/* (~ram((CM, SRC)) + ACC + ~CY) --> {CY,ACC}*/
-set({CY,ACC},((~ram((get(CM),get(SRC)))+get(ACC)+~get(CY))));
+/* (~ram((CM, SRC)) + ACC + ~CY) --> CY,ACC*/
+set(((~ram((get(CM),get(SRC)))+get(ACC)+~get(CY))), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2887,9 +2887,9 @@ template <>
 void Intel4004::rdm<0b11101001>()
 {
 /* ram((CM, SRC)) --> ACC*/
-set(ACC,(ram((get(CM),get(SRC)))));
+set((ram((get(CM),get(SRC)))), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2902,9 +2902,9 @@ template <>
 void Intel4004::rdr<0b11101010>()
 {
 /* rom_port(X2) --> ACC*/
-set(ACC,(rom_port(get(X2))));
+set((rom_port(get(X2))), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2914,10 +2914,10 @@ with carry. The RAM character is unaffected.
 template <>
 void Intel4004::adm<0b11101011>()
 {
-/* ram((CM, SRC)) + ACC + CY --> {CY,ACC}*/
-set({CY,ACC},(ram((get(CM),get(SRC)))+get(ACC)+get(CY)));
+/* ram((CM, SRC)) + ACC + CY --> CY,ACC*/
+set((ram((get(CM),get(SRC)))+get(ACC)+get(CY)), 2,ACC,CY);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2928,9 +2928,9 @@ template <>
 void Intel4004::rd0<0b11101100>()
 {
 /* ram_status((X2, 0b00)) --> ACC*/
-set(ACC,(ram_status((get(X2),bitset(0,2)))));
+set((ram_status((get(X2),bitset(0,2)))), ACC);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2941,9 +2941,9 @@ template <>
 void Intel4004::rd1<0b11101101>()
 {
 /* ram_status((X2, 0b01)) --> ACC*/
-set(ACC,(ram_status((get(X2),bitset(1,2)))));
+set((ram_status((get(X2),bitset(1,2)))), ACC);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2954,9 +2954,9 @@ template <>
 void Intel4004::rd2<0b11101110>()
 {
 /* ram_status((X2, 0b10)) --> ACC*/
-set(ACC,(ram_status((get(X2),bitset(2,2)))));
+set((ram_status((get(X2),bitset(2,2)))), ACC);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2967,9 +2967,9 @@ template <>
 void Intel4004::rd3<0b11101111>()
 {
 /* ram_status((X2, 0b11)) --> ACC*/
-set(ACC,(ram_status((get(X2),bitset(3,2)))));
+set((ram_status((get(X2),bitset(3,2)))), ACC);
 /* PC +1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2978,11 +2978,11 @@ template <>
 void Intel4004::clb<0b11110000>()
 {
 /* 0 --> ACC*/
-set(ACC,(0));
+set((0), ACC);
 /* 0 --> CY*/
-set(CY,(0));
+set((0), CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -2991,9 +2991,9 @@ template <>
 void Intel4004::clc<0b11110001>()
 {
 /* 0 --> CY*/
-set(CY,(0));
+set((0), CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3002,9 +3002,9 @@ template <>
 void Intel4004::cmc<0b11110011>()
 {
 /* ~CY --> CY*/
-set(CY,(~get(CY)));
+set((~get(CY)), CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3013,9 +3013,9 @@ template <>
 void Intel4004::stc<0b11111010>()
 {
 /* 1 --> CY*/
-set(CY,(1));
+set((1), CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3024,9 +3024,9 @@ template <>
 void Intel4004::cma<0b11110100>()
 {
 /* ~ACC --> ACC*/
-set(ACC,(~get(ACC)));
+set((~get(ACC)), ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3034,10 +3034,10 @@ set(PC,(get(PC)+1));
 template <>
 void Intel4004::iac<0b11110010>()
 {
-/* ACC+1 --> {CY,ACC}*/
-set({CY,ACC},(get(ACC)+1));
+/* ACC+1 --> CY,ACC*/
+set((get(ACC)+1), 2,ACC,CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3045,10 +3045,10 @@ set(PC,(get(PC)+1));
 template <>
 void Intel4004::dac<0b11111000>()
 {
-/* ACC+0b1111 --> {CY,ACC}*/
-set({CY,ACC},(get(ACC)+0b1111));
+/* ACC+0b1111 --> CY,ACC*/
+set((get(ACC)+0b1111), 2,ACC,CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3057,10 +3057,10 @@ set(PC,(get(PC)+1));
 template <>
 void Intel4004::ral<0b11110110>()
 {
-/* (CY,ACC) --> {ACC,CY}*/
-set({ACC,CY},((get(CY),get(ACC))));
+/* (CY,ACC) --> ACC,CY*/
+set(((get(CY),get(ACC))), 2,CY,ACC);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3069,10 +3069,10 @@ set(PC,(get(PC)+1));
 template <>
 void Intel4004::rar<0b11110110>()
 {
-/* (ACC,CY) --> {CY,ACC}*/
-set({CY,ACC},((get(ACC),get(CY))));
+/* (ACC,CY) --> CY,ACC*/
+set(((get(ACC),get(CY))), 2,ACC,CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3084,13 +3084,13 @@ template <>
 void Intel4004::tcc<0b11110111>()
 {
 /* 0 --> ACC*/
-set(ACC,(0));
+set((0), ACC);
 /* CY --> ACC*/
-set(ACC,(get(CY)));
+set((get(CY)), ACC);
 /* 0 --> CY*/
-set(CY,(0));
+set((0), CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3103,10 +3103,10 @@ template <>
 void Intel4004::daa<0b11111011>()
 {
 bool inc=get(CY)==1||get(ACC)>9;
-/* inc? ACC + 6 --> {CY,ACC}*/
+/* inc? ACC + 6 --> CY,ACC*/
 if(inc)
 {
-set({CY,ACC},(get(ACC)+6));
+set((get(ACC)+6), 2,ACC,CY);
 }
 }
 
@@ -3121,17 +3121,17 @@ void Intel4004::tcs<0b11111001>()
 /* CY == 0 ? 0b1001 --> ACC*/
 if(get(CY)==0)
 {
-set(ACC,(0b1001));
+set((0b1001), ACC);
 }
 /* CY == 1 ? 0b1010 --> ACC*/
 if(get(CY)==1)
 {
-set(ACC,(0b1010));
+set((0b1010), ACC);
 }
 /* 0 --> CY*/
-set(CY,(0));
+set((0), CY);
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3146,20 +3146,20 @@ bool error=!keep&&!four&&!eight;
 /* four ? 3 --> ACC*/
 if(four)
 {
-set(ACC,(3));
+set((3), ACC);
 }
 /* eight ? 4 --> ACC*/
 if(eight)
 {
-set(ACC,(4));
+set((4), ACC);
 }
 /* error ? 15 --> ACC*/
 if(error)
 {
-set(ACC,(15));
+set((15), ACC);
 }
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
@@ -3176,261 +3176,278 @@ void Intel4004::dcl<0b11111101>()
 /* ACC == 0 ? 1 --> CM*/
 if(get(ACC)==0)
 {
-set(CM,(1));
+set((1), CM);
 }
 /* ACC != 0 ? (ACC, 0b0) --> CM*/
 if(get(ACC)!=0)
 {
-set(CM,((get(ACC),bitset(0,1))));
+set(((get(ACC),bitset(0,1))), CM);
 }
 /* PC+1 --> PC*/
-set(PC,(get(PC)+1));
+set((get(PC)+1), PC);
 }
 
 
+Intel4004::op Intel4004::ops[256] = {
+&Intel4004::nop<0b00000000>,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+&Intel4004::jcn<0b00010000>,
+&Intel4004::jcn<0b00010001>,
+&Intel4004::jcn<0b00010010>,
+&Intel4004::jcn<0b00010011>,
+&Intel4004::jcn<0b00010100>,
+&Intel4004::jcn<0b00010101>,
+&Intel4004::jcn<0b00010110>,
+&Intel4004::jcn<0b00010111>,
+&Intel4004::jcn<0b00011000>,
+&Intel4004::jcn<0b00011001>,
+&Intel4004::jcn<0b00011010>,
+&Intel4004::jcn<0b00011011>,
+&Intel4004::jcn<0b00011100>,
+&Intel4004::jcn<0b00011101>,
+&Intel4004::jcn<0b00011110>,
+&Intel4004::jcn<0b00011111>,
+&Intel4004::fim<0b00100000>,
+&Intel4004::src<0b00100001>,
+&Intel4004::fim<0b00100010>,
+&Intel4004::src<0b00100011>,
+&Intel4004::fim<0b00100100>,
+&Intel4004::src<0b00100101>,
+&Intel4004::fim<0b00100110>,
+&Intel4004::src<0b00100111>,
+&Intel4004::fim<0b00101000>,
+&Intel4004::src<0b00101001>,
+&Intel4004::fim<0b00101010>,
+&Intel4004::src<0b00101011>,
+&Intel4004::fim<0b00101100>,
+&Intel4004::src<0b00101101>,
+&Intel4004::fim<0b00101110>,
+&Intel4004::src<0b00101111>,
+&Intel4004::fin<0b00110000>,
+&Intel4004::jin<0b00110001>,
+&Intel4004::fin<0b00110010>,
+&Intel4004::jin<0b00110011>,
+&Intel4004::fin<0b00110100>,
+&Intel4004::jin<0b00110101>,
+&Intel4004::fin<0b00110110>,
+&Intel4004::jin<0b00110111>,
+&Intel4004::fin<0b00111000>,
+&Intel4004::jin<0b00111001>,
+&Intel4004::fin<0b00111010>,
+&Intel4004::jin<0b00111011>,
+&Intel4004::fin<0b00111100>,
+&Intel4004::jin<0b00111101>,
+&Intel4004::fin<0b00111110>,
+&Intel4004::jin<0b00111111>,
+&Intel4004::jun<0b01000000>,
+&Intel4004::jun<0b01000001>,
+&Intel4004::jun<0b01000010>,
+&Intel4004::jun<0b01000011>,
+&Intel4004::jun<0b01000100>,
+&Intel4004::jun<0b01000101>,
+&Intel4004::jun<0b01000110>,
+&Intel4004::jun<0b01000111>,
+&Intel4004::jun<0b01001000>,
+&Intel4004::jun<0b01001001>,
+&Intel4004::jun<0b01001010>,
+&Intel4004::jun<0b01001011>,
+&Intel4004::jun<0b01001100>,
+&Intel4004::jun<0b01001101>,
+&Intel4004::jun<0b01001110>,
+&Intel4004::jun<0b01001111>,
+&Intel4004::jms<0b01010000>,
+&Intel4004::jms<0b01010001>,
+&Intel4004::jms<0b01010010>,
+&Intel4004::jms<0b01010011>,
+&Intel4004::jms<0b01010100>,
+&Intel4004::jms<0b01010101>,
+&Intel4004::jms<0b01010110>,
+&Intel4004::jms<0b01010111>,
+&Intel4004::jms<0b01011000>,
+&Intel4004::jms<0b01011001>,
+&Intel4004::jms<0b01011010>,
+&Intel4004::jms<0b01011011>,
+&Intel4004::jms<0b01011100>,
+&Intel4004::jms<0b01011101>,
+&Intel4004::jms<0b01011110>,
+&Intel4004::jms<0b01011111>,
+&Intel4004::inc<0b01100000>,
+&Intel4004::inc<0b01100001>,
+&Intel4004::inc<0b01100010>,
+&Intel4004::inc<0b01100011>,
+&Intel4004::inc<0b01100100>,
+&Intel4004::inc<0b01100101>,
+&Intel4004::inc<0b01100110>,
+&Intel4004::inc<0b01100111>,
+&Intel4004::inc<0b01101000>,
+&Intel4004::inc<0b01101001>,
+&Intel4004::inc<0b01101010>,
+&Intel4004::inc<0b01101011>,
+&Intel4004::inc<0b01101100>,
+&Intel4004::inc<0b01101101>,
+&Intel4004::inc<0b01101110>,
+&Intel4004::inc<0b01101111>,
+&Intel4004::isz<0b01110000>,
+&Intel4004::isz<0b01110001>,
+&Intel4004::isz<0b01110010>,
+&Intel4004::isz<0b01110011>,
+&Intel4004::isz<0b01110100>,
+&Intel4004::isz<0b01110101>,
+&Intel4004::isz<0b01110110>,
+&Intel4004::isz<0b01110111>,
+&Intel4004::isz<0b01111000>,
+&Intel4004::isz<0b01111001>,
+&Intel4004::isz<0b01111010>,
+&Intel4004::isz<0b01111011>,
+&Intel4004::isz<0b01111100>,
+&Intel4004::isz<0b01111101>,
+&Intel4004::isz<0b01111110>,
+&Intel4004::isz<0b01111111>,
+&Intel4004::add<0b10000000>,
+&Intel4004::add<0b10000001>,
+&Intel4004::add<0b10000010>,
+&Intel4004::add<0b10000011>,
+&Intel4004::add<0b10000100>,
+&Intel4004::add<0b10000101>,
+&Intel4004::add<0b10000110>,
+&Intel4004::add<0b10000111>,
+&Intel4004::add<0b10001000>,
+&Intel4004::add<0b10001001>,
+&Intel4004::add<0b10001010>,
+&Intel4004::add<0b10001011>,
+&Intel4004::add<0b10001100>,
+&Intel4004::add<0b10001101>,
+&Intel4004::add<0b10001110>,
+&Intel4004::add<0b10001111>,
+&Intel4004::sub<0b10010000>,
+&Intel4004::sub<0b10010001>,
+&Intel4004::sub<0b10010010>,
+&Intel4004::sub<0b10010011>,
+&Intel4004::sub<0b10010100>,
+&Intel4004::sub<0b10010101>,
+&Intel4004::sub<0b10010110>,
+&Intel4004::sub<0b10010111>,
+&Intel4004::sub<0b10011000>,
+&Intel4004::sub<0b10011001>,
+&Intel4004::sub<0b10011010>,
+&Intel4004::sub<0b10011011>,
+&Intel4004::sub<0b10011100>,
+&Intel4004::sub<0b10011101>,
+&Intel4004::sub<0b10011110>,
+&Intel4004::sub<0b10011111>,
+&Intel4004::ld<0b10100000>,
+&Intel4004::ld<0b10100001>,
+&Intel4004::ld<0b10100010>,
+&Intel4004::ld<0b10100011>,
+&Intel4004::ld<0b10100100>,
+&Intel4004::ld<0b10100101>,
+&Intel4004::ld<0b10100110>,
+&Intel4004::ld<0b10100111>,
+&Intel4004::ld<0b10101000>,
+&Intel4004::ld<0b10101001>,
+&Intel4004::ld<0b10101010>,
+&Intel4004::ld<0b10101011>,
+&Intel4004::ld<0b10101100>,
+&Intel4004::ld<0b10101101>,
+&Intel4004::ld<0b10101110>,
+&Intel4004::ld<0b10101111>,
+&Intel4004::xch<0b10110000>,
+&Intel4004::xch<0b10110001>,
+&Intel4004::xch<0b10110010>,
+&Intel4004::xch<0b10110011>,
+&Intel4004::xch<0b10110100>,
+&Intel4004::xch<0b10110101>,
+&Intel4004::xch<0b10110110>,
+&Intel4004::xch<0b10110111>,
+&Intel4004::xch<0b10111000>,
+&Intel4004::xch<0b10111001>,
+&Intel4004::xch<0b10111010>,
+&Intel4004::xch<0b10111011>,
+&Intel4004::xch<0b10111100>,
+&Intel4004::xch<0b10111101>,
+&Intel4004::xch<0b10111110>,
+&Intel4004::xch<0b10111111>,
+&Intel4004::bbl<0b11000000>,
+&Intel4004::bbl<0b11000001>,
+&Intel4004::bbl<0b11000010>,
+&Intel4004::bbl<0b11000011>,
+&Intel4004::bbl<0b11000100>,
+&Intel4004::bbl<0b11000101>,
+&Intel4004::bbl<0b11000110>,
+&Intel4004::bbl<0b11000111>,
+&Intel4004::bbl<0b11001000>,
+&Intel4004::bbl<0b11001001>,
+&Intel4004::bbl<0b11001010>,
+&Intel4004::bbl<0b11001011>,
+&Intel4004::bbl<0b11001100>,
+&Intel4004::bbl<0b11001101>,
+&Intel4004::bbl<0b11001110>,
+&Intel4004::bbl<0b11001111>,
+&Intel4004::ldm<0b11010000>,
+&Intel4004::ldm<0b11010001>,
+&Intel4004::ldm<0b11010010>,
+&Intel4004::ldm<0b11010011>,
+&Intel4004::ldm<0b11010100>,
+&Intel4004::ldm<0b11010101>,
+&Intel4004::ldm<0b11010110>,
+&Intel4004::ldm<0b11010111>,
+&Intel4004::ldm<0b11011000>,
+&Intel4004::ldm<0b11011001>,
+&Intel4004::ldm<0b11011010>,
+&Intel4004::ldm<0b11011011>,
+&Intel4004::ldm<0b11011100>,
+&Intel4004::ldm<0b11011101>,
+&Intel4004::ldm<0b11011110>,
+&Intel4004::ldm<0b11011111>,
+&Intel4004::wrm<0b11100000>,
+&Intel4004::wmp<0b11100001>,
+&Intel4004::wrr<0b11100010>,
+NULL,
+&Intel4004::wr0<0b11100100>,
+&Intel4004::wr1<0b11100101>,
+&Intel4004::wr2<0b11100110>,
+&Intel4004::wr3<0b11100111>,
+&Intel4004::sbm<0b11101000>,
+&Intel4004::rdm<0b11101001>,
+&Intel4004::rdr<0b11101010>,
+&Intel4004::adm<0b11101011>,
+&Intel4004::rd0<0b11101100>,
+&Intel4004::rd1<0b11101101>,
+&Intel4004::rd2<0b11101110>,
+&Intel4004::rd3<0b11101111>,
+&Intel4004::clb<0b11110000>,
+&Intel4004::clc<0b11110001>,
+&Intel4004::iac<0b11110010>,
+&Intel4004::cmc<0b11110011>,
+&Intel4004::cma<0b11110100>,
+NULL,
+&Intel4004::rar<0b11110110>,
+&Intel4004::tcc<0b11110111>,
+&Intel4004::dac<0b11111000>,
+&Intel4004::tcs<0b11111001>,
+&Intel4004::stc<0b11111010>,
+&Intel4004::daa<0b11111011>,
+&Intel4004::kbp<0b11111100>,
+&Intel4004::dcl<0b11111101>,
+NULL,
+NULL};
 Intel4004::Intel4004()
 {
-   ops = 
-{
-      {0b00000000, &Intel4004::nop<0b00000000>},
-      {0b00010000, &Intel4004::jcn<0b00010000>},
-      {0b00010001, &Intel4004::jcn<0b00010001>},
-      {0b00010010, &Intel4004::jcn<0b00010010>},
-      {0b00010011, &Intel4004::jcn<0b00010011>},
-      {0b00010100, &Intel4004::jcn<0b00010100>},
-      {0b00010101, &Intel4004::jcn<0b00010101>},
-      {0b00010110, &Intel4004::jcn<0b00010110>},
-      {0b00010111, &Intel4004::jcn<0b00010111>},
-      {0b00011000, &Intel4004::jcn<0b00011000>},
-      {0b00011001, &Intel4004::jcn<0b00011001>},
-      {0b00011010, &Intel4004::jcn<0b00011010>},
-      {0b00011011, &Intel4004::jcn<0b00011011>},
-      {0b00011100, &Intel4004::jcn<0b00011100>},
-      {0b00011101, &Intel4004::jcn<0b00011101>},
-      {0b00011110, &Intel4004::jcn<0b00011110>},
-      {0b00011111, &Intel4004::jcn<0b00011111>},
-      {0b00100000, &Intel4004::fim<0b00100000>},
-      {0b00100010, &Intel4004::fim<0b00100010>},
-      {0b00100100, &Intel4004::fim<0b00100100>},
-      {0b00100110, &Intel4004::fim<0b00100110>},
-      {0b00101000, &Intel4004::fim<0b00101000>},
-      {0b00101010, &Intel4004::fim<0b00101010>},
-      {0b00101100, &Intel4004::fim<0b00101100>},
-      {0b00101110, &Intel4004::fim<0b00101110>},
-      {0b00100001, &Intel4004::src<0b00100001>},
-      {0b00100011, &Intel4004::src<0b00100011>},
-      {0b00100101, &Intel4004::src<0b00100101>},
-      {0b00100111, &Intel4004::src<0b00100111>},
-      {0b00101001, &Intel4004::src<0b00101001>},
-      {0b00101011, &Intel4004::src<0b00101011>},
-      {0b00101101, &Intel4004::src<0b00101101>},
-      {0b00101111, &Intel4004::src<0b00101111>},
-      {0b00110000, &Intel4004::fin<0b00110000>},
-      {0b00110010, &Intel4004::fin<0b00110010>},
-      {0b00110100, &Intel4004::fin<0b00110100>},
-      {0b00110110, &Intel4004::fin<0b00110110>},
-      {0b00111000, &Intel4004::fin<0b00111000>},
-      {0b00111010, &Intel4004::fin<0b00111010>},
-      {0b00111100, &Intel4004::fin<0b00111100>},
-      {0b00111110, &Intel4004::fin<0b00111110>},
-      {0b00110001, &Intel4004::jin<0b00110001>},
-      {0b00110011, &Intel4004::jin<0b00110011>},
-      {0b00110101, &Intel4004::jin<0b00110101>},
-      {0b00110111, &Intel4004::jin<0b00110111>},
-      {0b00111001, &Intel4004::jin<0b00111001>},
-      {0b00111011, &Intel4004::jin<0b00111011>},
-      {0b00111101, &Intel4004::jin<0b00111101>},
-      {0b00111111, &Intel4004::jin<0b00111111>},
-      {0b01000000, &Intel4004::jun<0b01000000>},
-      {0b01000001, &Intel4004::jun<0b01000001>},
-      {0b01000010, &Intel4004::jun<0b01000010>},
-      {0b01000011, &Intel4004::jun<0b01000011>},
-      {0b01000100, &Intel4004::jun<0b01000100>},
-      {0b01000101, &Intel4004::jun<0b01000101>},
-      {0b01000110, &Intel4004::jun<0b01000110>},
-      {0b01000111, &Intel4004::jun<0b01000111>},
-      {0b01001000, &Intel4004::jun<0b01001000>},
-      {0b01001001, &Intel4004::jun<0b01001001>},
-      {0b01001010, &Intel4004::jun<0b01001010>},
-      {0b01001011, &Intel4004::jun<0b01001011>},
-      {0b01001100, &Intel4004::jun<0b01001100>},
-      {0b01001101, &Intel4004::jun<0b01001101>},
-      {0b01001110, &Intel4004::jun<0b01001110>},
-      {0b01001111, &Intel4004::jun<0b01001111>},
-      {0b01010000, &Intel4004::jms<0b01010000>},
-      {0b01010001, &Intel4004::jms<0b01010001>},
-      {0b01010010, &Intel4004::jms<0b01010010>},
-      {0b01010011, &Intel4004::jms<0b01010011>},
-      {0b01010100, &Intel4004::jms<0b01010100>},
-      {0b01010101, &Intel4004::jms<0b01010101>},
-      {0b01010110, &Intel4004::jms<0b01010110>},
-      {0b01010111, &Intel4004::jms<0b01010111>},
-      {0b01011000, &Intel4004::jms<0b01011000>},
-      {0b01011001, &Intel4004::jms<0b01011001>},
-      {0b01011010, &Intel4004::jms<0b01011010>},
-      {0b01011011, &Intel4004::jms<0b01011011>},
-      {0b01011100, &Intel4004::jms<0b01011100>},
-      {0b01011101, &Intel4004::jms<0b01011101>},
-      {0b01011110, &Intel4004::jms<0b01011110>},
-      {0b01011111, &Intel4004::jms<0b01011111>},
-      {0b01100000, &Intel4004::inc<0b01100000>},
-      {0b01100001, &Intel4004::inc<0b01100001>},
-      {0b01100010, &Intel4004::inc<0b01100010>},
-      {0b01100011, &Intel4004::inc<0b01100011>},
-      {0b01100100, &Intel4004::inc<0b01100100>},
-      {0b01100101, &Intel4004::inc<0b01100101>},
-      {0b01100110, &Intel4004::inc<0b01100110>},
-      {0b01100111, &Intel4004::inc<0b01100111>},
-      {0b01101000, &Intel4004::inc<0b01101000>},
-      {0b01101001, &Intel4004::inc<0b01101001>},
-      {0b01101010, &Intel4004::inc<0b01101010>},
-      {0b01101011, &Intel4004::inc<0b01101011>},
-      {0b01101100, &Intel4004::inc<0b01101100>},
-      {0b01101101, &Intel4004::inc<0b01101101>},
-      {0b01101110, &Intel4004::inc<0b01101110>},
-      {0b01101111, &Intel4004::inc<0b01101111>},
-      {0b01110000, &Intel4004::isz<0b01110000>},
-      {0b01110001, &Intel4004::isz<0b01110001>},
-      {0b01110010, &Intel4004::isz<0b01110010>},
-      {0b01110011, &Intel4004::isz<0b01110011>},
-      {0b01110100, &Intel4004::isz<0b01110100>},
-      {0b01110101, &Intel4004::isz<0b01110101>},
-      {0b01110110, &Intel4004::isz<0b01110110>},
-      {0b01110111, &Intel4004::isz<0b01110111>},
-      {0b01111000, &Intel4004::isz<0b01111000>},
-      {0b01111001, &Intel4004::isz<0b01111001>},
-      {0b01111010, &Intel4004::isz<0b01111010>},
-      {0b01111011, &Intel4004::isz<0b01111011>},
-      {0b01111100, &Intel4004::isz<0b01111100>},
-      {0b01111101, &Intel4004::isz<0b01111101>},
-      {0b01111110, &Intel4004::isz<0b01111110>},
-      {0b01111111, &Intel4004::isz<0b01111111>},
-      {0b10000000, &Intel4004::add<0b10000000>},
-      {0b10000001, &Intel4004::add<0b10000001>},
-      {0b10000010, &Intel4004::add<0b10000010>},
-      {0b10000011, &Intel4004::add<0b10000011>},
-      {0b10000100, &Intel4004::add<0b10000100>},
-      {0b10000101, &Intel4004::add<0b10000101>},
-      {0b10000110, &Intel4004::add<0b10000110>},
-      {0b10000111, &Intel4004::add<0b10000111>},
-      {0b10001000, &Intel4004::add<0b10001000>},
-      {0b10001001, &Intel4004::add<0b10001001>},
-      {0b10001010, &Intel4004::add<0b10001010>},
-      {0b10001011, &Intel4004::add<0b10001011>},
-      {0b10001100, &Intel4004::add<0b10001100>},
-      {0b10001101, &Intel4004::add<0b10001101>},
-      {0b10001110, &Intel4004::add<0b10001110>},
-      {0b10001111, &Intel4004::add<0b10001111>},
-      {0b10010000, &Intel4004::sub<0b10010000>},
-      {0b10010001, &Intel4004::sub<0b10010001>},
-      {0b10010010, &Intel4004::sub<0b10010010>},
-      {0b10010011, &Intel4004::sub<0b10010011>},
-      {0b10010100, &Intel4004::sub<0b10010100>},
-      {0b10010101, &Intel4004::sub<0b10010101>},
-      {0b10010110, &Intel4004::sub<0b10010110>},
-      {0b10010111, &Intel4004::sub<0b10010111>},
-      {0b10011000, &Intel4004::sub<0b10011000>},
-      {0b10011001, &Intel4004::sub<0b10011001>},
-      {0b10011010, &Intel4004::sub<0b10011010>},
-      {0b10011011, &Intel4004::sub<0b10011011>},
-      {0b10011100, &Intel4004::sub<0b10011100>},
-      {0b10011101, &Intel4004::sub<0b10011101>},
-      {0b10011110, &Intel4004::sub<0b10011110>},
-      {0b10011111, &Intel4004::sub<0b10011111>},
-      {0b10100000, &Intel4004::ld<0b10100000>},
-      {0b10100001, &Intel4004::ld<0b10100001>},
-      {0b10100010, &Intel4004::ld<0b10100010>},
-      {0b10100011, &Intel4004::ld<0b10100011>},
-      {0b10100100, &Intel4004::ld<0b10100100>},
-      {0b10100101, &Intel4004::ld<0b10100101>},
-      {0b10100110, &Intel4004::ld<0b10100110>},
-      {0b10100111, &Intel4004::ld<0b10100111>},
-      {0b10101000, &Intel4004::ld<0b10101000>},
-      {0b10101001, &Intel4004::ld<0b10101001>},
-      {0b10101010, &Intel4004::ld<0b10101010>},
-      {0b10101011, &Intel4004::ld<0b10101011>},
-      {0b10101100, &Intel4004::ld<0b10101100>},
-      {0b10101101, &Intel4004::ld<0b10101101>},
-      {0b10101110, &Intel4004::ld<0b10101110>},
-      {0b10101111, &Intel4004::ld<0b10101111>},
-      {0b10110000, &Intel4004::xch<0b10110000>},
-      {0b10110001, &Intel4004::xch<0b10110001>},
-      {0b10110010, &Intel4004::xch<0b10110010>},
-      {0b10110011, &Intel4004::xch<0b10110011>},
-      {0b10110100, &Intel4004::xch<0b10110100>},
-      {0b10110101, &Intel4004::xch<0b10110101>},
-      {0b10110110, &Intel4004::xch<0b10110110>},
-      {0b10110111, &Intel4004::xch<0b10110111>},
-      {0b10111000, &Intel4004::xch<0b10111000>},
-      {0b10111001, &Intel4004::xch<0b10111001>},
-      {0b10111010, &Intel4004::xch<0b10111010>},
-      {0b10111011, &Intel4004::xch<0b10111011>},
-      {0b10111100, &Intel4004::xch<0b10111100>},
-      {0b10111101, &Intel4004::xch<0b10111101>},
-      {0b10111110, &Intel4004::xch<0b10111110>},
-      {0b10111111, &Intel4004::xch<0b10111111>},
-      {0b11000000, &Intel4004::bbl<0b11000000>},
-      {0b11000001, &Intel4004::bbl<0b11000001>},
-      {0b11000010, &Intel4004::bbl<0b11000010>},
-      {0b11000011, &Intel4004::bbl<0b11000011>},
-      {0b11000100, &Intel4004::bbl<0b11000100>},
-      {0b11000101, &Intel4004::bbl<0b11000101>},
-      {0b11000110, &Intel4004::bbl<0b11000110>},
-      {0b11000111, &Intel4004::bbl<0b11000111>},
-      {0b11001000, &Intel4004::bbl<0b11001000>},
-      {0b11001001, &Intel4004::bbl<0b11001001>},
-      {0b11001010, &Intel4004::bbl<0b11001010>},
-      {0b11001011, &Intel4004::bbl<0b11001011>},
-      {0b11001100, &Intel4004::bbl<0b11001100>},
-      {0b11001101, &Intel4004::bbl<0b11001101>},
-      {0b11001110, &Intel4004::bbl<0b11001110>},
-      {0b11001111, &Intel4004::bbl<0b11001111>},
-      {0b11010000, &Intel4004::ldm<0b11010000>},
-      {0b11010001, &Intel4004::ldm<0b11010001>},
-      {0b11010010, &Intel4004::ldm<0b11010010>},
-      {0b11010011, &Intel4004::ldm<0b11010011>},
-      {0b11010100, &Intel4004::ldm<0b11010100>},
-      {0b11010101, &Intel4004::ldm<0b11010101>},
-      {0b11010110, &Intel4004::ldm<0b11010110>},
-      {0b11010111, &Intel4004::ldm<0b11010111>},
-      {0b11011000, &Intel4004::ldm<0b11011000>},
-      {0b11011001, &Intel4004::ldm<0b11011001>},
-      {0b11011010, &Intel4004::ldm<0b11011010>},
-      {0b11011011, &Intel4004::ldm<0b11011011>},
-      {0b11011100, &Intel4004::ldm<0b11011100>},
-      {0b11011101, &Intel4004::ldm<0b11011101>},
-      {0b11011110, &Intel4004::ldm<0b11011110>},
-      {0b11011111, &Intel4004::ldm<0b11011111>},
-      {0b11100000, &Intel4004::wrm<0b11100000>},
-      {0b11100001, &Intel4004::wmp<0b11100001>},
-      {0b11100010, &Intel4004::wrr<0b11100010>},
-      {0b11100100, &Intel4004::wr0<0b11100100>},
-      {0b11100101, &Intel4004::wr1<0b11100101>},
-      {0b11100110, &Intel4004::wr2<0b11100110>},
-      {0b11100111, &Intel4004::wr3<0b11100111>},
-      {0b11101000, &Intel4004::sbm<0b11101000>},
-      {0b11101001, &Intel4004::rdm<0b11101001>},
-      {0b11101010, &Intel4004::rdr<0b11101010>},
-      {0b11101011, &Intel4004::adm<0b11101011>},
-      {0b11101100, &Intel4004::rd0<0b11101100>},
-      {0b11101101, &Intel4004::rd1<0b11101101>},
-      {0b11101110, &Intel4004::rd2<0b11101110>},
-      {0b11101111, &Intel4004::rd3<0b11101111>},
-      {0b11110000, &Intel4004::clb<0b11110000>},
-      {0b11110001, &Intel4004::clc<0b11110001>},
-      {0b11110011, &Intel4004::cmc<0b11110011>},
-      {0b11111010, &Intel4004::stc<0b11111010>},
-      {0b11110100, &Intel4004::cma<0b11110100>},
-      {0b11110010, &Intel4004::iac<0b11110010>},
-      {0b11111000, &Intel4004::dac<0b11111000>},
-      {0b11110110, &Intel4004::ral<0b11110110>},
-      {0b11110110, &Intel4004::rar<0b11110110>},
-      {0b11110111, &Intel4004::tcc<0b11110111>},
-      {0b11111011, &Intel4004::daa<0b11111011>},
-      {0b11111001, &Intel4004::tcs<0b11111001>},
-      {0b11111100, &Intel4004::kbp<0b11111100>},
-      {0b11111101, &Intel4004::dcl<0b11111101>},
-};for(auto i = 0ul; i < 4096; i ++)
+for(auto i = 0ul; i < 4096; i ++)
 rom_mem[i] = bitset(0,8);
 for(auto i = 0ul; i < 2048; i ++)
 ram_mem[i] = bitset(0,4);
@@ -3442,39 +3459,42 @@ for(auto i = 0ul; i < 16; i ++)
 rom_port_mem[i] = bitset(0,4);
 
 }
-std::string Intel4004::bin(AddressInfo info)
+const char* Intel4004::bin(AddressInfo info)
 {
        return get(info).bin();
     }
-std::string Intel4004::hex(AddressInfo info)
+const char* Intel4004::hex(AddressInfo info)
 {
        return get(info).hex();
     }
-std::string Intel4004::dec(AddressInfo info)
+const char* Intel4004::dec(AddressInfo info)
 {
        return get(info).dec();
     }
 void Intel4004::display()
 {
-std::string format = "         STACK                REGISTERS\n\
-     PC " + hex( PC ) + "          R0 R1 " + hex( R0 ) + " " + hex( R1 ) + "   R8 R9 " + hex( R8 ) + " " + hex( R9 ) + "\n\
-LEVEL 1 " + hex( STACK0 ) + "          R2 R3 " + hex( R2 ) + " " + hex( R3 ) + "   RA RB " + hex( R10 ) + " " + hex( R11 ) + "\n\
-LEVEL 2 " + hex( STACK1 ) + "          R4 R5 " + hex( R4 ) + " " + hex( R5 ) + "   RA RB " + hex( R12 ) + " " + hex( R13 ) + "\n\
-LEVEL 3 " + hex( STACK2 ) + "          R6 R7 " + hex( R6 ) + " " + hex( R7 ) + "   RA RB " + hex( R14 ) + " " + hex( R15 ) + "\n\
+#ifndef NO_PRINT
+printf("         STACK                REGISTERS\n\
+     PC %s          R0 R1 %s %s   R8 R9 %s %s\n\
+LEVEL 1 %s          R2 R3 %s %s   RA RB %s %s\n\
+LEVEL 2 %s          R4 R5 %s %s   RA RB %s %s\n\
+LEVEL 3 %s          R6 R7 %s %s   RA RB %s %s\n\
 \n\
-ACCUMULATOR: " + dec( ACC ) + " [" + bin( ACC ) + "]  CARRY: " + bin( CY ) + "\n";
-std::cout << format;
+ACCUMULATOR: %s [%s]  CARRY: %s\n",hex(PC),hex(R0),hex(R1),hex(R8),hex(R9),hex(STACK0),hex(R2),hex(R3),hex(R10),hex(R11),hex(STACK1),hex(R4),hex(R5),hex(R12),hex(R13),hex(STACK2),hex(R6),hex(R7),hex(R14),hex(R15),dec(ACC),bin(ACC),bin(CY));
+#endif
 }
 void Intel4004::simulate(std::size_t i)
 {
 for (;i-->0;)
 {
    auto val = fetch();
-   if(!ops.contains(val.val()))
-{
-std::cerr << "instruction " << val.bin() << " unknown\n";
-break;
-}
+   if(ops[val.val()] == NULL)
+   {
+   #ifndef NO_PRINT
+   fprintf(stderr, "%s unknown\n", val.bin());
+   #endif
+   break;
+   }
    (this->*ops[val.val()])();
 }
 }
@@ -3558,19 +3578,23 @@ bitset Intel4004::fetch()
 /* rom(PC)*/
 return rom(get(PC));
 }
-void Intel4004::set(AddressInfo info, bitset data)
+void Intel4004::set(bitset data, AddressInfo info)
 {
 set_mem(&memory[0], info, data);
 }
-void Intel4004::set(bitset& dest, bitset data)
+void Intel4004::set(bitset data, bitset& dest)
 {
 dest=data;
 }
-void Intel4004::set(std::vector<AddressInfo> info, bitset data)
+void Intel4004::set(bitset data, int num, ...)
 {
-for(std::size_t i = info.size(); i --> 0;)
+va_list valist;
+va_start(valist, num);
+for(SIZE_T i = num; i --> 0;)
 {
-set_mem(&memory[0], info[i], data);
-data = data >> info[i].length;
+AddressInfo info = va_arg(valist, AddressInfo);
+set_mem(&memory[0], info, data);
+data = data >> info.length;
+va_end(valist);
 }
 }

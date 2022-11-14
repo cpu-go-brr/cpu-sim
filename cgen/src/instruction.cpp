@@ -92,6 +92,8 @@ Description::Instruction::Instruction(std::string key, YAML::Node config)
     description = config["description"].as<std::string>("");
     code = config["code"].as<std::string>("");
 
+    bits = std::regex_replace(code, std::regex("\\s"), "").size();
+
     auto instr = config["instructions"];
     for (auto i = 0ul; i < instr.size(); i++)
     {

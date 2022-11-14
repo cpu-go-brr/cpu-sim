@@ -111,7 +111,7 @@ const std::size_t abitset::bytes() const
     return (std::size_t)std::ceil(length / 8.0);
 }
 
-const std::string abitset::bin() const
+const char* abitset::bin() const
 {
     std::string ret = "";
     for (auto i : data)
@@ -125,7 +125,7 @@ const std::string abitset::bin() const
     return ret.substr(ret.length() - length, length);
 }
 
-const std::string abitset::hex() const
+const char* abitset::hex() const
 {
     std::string ret = "";
     for (auto i : data)
@@ -140,7 +140,7 @@ const std::string abitset::hex() const
     return ret;
 }
 
-const std::string abitset::dec() const
+const char* abitset::dec() const
 {
     return std::to_string(val());
 }
