@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0) # setting this is required
-project(intel-4004-sim)            # this sets the project name
+project(gasm)            # this sets the project name
 
 ###############################################################################
 ## file globbing ##############################################################
@@ -21,10 +21,10 @@ file(GLOB_RECURSE data resources/src/*.cpp resources/include/*.hpp)
 
 # The data is just added to the executable, because in some IDEs (QtCreator) 
 # files are invisible when they are not explicitly part of the project.
-add_executable(simulator ${sources} ${data})
+add_executable(gasm ${sources} ${data})
 
 # Just for example add some compiler flags.
-target_compile_options(simulator PUBLIC -std=c++2a -Wall -Wfloat-conversion)
+target_compile_options(gasm PUBLIC -std=c++2a -Wall -Wfloat-conversion)
 
 
 set(CMAKE_BUILD_TYPE Debug)
@@ -32,9 +32,9 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 # This allows to include files relative to the root of the src directory with a <> pair
-target_include_directories(simulator PUBLIC src/main)
-target_include_directories(simulator PUBLIC include)
-target_include_directories(simulator PUBLIC resources/include)
+target_include_directories(gasm PUBLIC src/main)
+target_include_directories(gasm PUBLIC include)
+target_include_directories(gasm PUBLIC resources/include)
 #target_include_directories(simulator PUBLIC out)
 
 # This copies all resource files in the build directory.
@@ -48,7 +48,7 @@ file(COPY ${data} DESTINATION resources)
 # This defines the variables Boost_LIBRARIES that containts all library names
 # that we need to link into the program.
 
-target_link_libraries(simulator PUBLIC
+target_link_libraries(gasm PUBLIC
   pthread
   yaml-cpp
   matheval
@@ -71,7 +71,7 @@ target_link_libraries(simulator PUBLIC
 
 # All install commands get the same destination. this allows us to use paths
 # relative to the executable.
-install(TARGETS simulator DESTINATION bin)
+install(TARGETS gasm DESTINATION bin)
 
 # This is basically a repeat of the file copy instruction that copies the
 # resources in the build directory, but here we tell cmake that we want it
