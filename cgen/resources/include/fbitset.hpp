@@ -24,12 +24,14 @@ public:
     const byte_t bytes() const;
     //get bitlength
     const bits_t size() const;
-    //print value as binary
-    const char* bin();
-    //print value as hex
-    const char* hex();
-    //print value as dec
-    const char* dec();
+
+    //write value as binary
+    void bin(char* addr) const;
+    //write value as hex
+    void hex(char* addr) const;
+    //write value as dec
+    void dec(char* addr) const;
+
 
     //get value
     const storage_t val() const;
@@ -71,10 +73,14 @@ public:
     bool operator==(const storage_t& other);
     bool operator==(const fbitset& other);
 
+    bool operator!=(const int& other);
+    bool operator!=(const storage_t& other);
+    bool operator!=(const fbitset& other);
+
+
     fbitset& operator=(const fbitset& other);
 
 private:
     storage_t data = 0;
     bits_t bits = 0; // number of bits
-    char* str = 0;
 };

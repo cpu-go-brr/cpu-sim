@@ -64,10 +64,15 @@ public:
     bool operator==(const std::size_t& other);
     bool operator==(const abitset& other);
 
+    bool operator!=(const int& other);
+    bool operator!=(const std::size_t& other);
+    bool operator!=(const abitset& other);
+
+
     const std::size_t bytes() const;
-    const char* bin() const;
-    const char* hex() const;
-    const char* dec() const;
+    void bin(char* addr) const;
+    void hex(char* addr) const;
+    void dec(char* addr) const;
     const std::size_t val() const;
 
 private:

@@ -164,6 +164,21 @@ bool fbitset::operator==(const fbitset &other)
     return data == other.data;
 }
 
+bool fbitset::operator!=(const int &other)
+{
+    return data != (storage_t)other;
+}
+
+bool fbitset::operator!=(const storage_t &other)
+{
+    return data != other;
+}
+
+bool fbitset::operator!=(const fbitset &other)
+{
+    return data != other.data;
+}
+
 fbitset &fbitset::operator=(const fbitset &other)
 {
     this->data = other.data;
@@ -201,26 +216,18 @@ void fbitset::write(uint8_t *mem, const AddressInfo &info) const
     }
 }
 // print value as bin
-const char *fbitset::bin()
+void fbitset::bin(char * str) const
 {
-    if(str == NULL) 
-        str = (char*)malloc(bits+1);
-
-    str[bits] = '\0';
     storage_t cpy = data;
     for(std::size_t i = 0; i < bits; i++)
     {
         str[bits-1-i] = (cpy&1)?'1':'0';
         cpy >>= 1;
     }
-    return str;
 }
 // print value as hex
-const char *fbitset::hex()
+void fbitset::hex(char * str) const
 {
-    if(str == NULL) 
-        str = (char*)malloc(bits+1);
-
     storage_t cpy = data;
     std::size_t chars = (bits / 4) + ((bits%4)?1:0);
     for(std::size_t i = 0; i < chars; i++)
@@ -229,26 +236,20 @@ const char *fbitset::hex()
         str[chars-i-1] = val + ((val <= 9)? '0': ('A'-10));
         cpy >>=4;
     }
-    str[chars] = '\0';
-    return str;
 }
 // print value as dec
-const char *fbitset::dec()
+void fbitset::dec(char* str) const 
 {
-    if(str == NULL) 
-        str = (char*)malloc(bits+1);
 
     storage_t cpy = data;
     std::size_t i = 0;
     for(storage_t m = mask(); m > 0; m /= 10) i++;
 
-    str[i] = '\0';
     for(; i-->0;)
     {
         str[i] =cpy % 10 + '0';
         cpy /= 10;
     }
-    return str;
 }
 
 fbitset::operator bool() const

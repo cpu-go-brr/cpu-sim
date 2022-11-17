@@ -22,6 +22,7 @@ const std::size_t abitset::val() const
 
     return v;
 }
+
 abitset::abitset() : length{8}
 {
     data = {0};
@@ -165,6 +166,21 @@ bool abitset::operator==(const std::size_t &other)
 bool abitset::operator==(const abitset &other)
 {
     return val() == other.val();
+}
+
+bool abitset::operator!=(const int &other)
+{
+    return val() != (std::size_t)other;
+}
+
+bool abitset::operator!=(const std::size_t &other)
+{
+    return val() != other;
+}
+
+bool abitset::operator!=(const abitset &other)
+{
+    return val() != other.val();
 }
 
 bool abitset::operator<(const abitset &other)
@@ -342,6 +358,11 @@ bool operator==(abitset const &a, abitset const &b)
 {
     return a.val() == b.val();
 }
+
+bool operator!=(abitset const &a, abitset const &b)
+{
+    return a.val() != b.val();
+}
 bool operator>(abitset const &a, int const &b)
 {
     return (int)a.val() > b;
@@ -355,6 +376,10 @@ bool operator==(abitset const &a, int const &b)
     return (int)a.val() == b;
 }
 
+bool operator!=(abitset const &a, int const &b)
+{
+    return (int)a.val() != b;
+}
 void abitset::write(uint8_t *mem, const AddressInfo &info) const
 {
     abitset shifted{*this, (bitset::bits_t)(info.length + info.bit_offset)};
