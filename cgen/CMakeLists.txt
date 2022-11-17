@@ -9,8 +9,6 @@ project(cgen)            # this sets the project name
 # invoked and put all files that match the pattern in the variables 
 # `sources` and `data`.
 file(GLOB_RECURSE sources src/*.cpp include/*.hpp)
-file(GLOB_RECURSE data resources/src/*.cpp resources/include/*.hpp)
-#file(GLOB_RECURSE data out/*.cpp out/*.hpp)
 
 # You can use set(sources src/main.cpp) etc if you don't want to
 # use globbing to find files automatically.
@@ -21,7 +19,7 @@ file(GLOB_RECURSE data resources/src/*.cpp resources/include/*.hpp)
 
 # The data is just added to the executable, because in some IDEs (QtCreator) 
 # files are invisible when they are not explicitly part of the project.
-add_executable(cgen ${sources} ${data})
+add_executable(cgen ${sources})
 
 # Just for example add some compiler flags.
 target_compile_options(cgen PUBLIC -std=c++2a -Wall -Wfloat-conversion)
@@ -49,7 +47,6 @@ file(COPY ${data} DESTINATION resources)
 # that we need to link into the program.
 
 target_link_libraries(cgen PUBLIC
-  pthread
   yaml-cpp
   matheval
 )
