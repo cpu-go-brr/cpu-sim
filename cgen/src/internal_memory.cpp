@@ -76,6 +76,9 @@ std::vector<uint8_t> Description::InternalMemory::getBitmask()
     return bytes;
 }
 
+
+std::map<std::string, std::size_t> Description::InternalMemory::address_lengths = {};
+
 Description::InternalMemory::InternalMemory(std::string key, YAML::Node config, int total_mem, std::vector<int> dimension)
 {
     auto info = getDimension(key);
@@ -102,4 +105,5 @@ Description::InternalMemory::InternalMemory(std::string key, YAML::Node config, 
 
     bitoffset = total_mem % 8;
     byteoffset = total_mem / 8;
+    InternalMemory::address_lengths[name] = size;
 }

@@ -85,38 +85,27 @@ std::string Description::Expression::getCode(std::map<std::string, std::string> 
 
     right = std::regex_replace(right, rightvars, "(get($1)");
 
-    std::vector<std::string> infos;
-
-    std::size_t pos = 0;
+    std::size_t commas = 0;
     int level = 0;
     for(std::size_t p = 0; p < right.size(); p++)
     {
         if(right[p] == '(') level++;
         if(right[p] == ')') level--;
-        if(level == 0 && right[p] == ',')
-        {
-            infos.push_back(right.substr(pos, p - pos));
-            pos = p+1;
-        }
-    }
-
-    infos.push_back(right.substr(pos));
-    
-    if(infos.size() > 1) 
-    {
-        std::string r2 = std::to_string(infos.size()) + ",";
+        if(level == 0 && right[p] == ',') commas++;
         
-        for(auto i = infos.size(); i --> 0;)
-            r2 += infos[i] + ",";
-
-        right = r2.substr(0,r2.size()-1);
-
     }
-        // std::cout << right << "\n";
+
+    std::string prev = "", suff = "";
+    if(commas > 0)
+    {
+        prev = "{\nconst AddressInfo __addr_infos[" + std::to_string(commas+1) + "] = {" + right + "};\n";
+        right =  std::to_string(commas+1) + ",__addr_infos";
+        suff = "}\n";
+    }
 
     std::string ret = "";
     if (right != "")
-        ret = "set((" + left + "), "+ right +");\n";
+        ret = prev + "set((" + left + "), "+ right +");\n" + suff;
     else
         ret = "return " + left + ";\n";
 

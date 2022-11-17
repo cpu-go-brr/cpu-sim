@@ -24,6 +24,7 @@ namespace Description
         std::vector<InternalMemory> submemory;
         std::vector<uint8_t> bitmask;
 
+        static std::map<std::string, std::size_t> address_lengths;
         // std::vector<uint8_t> get();
         // void set(std::vector<uint8_t> val);
     };
