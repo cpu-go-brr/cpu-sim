@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 #include <regex>
-#include "bitset.hpp"
 #include "matheval.hpp"
 #include <iostream>
 #include "expression.hpp"
