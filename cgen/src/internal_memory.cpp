@@ -60,6 +60,20 @@ std::string getName(std::string name, std::vector<int> dimensions)
     return name;
 }
 
+std::string Description::InternalMemory::getJSONDescription()
+{
+    if(submemory.size() == 0)
+    return "\"\\\"" + name + "\\\":{\\\"bits\\\":"+std::to_string(size)+",\\\"val\\\":\" + std::to_string(get("+name+").val()) + \"},\"";
+
+    std::string ret = "\"\\\"" + name + "\\\":{\"\n";
+        for(auto s: submemory)
+            ret += s.getJSONDescription() + "\n";
+    
+    ret = ret.substr(0,ret.size()-3) + "\"\n";
+    return ret +"\"},\"";
+}
+
+
 std::vector<uint8_t> Description::InternalMemory::getBitmask()
 {
     assert(size > 0);

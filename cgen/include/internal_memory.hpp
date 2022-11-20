@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <regex>
-#include "bitset.hpp"
 #include "matheval.hpp"
 
 namespace Description
@@ -25,6 +24,7 @@ namespace Description
         std::vector<uint8_t> bitmask;
 
         static std::map<std::string, std::size_t> address_lengths;
+        std::string getJSONDescription();
         // std::vector<uint8_t> get();
         // void set(std::vector<uint8_t> val);
     };
