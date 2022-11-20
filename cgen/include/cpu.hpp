@@ -22,16 +22,20 @@ namespace Description
         std::size_t min_opcode_length, max_opcode_length;
         int total_mem = 0;
 
-        void generate();
+        void generate(std::string path);
 
+        std::string lowername();
         std::string generateDisplay();
         std::string generateCMakeFile();
-        std::string generateMainFile();
         std::string generateAddressInfos();
         std::string generateMemory();
         std::string generateClass();
+        std::string generateRunScript();
         std::string generateFunctions();
         std::string generateHeader();
+        std::string generateCpp();
+        std::string generateHpp();
+        
     };
 
 }
