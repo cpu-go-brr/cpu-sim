@@ -40,21 +40,6 @@ memory:
       words: 16
       bits: 4
 
-modifications:
-    rom_port: 
-      0: # write only
-        write_mask: 1111
-        read_mask: 0000
-        read_values: 0000 # always read zeros
-      1: # read only
-        write_mask: 0000
-        read_mask: 1111
-        read_values: 0000 # always read input
-      2: # mixed
-        write_mask: 0110
-        read_mask: 1001
-        read_values: 0100 # read I11I
-
 fetch:
   instructions:
     - "rom(PC)"
