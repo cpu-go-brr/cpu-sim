@@ -198,7 +198,7 @@ void fbitset::write(uint8_t *mem, const AddressInfo &info) const
     auto needed_bytes = bytes_needed(info); 
     for (auto i = 0u; i < needed_bytes; i++)
     {
-        SIZE_T index = info.byte_start  + i;
+        size_t index = info.byte_start  + i;
         if (i > sizeof(storage_t))
         {
             mem[index] = (mem[index] & ~m);
@@ -240,7 +240,6 @@ void fbitset::hex(char * str) const
 // print value as dec
 void fbitset::dec(char* str) const 
 {
-
     storage_t cpy = data;
     std::size_t i = 0;
     for(storage_t m = mask(); m > 0; m /= 10) i++;

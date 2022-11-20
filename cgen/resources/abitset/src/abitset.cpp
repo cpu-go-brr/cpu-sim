@@ -1,6 +1,4 @@
-#include "settings.hpp"
-#ifndef C_ONLY
-
+#include <string.h>
 #include "abitset.hpp"
 #include "AddressInfo.hpp"
 #include <cmath>
@@ -112,7 +110,7 @@ const std::size_t abitset::bytes() const
     return (std::size_t)std::ceil(length / 8.0);
 }
 
-const char* abitset::bin() const
+void abitset::bin(char* str) const
 {
     std::string ret = "";
     for (auto i : data)
@@ -123,27 +121,35 @@ const char* abitset::bin() const
             i >>= 1;
         }
     }
-    return ret.substr(ret.length() - length, length);
+    ret = ret.substr(ret.length() - length, length);
+
+    strncpy(str, ret.c_str(), ret.size());
 }
 
-const char* abitset::hex() const
+void abitset::hex(char* str) const
 {
     std::string ret = "";
     for (auto i : data)
     {
         std::stringstream ss;
-        ss << std::setw(2) << std::hex << std::setfill('0') << (int)i;
+        ss << std::setw(2) << std::uppercase << std::hex << std::setfill('0') << (int)i;
         ret = ss.str() + ret;
     }
 
     if (length % 8 <= 4 && length % 8 > 0)
         ret = ret.substr(1);
-    return ret;
+    
+    strncpy(str, ret.c_str(), ret.size());
 }
 
-const char* abitset::dec() const
+void abitset::dec(char* str) const
 {
-    return std::to_string(val());
+    std::size_t size = (std::size_t)std::ceil(std::log10(std::pow(2,length)));
+    std::string ret = "";
+    ret += std::to_string(val());
+
+    while(ret.size() < size) ret = " " + ret;
+    strncpy(str, ret.c_str(), ret.size());
 }
 
 abitset &abitset::operator=(const abitset &other)
@@ -405,5 +411,3 @@ abitset::operator bool() const
     return val() > 0;
 }
 
-
-#endif

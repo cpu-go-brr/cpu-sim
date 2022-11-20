@@ -2,10 +2,11 @@
 
 #include "settings.hpp"
 
-#ifdef C_ONLY
+#ifdef FBITSET
 #include "fbitset.hpp"
 typedef fbitset bitset;
-#else 
+#endif
+#ifdef ABITSET
 #include "abitset.hpp"
 typedef abitset bitset;
 #endif

@@ -1,8 +1,8 @@
 #include "AddressInfo.hpp"
 
-SIZE_T bytes_needed(const AddressInfo& i)
+size_t bytes_needed(const AddressInfo& i)
 {
-   return (SIZE_T)((i.length + i.bit_offset) / 8.0 + ((i.length + i.bit_offset) % 8 > 0?1:0));
+   return (size_t)((i.length + i.bit_offset) / 8.0 + ((i.length + i.bit_offset) % 8 > 0?1:0));
 }
 
 bitset get_mem(uint8_t *mem, const AddressInfo& info)

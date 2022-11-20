@@ -1,14 +1,13 @@
 #pragma once
-
-#include "size_t.hpp"
-
+#include <stdint.h>
+#include <stddef.h>
 class AddressInfo;
 
 //fast bitset
 class fbitset
 {
 public:
-    typedef SIZE_T storage_t;
+    typedef size_t storage_t;
     typedef uint8_t bits_t; //datatype exceeds 8*sizeof(storage_t)
     typedef uint8_t byte_t; //datatype must exceed sizeof(storage_t)
     fbitset() = default;
