@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #define CONFIG_CATCH_MAIN
 
-#include "fbitset.hpp"
+#include "fbitset/include/fbitset.hpp"
 
 TEST_CASE("fbitset Addition")
 {

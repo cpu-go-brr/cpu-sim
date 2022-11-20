@@ -1,12 +1,12 @@
 #include <catch2/catch_test_macros.hpp>
 #define CONFIG_CATCH_MAIN
 
-#include "bitset.hpp"
+#include "abitset/include/abitset.hpp"
 
-TEST_CASE("bitset Addition")
+TEST_CASE("abitset Addition")
 {
-    bitset one{1, 1};
-    bitset three_initialized{3, 1};
+    abitset one{1, 1};
+    abitset three_initialized{3, 1};
 
     REQUIRE((one == 1));
     REQUIRE((three_initialized == 1));
@@ -14,22 +14,22 @@ TEST_CASE("bitset Addition")
     REQUIRE(((one + three_initialized) == 2));
 }
 
-TEST_CASE("bitset shift")
+TEST_CASE("abitset shift")
 {
-    bitset five{0b101, 3};
+    abitset five{0b101, 3};
 
     REQUIRE((five << 1 == 2));
     REQUIRE((five >> 1 == 2));
 }
 
-TEST_CASE("bitset complement")
+TEST_CASE("abitset complement")
 {
-    bitset five{0b101, 3};
+    abitset five{0b101, 3};
     REQUIRE((~five  == 2));
 }
 
-TEST_CASE("bitset concatenation")
+TEST_CASE("abitset concatenation")
 {
-    bitset five{0b101, 3};
+    abitset five{0b101, 3};
     REQUIRE(((five,five)  == 0b101101));
 }
