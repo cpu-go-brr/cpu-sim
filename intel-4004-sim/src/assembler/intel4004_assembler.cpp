@@ -121,7 +121,7 @@ int parse_value_from_argument(std::string arg)
         for (size_t i = 0; i < arg.length(); i++)
         {
             int current_acsii = int(arg[i]);
-            if (!(30 <= current_acsii <= 39) && !(41 <= current_acsii <= 46) && !(61 <= current_acsii <= 66))
+            if (!(48 <= current_acsii <= 57) && !(65 <= current_acsii <= 70) && !(97 <= current_acsii <= 102))
             {
                 arg = arg.substr(0, i);
                 break;
@@ -135,7 +135,7 @@ int parse_value_from_argument(std::string arg)
         for (size_t i = 0; i < arg.length(); i++)
         {
             int current_acsii = int(arg[i]);
-            if (!(30 <= current_acsii <= 31))
+            if (!(48 <= current_acsii <= 49))
             {
                 arg = arg.substr(0, i);
                 break;
@@ -148,7 +148,7 @@ int parse_value_from_argument(std::string arg)
         for (size_t i = 0; i < arg.length(); i++)
         {
             int current_acsii = int(arg[i]);
-            if (!(30 <= current_acsii <= 39))
+            if (!(48 <= current_acsii <= 57))
             {
                 arg = arg.substr(0, i);
                 break;
@@ -356,7 +356,7 @@ std::vector<std::string> parse_labels(std::vector<std::string> cleaned_instructi
             std::string variable_value = trim(cleaned_instructions[i].substr(cleaned_instructions[i].find("=") + 1, cleaned_instructions[i].size()));
             int variable_value_int = parse_value_from_argument(variable_value);
             address_count = variable_value_int;
-            
+
             // std::cout << current_line << "\n";
             new_instructions.push_back(current_line);
         }
@@ -434,7 +434,7 @@ std::vector<int> clean_instructions_to_object_code(std::vector<std::string> clea
                 // std::cout << variable_value << " \n";
                 if (variable_value_int > pos)
                 {
-                    while(pos < variable_value_int)
+                    while (pos < variable_value_int)
                     {
                         if (pos >= res.size())
                         {
@@ -446,7 +446,9 @@ std::vector<int> clean_instructions_to_object_code(std::vector<std::string> clea
                         }
                         pos++;
                     }
-                }else{
+                }
+                else
+                {
                     pos = variable_value_int;
                 }
             }
