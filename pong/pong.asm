@@ -1,12 +1,9 @@
-BP=5  ; PAIR BALL_POS
-BPY=10   ; SINGLE REGISTER
-BPX=11   ; SINGLE REGISTER
-BV=6  ; PAIR BALL_VELOCITY
-BVX=12   ; SINGLE REGISTER
-BVY=13   ; SINGLE REGISTER
-BC=7  ; PAIR BALL_COUNTER
-BCX=14  ; SINGLE REGISTER
-BCY=15  ; SINGLE REGISTER
+BP=6  ; PAIR BALL_POS
+BPY=12   ; SINGLE REGISTER
+BPX=13   ; SINGLE REGISTER
+BV=7  ; PAIR BALL_VELOCITY
+BVX=14   ; SINGLE REGISTER
+BVY=15   ; SINGLE REGISTER
 
 START   ; Entrypoint
         JMS RESET ; RESET REGISTERS
@@ -17,8 +14,7 @@ LOOP_1
 
 RESET   ; Reset Variables
         FIM BP, $37 ; RESET BALL_POS      
-        FIM BV, $12 ; RESET BALL_VEL
-        FIM BC, $00 ; RESET BALL_VEL
+        FIM BV, $11 ; RESET BALL_VEL
         BBL 0       ; RETURN 0
 
 DONE    JUN DONE    ; ENDLESS LOOP
@@ -27,9 +23,9 @@ DONE    JUN DONE    ; ENDLESS LOOP
 MOVE
             ; STORE PREV POS
         LD BPY
-        XCH R0
+        XCH 0
         LD BPX
-        XCH R1
+        XCH 1
 
         ; CALC NEW VEL
             ; DID I BOUNCE RIGHT?
@@ -64,10 +60,10 @@ BTE
         ; DID I BOUNCE BOT
 
         LDM 8
-        XCH R2
+        XCH 2
 
         LD BPY
-        SUB R2
+        SUB 2
         
         CMA
         JCN %1100  BBE ; LEAVE if no bounce
@@ -93,11 +89,11 @@ BBE
 
 
             ; CLEAR prev POS
-        SRC P0 ; SRC BALL POS
+        SRC 0 ; SRC BALL POS
         LDM $0
         WRM  ; WRITE 0 TO BALL POS
             ; DRAW BALL
-        SRC P6
+        SRC 6
         LDM $1 
         WRM ; Write Current Pos
         BBL 0
