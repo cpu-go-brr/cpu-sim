@@ -19,7 +19,6 @@ int main(int argc, char **argv)
     else
     {
         exit(0);
-
     }
     std::vector<bitset> prog;
     for (const auto c : bytes)
@@ -33,8 +32,16 @@ int main(int argc, char **argv)
     char c;
     while (true)
     {
-        cpu.simulate();
+        for (int j = 0; j < 20; j++)
+            cpu.simulate();
         cpu.display();
+
+        for (int j = 0; j < 8; j++)
+        {
+            for (int i = 0; i < 16; i++)
+                std::cout << cpu.ram_mem[16*j +i].val();
+            std::cout << "\n";
+        }
         tty.read(&c, 1);
     }
     return 0;
