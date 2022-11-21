@@ -1,23 +1,28 @@
 #include <iostream>
 #include <iomanip>
 #include "gasm.hpp"
-
-void test_general_assembler();
+#include "argument_parser.hpp"
+#include <fstream>
+#include <filesystem>
 
 int main(int argc, char **argv)
 {
-    test_general_assembler();
-    return 0;
-}
+    ArgumentParser parser(argc,argv);
 
-void test_general_assembler(){
     GeneralAssembler gasm = GeneralAssembler();
-    std::vector<int> assembled_code = gasm.assemble("input/input.asm", "input/intel4004.yaml");
 
-    std::cout << "\n\nAssembled Code:\n";
+    std::string code_file = parser.getCode();
+    std::string cpu_file = parser.getCPU();
+    std::string out_file = parser.getOut();
+
+    
+    std::vector<int> assembled_code = gasm.assemble(code_file, cpu_file);
+    std::filesystem::create_directories(std::filesystem::path(out_file).parent_path());
+    std::ofstream out(out_file);
+
     for (size_t i = 0; i < assembled_code.size(); i++)
-    {
-        std::cout << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << assembled_code[i] << " ";
-    }
-    std::cout << "\n\n\n";
+        out << (char)assembled_code[i];
+    
+    out.close();
+    return 0;
 }
