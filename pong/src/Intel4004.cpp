@@ -3916,7 +3916,7 @@ set_mem(&memory[0], info, data);
 }
 void Intel4004::set(bitset data, bitset& dest)
 {
-dest=data;
+dest=bitset(data,dest.size());
 }
 void Intel4004::set(bitset data, int num, const AddressInfo* infos)
 {
