@@ -30,10 +30,12 @@ int main(int argc, char **argv)
 
     std::ifstream tty("/dev/tty");
     char c;
+
+    char rom_port[5] = "XXXX";
     while (true)
     {
-        for (int j = 0; j < 20; j++)
-            cpu.simulate();
+        cpu.rom_port(0).bin(rom_port);
+        cpu.simulate();
         cpu.display();
 
         for (int j = 0; j < 8; j++)
@@ -42,7 +44,27 @@ int main(int argc, char **argv)
                 std::cout << cpu.ram_mem[16*j +i].val();
             std::cout << "\n";
         }
-        tty.read(&c, 1);
+        std::cout << "rom_port: "<< rom_port << "\n"; 
+
+        //Player 1: wsx Player 2: ujm
+
+        while(tty.read(&c, 1))
+        {
+            if(c == '\n') break;
+            uint8_t val = cpu.rom_port(0).val();
+
+            if(c == 'w') cpu.set(0b1000 + (val & 0b11), cpu.rom_port(0));
+            if(c == 's') cpu.set(0b0000 + (val & 0b11), cpu.rom_port(0));
+            if(c == 'x') cpu.set(0b0100 + (val & 0b11), cpu.rom_port(0));
+
+
+            if(c == 'u') cpu.set(0b10 + (val & 0b1100), cpu.rom_port(0));
+            if(c == 'j') cpu.set(0b00 + (val & 0b1100), cpu.rom_port(0));
+            if(c == 'm') cpu.set(0b01 + (val & 0b1100), cpu.rom_port(0));
+
+        }
+
+
     }
     return 0;
 }

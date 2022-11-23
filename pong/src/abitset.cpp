@@ -5,6 +5,14 @@
 #include <iomanip>
 #include <sstream>
 
+
+void abitset::apply_mask()
+{
+    if(length % 8 == 0) return;
+
+    data[data.size()-1] &= ((1 << (length % 8))-1);
+}
+
 const std::size_t abitset::val() const
 {
     std::size_t v = 0;
@@ -30,18 +38,24 @@ abitset::abitset(std::vector<uint8_t> data_, std::size_t length_) : length{lengt
 {
     for (std::size_t i = 0; i < bytes(); i++)
         data.push_back((data_.size() > i) ? data_[i] : 0);
+
+    apply_mask();
 }
 
 abitset::abitset(uint8_t* data_, bits_t bytes_, bits_t length_) : length{length_}
 {
     for (std::size_t i = 0; i < bytes(); i++)
         data.push_back((bytes_ > i) ? data_[i] : 0);
+
+    apply_mask();
 }
 
 abitset::abitset(abitset data_, std::size_t length_) : length{length_}
 {
     for (std::size_t i = 0; i < std::ceil(length / 8.0); i++)
         data.push_back((data_.size() > i) ? data_[abitset(i)] : 0);
+    
+    apply_mask();
 }
 
 abitset::abitset(std::size_t data_, std::size_t length_)
@@ -56,6 +70,8 @@ abitset::abitset(std::size_t data_, std::size_t length_)
         data.push_back(data_);
         data_ >>= 8;
     }
+
+    apply_mask();
 }
 
 abitset::abitset(std::string data_, std::size_t length_)
@@ -76,6 +92,8 @@ abitset::abitset(std::string data_, std::size_t length_)
         length = data.size() * 8;
     else
         length = length_;
+
+    apply_mask();
 }
 
 abitset::abitset(int data_, std::size_t length_)
@@ -90,6 +108,8 @@ abitset::abitset(int data_, std::size_t length_)
         data.push_back(data_);
         data_ >>= 8;
     }
+
+    apply_mask();
 }
 
 abitset::abitset(long data_, std::size_t length_)
@@ -103,6 +123,8 @@ abitset::abitset(long data_, std::size_t length_)
         data.push_back(data_);
         data_ >>= 8;
     }
+
+    apply_mask();
 }
 
 const std::size_t abitset::bytes() const
