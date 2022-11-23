@@ -24,7 +24,7 @@ public:
     abitset(std::size_t data, bits_t length = 0);
     abitset(std::string data, bits_t length = 0);
     
-
+    void apply_mask();
     const std::size_t size() const { return length; }
     uint8_t operator[](abitset i) const { return data[i.val()]; }
     uint8_t &operator[](abitset i) { return data[i.val()]; }
