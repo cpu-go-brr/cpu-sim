@@ -376,7 +376,7 @@ std::string Description::CPU::generateCpp()
            "}\n";
 
     cpp += "void " + name + "::set(bitset data, AddressInfo info)\n{\nset_mem(&memory[0], info, data);\n}\n";
-    cpp += "void " + name + "::set(bitset data, bitset& dest)\n{\ndest=data;\n}\n";
+    cpp += "void " + name + "::set(bitset data, bitset& dest)\n{\ndest=bitset(data,dest.size());\n}\n";
     cpp += "void " + name + "::set(bitset data, int num, const AddressInfo* infos)\n{\n"
                             "for(size_t i = num; i --> 0;)\n"
                             "{\n"
