@@ -65,19 +65,19 @@ std::string ArgumentParser::getMode()
         mode =  getCmdOption("--mode");
 
     else if(cmdOptionExists("-m"))
-        mode =  getCmdOption("-");
+        mode =  getCmdOption("-m");
     
     if(mode == "")
     {
-        std::cerr << "No mode specified! Available Modes are:\n";
-        for(auto [key,pointer]: generators) std::cerr << "- "<< key << "\n";
+        std::cerr << "No mode specified! Available Modes are:" <<std::endl;
+        for(auto [key,pointer]: generators) std::cerr << "- "<< key << std::endl;
         exit(0);
     }
 
     if(!generators.contains(mode))
     {
-        std::cerr << "specified mode \""+mode+"\" does not exist! Available Modes are:\n";
-        for(auto [key,pointer]: generators) std::cerr << "- "<< key << "\n";
+        std::cerr << "specified mode \""+mode+"\" does not exist! Available Modes are:" <<std::endl;
+        for(auto [key,pointer]: generators) std::cerr << "- "<< key << std::endl;
         exit(0);
     }
 
