@@ -13,7 +13,6 @@ namespace CPUDescription
     {
     public:
         InternalMemory(std::string key, YAML::Node config, int total_mem, std::vector<int> dimension = std::vector<int>());
-        std::vector<uint8_t> getBitmask();
         std::string getJSONDescription();
 
         std::size_t getSize() const;
@@ -22,11 +21,7 @@ namespace CPUDescription
 
     private:
         std::string name = "";
-        std::size_t size = 0;
-        uint8_t *address;
-        uint8_t bitoffset = 0;
-        int byteoffset = 0;
+        std::size_t size = 0, bitoffset = 0, byteoffset = 0;
         std::vector<InternalMemory> submemory;
-        std::vector<uint8_t> bitmask;
     };
 }
