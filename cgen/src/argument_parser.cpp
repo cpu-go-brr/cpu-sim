@@ -1,17 +1,13 @@
 #include "argument_parser.hpp"
 #include "generator.hpp"
 #include <iostream>
-ArgumentParser::ArgumentParser(int argc_, char **argv_)
+ArgumentParser::ArgumentParser(const int argc_, const char **argv_) : argc{argc_}, argv{argv_}
 {
-    argc = argc_;
-    argv = argv_;
-
     if(cmdOptionExists("--help") || cmdOptionExists("-h"))
-        printHelp();
-
+        printHelpAndExit();
 }
 
-void ArgumentParser::printHelp()
+void ArgumentParser::printHelpAndExit() const
 {
     std::cout << "cgen - CPU Emulation Generator\n"
     "Options:\n"
@@ -21,20 +17,20 @@ void ArgumentParser::printHelp()
     exit(0);
 }
 
-char* ArgumentParser::getCmdOption(const std::string &option)
+const char* ArgumentParser::getCmdOption(const std::string &option) const
 {
-    char ** itr = std::find(argv, argv + argc, option);
+    const char ** itr = std::find(argv, argv + argc, option);
     if (itr != argv + argc && ++itr != argv + argc)
     {
         return *itr;
     }
     return 0;
 }
-bool ArgumentParser::cmdOptionExists(const std::string &option)
+bool ArgumentParser::cmdOptionExists(const std::string &option) const
 {
     return std::find(argv, argv + argc, option) != argv + argc;
 }
-std::string ArgumentParser::getInputPath()
+std::string ArgumentParser::getInputPath() const
 {
     if(cmdOptionExists("--file"))
         return getCmdOption("--file");
@@ -46,7 +42,7 @@ std::string ArgumentParser::getInputPath()
     exit(0);
 }
 
-std::string ArgumentParser::getOutputPath()
+std::string ArgumentParser::getOutputPath() const
 {
     if(cmdOptionExists("--out"))
         return getCmdOption("--out");
@@ -58,7 +54,7 @@ std::string ArgumentParser::getOutputPath()
     exit(0);
 }
 
-std::string ArgumentParser::getSelectedMode()
+std::string ArgumentParser::getSelectedMode() const
 {
     std::string mode = "";
     if(cmdOptionExists("--mode"))
@@ -82,7 +78,4 @@ std::string ArgumentParser::getSelectedMode()
     }
 
     return mode;
-    
-
-
 }
