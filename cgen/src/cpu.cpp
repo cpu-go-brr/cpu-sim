@@ -161,7 +161,7 @@ std::string CPUDescription::CPU::generateClass()
                "void set(bitset data, bitset& dest);\n";
 
     for (auto m : external_memory)
-        c += m.getDeclaration();
+        c += m.getInterfaceDeclaration();
 
     c +=
         "void bin(AddressInfo info, char* addr);\n"
@@ -332,7 +332,7 @@ std::string CPUDescription::CPU::generateCpp()
     cpp += name + "::" + name + "()\n{\n";
     for (auto &m : external_memory)
     {
-        cpp += m.getInit();
+        cpp += m.getInitCode();
     }
     cpp += "\n}\n";
 
@@ -355,7 +355,7 @@ std::string CPUDescription::CPU::generateCpp()
 
     for (auto m : external_memory)
     {
-        cpp += m.getFunction(name);
+        cpp += m.getInterfaceCode(name);
     }
 
     cpp += "bitset " + name + "::fetch()\n"
@@ -384,8 +384,8 @@ std::string CPUDescription::CPU::generateCpp()
     cpp = cpp.substr(0, cpp.size() - 3) + "},\\\"external\\\":{\"\n";
     for (auto m : external_memory)
     {
-        cpp += "\"\\\"" + m.name + "\\\":{\\\"bits\\\":" + std::to_string(m.bits) + ",\\\"vals\\\":[\";\n";
-        cpp += "for(size_t i = 0; i < " + std::to_string(m.words) + "; i++) json += std::to_string(" + m.name + "_mem[i].val()) + \",\";\n"
+        cpp += "\"\\\"" + m.getName() + "\\\":{\\\"bits\\\":" + std::to_string(m.getBits()) + ",\\\"vals\\\":[\";\n";
+        cpp += "for(size_t i = 0; i < " + std::to_string(m.getWords()) + "; i++) json += std::to_string(" + m.getName() + "_mem[i].val()) + \",\";\n"
                                                                                                                 "json = json.substr(0,json.size()-1);\n";
         cpp += "json += \"]},\";\njson +=";
     }
