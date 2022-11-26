@@ -34,7 +34,7 @@ bool ArgumentParser::cmdOptionExists(const std::string &option)
 {
     return std::find(argv, argv + argc, option) != argv + argc;
 }
-std::string ArgumentParser::getIn()
+std::string ArgumentParser::getInputPath()
 {
     if(cmdOptionExists("--file"))
         return getCmdOption("--file");
@@ -46,7 +46,7 @@ std::string ArgumentParser::getIn()
     exit(0);
 }
 
-std::string ArgumentParser::getOut()
+std::string ArgumentParser::getOutputPath()
 {
     if(cmdOptionExists("--out"))
         return getCmdOption("--out");
@@ -58,7 +58,7 @@ std::string ArgumentParser::getOut()
     exit(0);
 }
 
-std::string ArgumentParser::getMode()
+std::string ArgumentParser::getSelectedMode()
 {
     std::string mode = "";
     if(cmdOptionExists("--mode"))

@@ -3,17 +3,18 @@
 
 class ArgumentParser
 {
-    public: 
-    ArgumentParser(int argc, char **argv);
-    std::string getIn();
-    std::string getOut();
-    std::string getMode();
-    void printHelp();
+public:
+    ArgumentParser(int argc, char **argv); // init with arguments
+    std::string getInputPath();            // get CPU Description path
+    std::string getOutputPath();           // get Path to write to
+    std::string getSelectedMode();         // get the seleted mode
 
-    private:
-    char *getCmdOption(const std::string &option);
-    bool cmdOptionExists(const std::string &option);
+private:
+    void printHelp(); // print help screen
 
-    int argc;
-    char **argv;
+    bool cmdOptionExists(const std::string &option); // check if argument was specified
+    char *getCmdOption(const std::string &option);   // retrieve specified argument
+
+    int argc;    // argument count
+    char **argv; // argument vector
 };
