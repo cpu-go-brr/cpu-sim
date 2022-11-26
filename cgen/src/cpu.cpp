@@ -74,13 +74,14 @@ std::string CPUDescription::CPU::generateHppIncludes()
 std::string CPUDescription::CPU::generateHppInstructions()
 {
     std::string functions = ""; // the return array
-    std::size_t max_bits = 0;  // the maximum number of bits a function has
+    std::size_t max_bits = 0;   // the maximum number of bits a function has
 
     for (auto &i : instructions)
     {
-        max_bits = std::max(max_bits, i.getSizeOfOPCode());  // set the bitsize to maximum
-        functions += "   template <size_t C>\n" // concatenate declaration of the instruction
-                     "   void " + i.getName() + "();\n";
+        max_bits = std::max(max_bits, i.getSizeOfOPCode()); // set the bitsize to maximum
+        functions += "   template <size_t C>\n"             // concatenate declaration of the instruction
+                     "   void " +
+                     i.getName() + "();\n";
     }
     auto array_size = (unsigned int)std::pow(2, max_bits);                            // calculate space needed o accommodate all instructions
     functions += "\nstatic Intel4004::op ops[" + std::to_string(array_size) + "];\n"; // add array for instruction pointer
@@ -89,10 +90,9 @@ std::string CPUDescription::CPU::generateHppInstructions()
 
 std::string CPUDescription::CPU::generateMemory()
 {
-    //return byte array needed to accommodate all internal memory
+    // return byte array needed to accommodate all internal memory
     return "   uint8_t memory[" + std::to_string((int)std::ceil(total_mem / 8.0)) + "] = {};\n";
 }
-
 
 std::string CPUDescription::CPU::generateAddressInfos()
 {
@@ -166,7 +166,7 @@ std::string CPUDescription::CPU::generateClass()
     return c;
 }
 
-//returns stringsize -1 -3*count('\n')
+// returns stringsize -1 -3*count('\n')
 std::size_t unescapedsize(std::string s)
 {
     std::size_t len = s.size() - 1;
@@ -181,44 +181,46 @@ std::size_t unescapedsize(std::string s)
     return len;
 }
 
-std::string CPUDescription::CPU::generateDisplay()
+std::tuple<std::string, std::string> processDisplayInfo(const std::string &display)
 {
-    // replace our display:
-    auto display_str = std::regex_replace(display, std::regex("\\n"), "\\n\\\n"); //escape \n
+    std::string params = "", display_str = std::regex_replace(display, std::regex("\\n"), "\\n\\\n"); // escape \n
 
-    std::regex replacements("(0x|0b)?\\{([A-Z][A-Z0-9]+)\\}"); //matchs 0x{PC} 0b{ACC} {R0} ..
+    std::regex replacements("(0x|0b)?\\{([A-Z][A-Z0-9]+)\\}"); // matchs 0x{PC} 0b{ACC} {R0} ..
     std::smatch sm;
-
-    std::string params = "";
-    std::size_t size = display.length() + 1;
     while (std::regex_search(display_str, sm, replacements))
     {
-        size -= sm[1].str().size();
-        auto b = InternalMemory::address_lengths[sm[2].str()];
-        auto c = 0;
-        if (sm[1].str() == "")
+        std::string prefix = sm[1].str(), address = sm[2].str();
+        auto bits = CPUDescription::InternalMemory::address_lengths[address];
+        auto characters = bits;
+        if (prefix == "")
         {
-            c = (std::size_t)std::ceil(std::log10(std::pow(2, b)));
-            params += "dec(" + sm[2].str() + ", str+" + std::to_string(unescapedsize(sm.prefix().str())) + ");\n";
+            characters = (std::size_t)std::ceil(std::log10(std::pow(2, bits)));
+            params += "dec";
         }
-        if (sm[1].str() == "0x")
+        else if (prefix == "0x")
         {
-            c = (std::size_t)std::ceil(b / 4.0);
-            params += "hex(" + sm[2].str() + ",str +" + std::to_string(unescapedsize(sm.prefix().str())) + ");\n";
+            characters = (std::size_t)std::ceil(bits / 4.0);
+            params += "hex";
         }
-        if (sm[1].str() == "0b")
+        else if (prefix == "0b")
         {
-            c = b;
-            params += "bin(" + sm[2].str() + ", str +" + std::to_string(unescapedsize(sm.prefix().str())) + ");\n";
+            params += "bin";
         }
-        size += c;
         std::string placeholder = "";
-        for (int i = 0u; i < c; i++)
+        for (std::size_t i = 0; i < characters; i++)
             placeholder += "X";
+
+        params += "(" + address + ", str +" + std::to_string(unescapedsize(sm.prefix().str())) + ");\n";
         display_str = sm.prefix().str() + placeholder + sm.suffix().str();
     }
 
-    std::string ret;
+    return {display_str, params};
+}
+
+std::string CPUDescription::CPU::generateDisplay()
+{
+    std::string ret, display_str, params;
+    std::tie(display_str, params) = processDisplayInfo(display);
 
     ret += "void " + name + "::bin(AddressInfo info, char* addr)\n{\n\
        get(info).bin(addr);\n\
@@ -281,55 +283,98 @@ std::string CPUDescription::CPU::generateHpp()
 
 std::string CPUDescription::CPU::generateCpp()
 {
-    std::string cpp = "";
+    std::string cpp = generateIncludesCpp();
 
-    cpp += "#include \"" + name + ".hpp\"\n";
-    cpp += "#include <stdio.h>\n";
-    cpp += "#include <stdlib.h>\n";
+    cpp += generateInstructionsCpp();
 
-    cpp += "bitset " + name + "::get(AddressInfo info)\n"
-                              "{\n"
-                              "   return get_mem(&memory[0], info);\n"
-                              "}\n";
-    for (auto i : instructions)
-    {
-        cpp += "/* " + i.getDescription() + "*/\n";
-        cpp += i.getCode(name) + "\n";
-    }
+    cpp += generateInstructionJumpTableCpp();
+    cpp += generateConstructorCpp();
+    cpp += generateDisplay();
+    cpp += generateSimulateCpp();
+    cpp += generateExternalMemoryCpp();
+    cpp += generateFetchCpp();
+    cpp += generateMemorySetAndGetCpp();
+    cpp += generateJSONCpp();
+    return cpp;
+}
 
+std::size_t CPUDescription::CPU::getOpCodeMaxLength()
+{
     std::size_t max_opcode_size = 0;
+    for (auto &i : instructions)
+        max_opcode_size = std::max(max_opcode_size, i.getSizeOfOPCode());
+
+    return max_opcode_size;
+}
+
+std::map<std::size_t, std::string> CPUDescription::CPU::generateInstructionMap()
+{
     std::map<std::size_t, std::string> instruction_map{};
     for (auto &i : instructions)
     {
-        max_opcode_size = std::max(max_opcode_size, i.getSizeOfOPCode());
+        //fill instruction map
         for (auto &code : i.getOPCodes())
             instruction_map[std::stoi(code.c_str(), nullptr, 2)] = "&" + name + "::" + i.getName() + "<0b" + code + ">";
     }
-    auto array_size = (unsigned int)std::pow(2, max_opcode_size);
-    cpp += "Intel4004::op " + name + "::" + "ops[" + std::to_string(array_size) + "] = {\n";
+    return instruction_map;
+}
+
+std::string CPUDescription::CPU::generateInstructionJumpTableCpp()
+{    
+    auto array_size = (unsigned int)std::pow(2, getOpCodeMaxLength());
+    auto instruction_map = generateInstructionMap();
+    std::string ret = "Intel4004::op " + name + "::" + "ops[" + std::to_string(array_size) + "] = {\n";
+
     for (auto i = 0u; i < array_size; i++)
     {
-        if (instruction_map.contains(i))
-            cpp += instruction_map[i];
-        else
-            cpp += "NULL";
+        ret += instruction_map.contains(i)?instruction_map[i]:"NULL";
 
         if (i != array_size - 1)
-            cpp += ",\n";
+            ret += ",\n";
     }
 
-    cpp += "};\n";
+    return ret + "};\n";
+}
 
-    cpp += name + "::" + name + "()\n{\n";
+std::string CPUDescription::CPU::generateInstructionsCpp()
+{
+    std::string ret = "";
+    for (auto i : instructions)
+    {
+        ret += "/* " + i.getDescription() + "*/\n";
+        ret += i.getCode(name) + "\n";
+    }
+    return ret;
+}
+
+std::string CPUDescription::CPU::generateExternalMemoryCpp()
+{
+    std::string ret = "";
+    for (auto &m : external_memory)
+        ret += m.getInterfaceCode(name);
+
+    return ret;
+}
+
+std::string CPUDescription::CPU::generateIncludesCpp()
+{
+    return "#include \"" + name + ".hpp\"\n"
+                                  "#include <stdio.h>\n"
+                                  "#include <stdlib.h>\n";
+}
+std::string CPUDescription::CPU::generateConstructorCpp()
+{
+    std::string ret = name + "::" + name + "()\n{\n";
     for (auto &m : external_memory)
     {
-        cpp += m.getInitCode();
+        ret += m.getInitCode();
     }
-    cpp += "\n}\n";
+    return ret + "\n}\n";
+}
 
-    cpp += generateDisplay();
-
-    cpp += "void " + name + "::simulate(size_t i)\n{\n"
+std::string CPUDescription::CPU::generateSimulateCpp()
+{
+    return "void " + name + "::simulate(size_t i)\n{\n"
                             "for (;i-->0;)\n"
                             "{\n"
                             "   auto val = fetch();\n"
@@ -341,47 +386,51 @@ std::string CPUDescription::CPU::generateCpp()
                             "   break;\n"
                             "   }\n"
                             "   (this->*ops[val.val()])();\n"
+                            "}\n"
                             "}\n";
-    cpp += "}\n";
-
-    for (auto m : external_memory)
-    {
-        cpp += m.getInterfaceCode(name);
-    }
-
-    cpp += "bitset " + name + "::fetch()\n"
+}
+std::string CPUDescription::CPU::generateFetchCpp()
+{
+    return "bitset " + name + "::fetch()\n"
                               "{\n" +
            fetch.generateFunction(name) +
            "}\n";
+}
 
-    cpp += "void " + name + "::set(bitset data, AddressInfo info)\n{\nset_mem(&memory[0], info, data);\n}\n";
-    cpp += "void " + name + "::set(bitset data, bitset& dest)\n{\ndest=bitset(data,dest.size());\n}\n";
-    cpp += "void " + name + "::set(bitset data, int num, const AddressInfo* infos)\n{\n"
-                            "for(size_t i = num; i --> 0;)\n"
-                            "{\n"
-                            "set_mem(&memory[0], infos[i], data);\n"
-                            "data = data >> infos[i].length;\n"
-                            "}\n}\n";
-
-    cpp += "#ifndef NO_CPPSTD\n"
-           "    std::string Intel4004::json()\n"
-           "{\n"
-           "std::string json = \"{\\\"internal\\\":{\"\n";
+std::string CPUDescription::CPU::generateMemorySetAndGetCpp()
+{
+    return "void " + name + "::set(bitset data, AddressInfo info)\n{\nset_mem(&memory[0], info, data);\n}\n"
+    "void " + name + "::set(bitset data, bitset& dest)\n{\ndest=bitset(data,dest.size());\n}\n"
+    "void " + name + "::set(bitset data, int num, const AddressInfo* infos)\n{\n"
+                     "for(size_t i = num; i --> 0;)\n"
+                     "{\n"
+                     "set_mem(&memory[0], infos[i], data);\n"
+                     "data = data >> infos[i].length;\n"
+                     "}\n}\n"
+    "bitset " + name + "::get(AddressInfo info)\n"
+                       "{\n"
+                       "   return get_mem(&memory[0], info);\n"
+                       "}\n";
+}
+std::string CPUDescription::CPU::generateJSONCpp()
+{
+    std::string ret = "#ifndef NO_CPPSTD\n"
+                      "    std::string Intel4004::json()\n"
+                      "{\n"
+                      "std::string json = \"{\\\"internal\\\":{\"\n";
     for (auto m : internal_memory)
-    {
-        cpp += m.getJSONDescription() + "\n";
-    }
+        ret += m.getJSONDescription() + "\n";
 
-    cpp = cpp.substr(0, cpp.size() - 3) + "},\\\"external\\\":{\"\n";
+    ret = ret.substr(0, ret.size() - 3) + "},\\\"external\\\":{\"\n";
     for (auto m : external_memory)
     {
-        cpp += "\"\\\"" + m.getName() + "\\\":{\\\"bits\\\":" + std::to_string(m.getBits()) + ",\\\"vals\\\":[\";\n";
-        cpp += "for(size_t i = 0; i < " + std::to_string(m.getWords()) + "; i++) json += std::to_string(" + m.getName() + "_mem[i].val()) + \",\";\n"
-                                                                                                                "json = json.substr(0,json.size()-1);\n";
-        cpp += "json += \"]},\";\njson +=";
+        ret += "\"\\\"" + m.getName() + "\\\":{\\\"bits\\\":" + std::to_string(m.getBits()) + ",\\\"vals\\\":[\";\n";
+        ret += "for(size_t i = 0; i < " + std::to_string(m.getWords()) + "; i++) json += std::to_string(" + m.getName() + "_mem[i].val()) + \",\";\n"
+                                                                                                                          "json = json.substr(0,json.size()-1);\n";
+        ret += "json += \"]},\";\njson +=";
     }
-    cpp = cpp.substr(0, cpp.size() - 12) + "\"\n\"}}\";\n";
-    cpp += "return json + \"}\";\n}\n#endif\n";
+    ret = ret.substr(0, ret.size() - 12) + "\"\n\"}}\";\n";
+    ret += "return json + \"}\";\n}\n#endif\n";
 
-    return cpp;
+    return ret;
 }

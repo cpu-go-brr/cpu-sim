@@ -18,18 +18,30 @@ namespace CPUDescription
         std::string getName();                 // get Name of the CPU
         std::string getLowerName();            // get Name of the CPU lowercase
         std::string getDescription();          // get the description of the file
-        std::string generateDisplay();         // generate sourcecode able to display the cpu
         std::string generateCMakeFile();       // generate CMake File for the CPU
         std::string generateAddressInfos();    // generate the AddressInfos of the CPU
         std::string generateMemory();          // generate the internal Memory
-        std::string generateClass();           // generate the CPU Class
         std::string generateRunScript();       // generate Script to automatically build and Run the code
-        std::string generateHppInstructions(); // generate the CPU instructions
-        std::string generateHppIncludes();     // generate the Hpp Includes
         std::string generateCpp();             // generate the CPU .cpp
         std::string generateHpp();             // generate the CPU .hpp
 
+
     private:
+        std::string generateHppInstructions(); // generate the CPU instructions
+        std::string generateHppIncludes();     // generate the Hpp Includes
+        std::string generateClass();           // generate the CPU Class
+        std::string generateDisplay();         // generate sourcecode able to display the cpu
+        std::string generateJSONCpp();             // generate the CPU .hpp
+        std::string generateMemorySetAndGetCpp();             // generate the CPU .hpp
+        std::string generateFetchCpp();             // generate the CPU .hpp
+        std::string generateSimulateCpp();
+        std::string generateConstructorCpp();
+        std::string generateIncludesCpp();
+        std::string generateExternalMemoryCpp();
+        std::string generateInstructionsCpp();
+        std::string generateInstructionJumpTableCpp();
+        std::map<std::size_t, std::string> generateInstructionMap();
+        std::size_t getOpCodeMaxLength();
         void initInfo(const YAML::Node &config);
         void initInternalMemory(const YAML::Node &config);
         void initExternalMemory(const YAML::Node &config);
