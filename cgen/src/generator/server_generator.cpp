@@ -1,7 +1,9 @@
-#include "generator/server_generator.hpp"
+#include "generator.hpp"
 #include <fstream>
 
-void ServerGenerator::generate(Description::CPU cpu, std::filesystem::path out)
+ADD_GENERATOR(Server);
+
+void ServerGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path out)
 {
     std::filesystem::create_directories(out);
 
@@ -26,10 +28,10 @@ void ServerGenerator::generate(Description::CPU cpu, std::filesystem::path out)
     main << ""
             "#include \"httplib.hpp\"\n"
             "#include \"" +
-                cpu.name + ".hpp\"\n"
+                cpu.getName() + ".hpp\"\n"
                            "int main (int argc, char** argv)\n"
                            "{\n" +
-                cpu.name + " cpu;\n"
+                cpu.getName() + " cpu;\n"
                 "    httplib::Server svr;\n"
                 "svr.Get(\"/simulate\", [&](const httplib::Request &req, httplib::Response &res)\n"
     "{\n"

@@ -1,7 +1,9 @@
-#include "generator/x86_generator.hpp"
+#include "generator.hpp"
 #include <fstream>
 
-void x86Generator::generate(Description::CPU cpu, std::filesystem::path out)
+ADD_GENERATOR(PC);
+
+void PCGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path out)
 {
     std::filesystem::create_directories(out);
 
@@ -22,10 +24,10 @@ void x86Generator::generate(Description::CPU cpu, std::filesystem::path out)
 
     std::ofstream main(out / "src/main.cpp", std::ios::trunc);
 
-    main << "#include \"" + cpu.name + ".hpp\"\n"
+    main << "#include \"" + cpu.getName() + ".hpp\"\n"
                                        "int main (int argc, char** argv)\n"
                                        "{\n" +
-                cpu.name + " cpu;\n"
+                cpu.getName() + " cpu;\n"
                            "return 0;\n"
                            "}\n";
 

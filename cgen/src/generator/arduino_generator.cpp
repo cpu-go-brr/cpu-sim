@@ -1,10 +1,10 @@
-#include "generator/arduino_generator.hpp"
+#include "generator.hpp"
 #include <fstream>
 
-void ArduinoGenerator::generate(Description::CPU cpu, std::filesystem::path out)
-{
-    std::filesystem::create_directories(out);
+ADD_GENERATOR(Arduino);
 
+void ArduinoGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path out)
+{
     generateStandard(cpu, out);
     std::filesystem::copy("resources/fbitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
     std::filesystem::copy("resources/scripts", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
@@ -25,7 +25,7 @@ void ArduinoGenerator::generate(Description::CPU cpu, std::filesystem::path out)
     main << ""
             "#include <Arduino.h>"
             "#include \"" +
-                cpu.name + ".hpp\""
+                cpu.getName() + ".hpp\""
                            "void setup()"
                            "{"
                            "// put your setup code here, to run once:"
@@ -33,7 +33,7 @@ void ArduinoGenerator::generate(Description::CPU cpu, std::filesystem::path out)
                            "while(!Serial.available());"
                            "}"
                            "" +
-                cpu.name + " cpu{};"
+                cpu.getName() + " cpu{};"
                            ""
                            "void loop()"
                            "{"
