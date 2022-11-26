@@ -73,6 +73,18 @@ std::string CPUDescription::InternalMemory::getJSONDescription()
     return ret +"\"},\"";
 }
 
+std::size_t CPUDescription::InternalMemory::getSize() const
+{
+    return size;
+}
+
+std::string CPUDescription::InternalMemory::getAddressInfo() const
+{
+    std::string ret = "const AddressInfo " + name + "{" + std::to_string(byteoffset) + ", " + std::to_string(bitoffset) + ", " + std::to_string(size) + "};\n";
+    for (auto mem : submemory)
+        ret += mem.getAddressInfo();
+    return ret;
+}
 
 std::vector<uint8_t> CPUDescription::InternalMemory::getBitmask()
 {

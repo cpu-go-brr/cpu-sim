@@ -19,7 +19,7 @@ void CPUDescription::CPU::initInternalMemory(const YAML::Node &config)
     for (YAML::const_iterator it = mem.begin(); it != mem.end(); ++it)
     {
         InternalMemory m(it->first.as<std::string>(), it->second, total_mem);
-        total_mem += m.size;
+        total_mem += m.getSize();
         internal_memory.push_back(m);
     }
 }
@@ -94,21 +94,12 @@ std::string CPUDescription::CPU::generateMemory()
 }
 
 
-std::string getAddressInfo(CPUDescription::InternalMemory m)
-{
-    std::string ret = "const AddressInfo " + m.name + "{" + std::to_string(m.byteoffset) + ", " + std::to_string(m.bitoffset) + ", " + std::to_string(m.size) + "};\n";
-    for (auto mem : m.submemory)
-        ret += getAddressInfo(mem);
-
-    return ret + "\n\n";
-}
-
 std::string CPUDescription::CPU::generateAddressInfos()
 {
     std::string ret = "#pragma once\n#include \"AddressInfo.hpp\"\n";
 
     for (auto m : internal_memory)
-        ret += getAddressInfo(m);
+        ret += m.getAddressInfo();
 
     return ret;
 }
