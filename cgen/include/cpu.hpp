@@ -30,7 +30,7 @@ namespace CPUDescription
         std::string generateHpp();             // generate the CPU .hpp
 
     private:
-        void extractInfo(const YAML::Node &config);
+        void initInfo(const YAML::Node &config);
         void initInternalMemory(const YAML::Node &config);
         void initExternalMemory(const YAML::Node &config);
         void initInstructions(const YAML::Node &config);

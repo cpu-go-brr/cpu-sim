@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cctype>
 
-void CPUDescription::CPU::extractInfo(const YAML::Node &config)
+void CPUDescription::CPU::initInfo(const YAML::Node &config)
 {
     name = config["name"].as<std::string>();
     description = config["description"].as<std::string>("");
@@ -49,7 +49,7 @@ void CPUDescription::CPU::initInstructions(const YAML::Node &config)
 CPUDescription::CPU::CPU(std::string path)
 {
     auto file = YAML::LoadFile(path);
-    extractInfo(file);
+    initInfo(file);
     initInternalMemory(file);
     initExternalMemory(file);
     initInstructions(file);
@@ -74,13 +74,13 @@ std::string CPUDescription::CPU::generateHppIncludes()
 std::string CPUDescription::CPU::generateHppInstructions()
 {
     std::string functions = ""; // the return array
-    unsigned int max_bits = 0;  // the maximum number of bits a function has
+    std::size_t max_bits = 0;  // the maximum number of bits a function has
 
     for (auto &i : instructions)
     {
-        max_bits = std::max(max_bits, i.bits);  // set the bitsize to maximum
+        max_bits = std::max(max_bits, i.getSizeOfOPCode());  // set the bitsize to maximum
         functions += "   template <size_t C>\n" // concatenate declaration of the instruction
-                     "   void " + i.name + "();\n";
+                     "   void " + i.getName() + "();\n";
     }
     auto array_size = (unsigned int)std::pow(2, max_bits);                            // calculate space needed o accommodate all instructions
     functions += "\nstatic Intel4004::op ops[" + std::to_string(array_size) + "];\n"; // add array for instruction pointer
@@ -302,19 +302,19 @@ std::string CPUDescription::CPU::generateCpp()
                               "}\n";
     for (auto i : instructions)
     {
-        cpp += "/* " + i.description + "*/\n";
-        cpp += i.getFunction(name) + "\n";
+        cpp += "/* " + i.getDescription() + "*/\n";
+        cpp += i.getCode(name) + "\n";
     }
 
-    unsigned int max_bits = 0;
+    std::size_t max_opcode_size = 0;
     std::map<std::size_t, std::string> instruction_map{};
     for (auto &i : instructions)
     {
-        max_bits = std::max(max_bits, i.bits);
+        max_opcode_size = std::max(max_opcode_size, i.getSizeOfOPCode());
         for (auto &code : i.getOPCodes())
-            instruction_map[std::stoi(code.c_str(), nullptr, 2)] = "&" + name + "::" + i.name + "<0b" + code + ">";
+            instruction_map[std::stoi(code.c_str(), nullptr, 2)] = "&" + name + "::" + i.getName() + "<0b" + code + ">";
     }
-    auto array_size = (unsigned int)std::pow(2, max_bits);
+    auto array_size = (unsigned int)std::pow(2, max_opcode_size);
     cpp += "Intel4004::op " + name + "::" + "ops[" + std::to_string(array_size) + "] = {\n";
     for (auto i = 0u; i < array_size; i++)
     {
@@ -360,7 +360,7 @@ std::string CPUDescription::CPU::generateCpp()
 
     cpp += "bitset " + name + "::fetch()\n"
                               "{\n" +
-           fetch.getCode(name) +
+           fetch.generateFunction(name) +
            "}\n";
 
     cpp += "void " + name + "::set(bitset data, AddressInfo info)\n{\nset_mem(&memory[0], info, data);\n}\n";
