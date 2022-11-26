@@ -3,24 +3,27 @@
 #include <assert.h>
 #include <iostream>
 
-double eval(std::string formula, std::vector<std::pair<std::string, double>> vals)
+double MathExpression::eval(std::string formula, std::vector<std::pair<std::string, double>> vals)
 {
+    //Initialize two vectors
     std::vector<char *> cstrings{};
     std::vector<double> nums{};
 
-    for (const auto& pair : vals)
+    for (const auto& [name, val] : vals)
     {
-        cstrings.push_back((char*)pair.first.c_str());
-        nums.push_back(pair.second);
+        cstrings.push_back((char*)name.c_str());
+        nums.push_back(val);
     }
-// std::cout << formula << "(";
 
+    //create evaluator
     auto f = evaluator_create((char *)formula.c_str());
-    // std::cout << ")\n";
+    //check that formular was correct
     assert(f);
 
+    //obtain res
     auto res = evaluator_evaluate(f, vals.size(), cstrings.data(), nums.data());
 
+    //clear up evaluator
     evaluator_destroy (f);
     return res;
 }
