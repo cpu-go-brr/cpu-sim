@@ -5,23 +5,28 @@
 #include <iostream>
 #include "expression.hpp"
 
-std::string Description::Expression::getCode(std::map<std::string, std::string> params)
+std::tuple<std::string, std::string> split(const std::string& string, const std::string& seperator)
+{
+    auto p = string.find(seperator);
+    return {string.substr(0, p), string.substr(0, p + seperator.size()) };
+}
+
+std::string CPUDescription::Expression::getCode(std::map<std::string, std::string> params)
 {
     std::string comment = "/* " + source + "*/\n";
 
     // now we want to do the text substitution
     std::smatch sm;
     std::string source_nw = std::regex_replace(source, std::regex("\\s"), "");
-    source = source_nw;
 
-    auto arrow = source.find("-->");
-    std::string left = source.substr(0, arrow);
-    std::string right = source.substr(arrow + 3);
+    auto arrow = source_nw.find("-->");
+    std::string left = source_nw.substr(0, arrow);
+    std::string right = source_nw.substr(arrow + 3);
 
     if (arrow == std::string::npos)
         right = "";
     std::string condition = "";
-    auto cond = source.find("?");
+    auto cond = source_nw.find("?");
     if (cond != std::string::npos)
     {
         condition = left.substr(0, cond);
@@ -114,9 +119,4 @@ std::string Description::Expression::getCode(std::map<std::string, std::string> 
     return comment + ret;
 }
 
-Description::Expression::Expression(std::string source_, std::string code_)
-{
-    source = source_;
-    code = code_;
-
-}
+CPUDescription::Expression::Expression(std::string source_): source{source_}{}

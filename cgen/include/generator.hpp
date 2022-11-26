@@ -4,9 +4,9 @@
 #include "cpu.hpp"
 #include <filesystem>
 
-typedef void (*Generator)(Description::CPU, std::filesystem::path);
+typedef void (*Generator)(CPUDescription::CPU, std::filesystem::path);
 inline std::map<std::string, Generator> generators = {};
-void generateStandard(Description::CPU cpu, std::filesystem::path path);
+void generateStandard(CPUDescription::CPU cpu, std::filesystem::path path);
 
 
 #define ADD_GENERATOR(VAR) class VAR##Generator\
@@ -20,7 +20,7 @@ void generateStandard(Description::CPU cpu, std::filesystem::path path);
     ;                                                            \
     static VAR##GeneratorInitializer init;                       \
                                                                  \
-    static void generate(Description::CPU cpu, std::filesystem::path out); \
+    static void generate(CPUDescription::CPU cpu, std::filesystem::path out); \
     }                                                            \
     ;                                                            \
     VAR##Generator::VAR##GeneratorInitializer VAR##Generator::init;

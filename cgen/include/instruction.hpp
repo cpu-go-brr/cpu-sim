@@ -10,7 +10,7 @@
 #include "condition.hpp"
 
 
-namespace Description
+namespace CPUDescription
 {
     class Instruction
     {

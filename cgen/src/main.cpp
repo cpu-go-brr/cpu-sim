@@ -10,13 +10,15 @@ int main(int argc, char **argv)
     std::cout << argv[0] << std::endl;
 
     ArgumentParser parser(argc, argv);
-    auto in = parser.getIn();
-    auto out = parser.getOut();
-    auto mode = parser.getMode();
+    auto in = parser.getInputPath();
+    auto out = parser.getOutputPath();
+    auto mode = parser.getSelectedMode();
     
     // for(auto [key,pointer]: generators) std::cout << key << "\n";
     std::cout << "Building " <<in << " to " << out << "(" << mode << ")" << std::endl;
-    auto cpu = Description::CPU(in);
+    auto cpu = CPUDescription::CPU(in);
+
+    std::filesystem::create_directories(out);
     generators[mode](cpu, out);
     // desc.generate(out);
 

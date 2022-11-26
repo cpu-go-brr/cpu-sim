@@ -6,14 +6,14 @@
 #include <cctype>
 
 
-Description::ExternalMemory::ExternalMemory(std::string key, YAML::Node config)
+CPUDescription::ExternalMemory::ExternalMemory(std::string key, YAML::Node config)
 {
     name = key;
     words = config["words"].as<int>();
     bits = config["bits"].as<int>();
 }
 
-std::string Description::ExternalMemory::getDeclaration()
+std::string CPUDescription::ExternalMemory::getDeclaration()
 {
     return "/* "+name+" */\n"
     "bitset " + name + "_mem[" + std::to_string(words) + "];\n"
@@ -26,14 +26,14 @@ std::string Description::ExternalMemory::getDeclaration()
 
 }
 
-std::string Description::ExternalMemory::getInit()
+std::string CPUDescription::ExternalMemory::getInit()
 {
     return "for(auto i = 0ul; i < " + std::to_string(words) + "; i ++)\n"
     "" + name + "_mem[i] = bitset(0," + std::to_string(bits) + ");\n";
 }
 
 
-std::string Description::ExternalMemory::getFunction(const std::string& cpu)
+std::string CPUDescription::ExternalMemory::getFunction(const std::string& cpu)
 {
     return "bitset& " + cpu + "::" + name + "(AddressInfo info)\n"
     "{\n"

@@ -1,18 +1,18 @@
 #pragma once
 
 #include <string>
-#include <vector>
-#include <regex>
 #include "matheval.hpp"
 
-namespace Description
+namespace CPUDescription
 {
     class Expression
     {
     public:
-        Expression(std::string source, std::string code);
+        Expression(std::string source); //intitialize with source like 0 --> ACC
 
+        //return code 
         std::string getCode(std::map<std::string, std::string> params);
-        std::string source, code;
+    private:
+        const std::string source;
     };
 }

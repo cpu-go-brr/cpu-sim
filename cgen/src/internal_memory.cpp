@@ -60,7 +60,7 @@ std::string getName(std::string name, std::vector<int> dimensions)
     return name;
 }
 
-std::string Description::InternalMemory::getJSONDescription()
+std::string CPUDescription::InternalMemory::getJSONDescription()
 {
     if(submemory.size() == 0)
     return "\"\\\"" + name + "\\\":{\\\"bits\\\":"+std::to_string(size)+",\\\"val\\\":\" + std::to_string(get("+name+").val()) + \"},\"";
@@ -74,7 +74,7 @@ std::string Description::InternalMemory::getJSONDescription()
 }
 
 
-std::vector<uint8_t> Description::InternalMemory::getBitmask()
+std::vector<uint8_t> CPUDescription::InternalMemory::getBitmask()
 {
     assert(size > 0);
 
@@ -91,9 +91,9 @@ std::vector<uint8_t> Description::InternalMemory::getBitmask()
 }
 
 
-std::map<std::string, std::size_t> Description::InternalMemory::address_lengths = {};
+std::map<std::string, std::size_t> CPUDescription::InternalMemory::address_lengths = {};
 
-Description::InternalMemory::InternalMemory(std::string key, YAML::Node config, int total_mem, std::vector<int> dimension)
+CPUDescription::InternalMemory::InternalMemory(std::string key, YAML::Node config, int total_mem, std::vector<int> dimension)
 {
     auto info = getDimension(key);
     name = getName(info.first, dimension);

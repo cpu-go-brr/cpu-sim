@@ -2,7 +2,7 @@
 #include "instruction.hpp"
 
 
-std::string Description::Instruction::getFunction(std::string classname)
+std::string CPUDescription::Instruction::getFunction(std::string classname)
 {
     std::string ret = "";
 
@@ -17,7 +17,7 @@ std::string Description::Instruction::getFunction(std::string classname)
     }
     return ret;
 }
-std::string Description::Instruction::getCode(std::string c)
+std::string CPUDescription::Instruction::getCode(std::string c)
 {
     std::string ret = "";
 
@@ -79,14 +79,14 @@ std::vector<std::string> getPossibilities(std::string code)
     return {code};
 }
 
-std::vector<std::string> Description::Instruction::getOPCodes()
+std::vector<std::string> CPUDescription::Instruction::getOPCodes()
 {
     code.erase(std::remove_if(code.begin(), code.end(), ::isspace), code.end());
 
     return getPossibilities(code);
 }
 
-Description::Instruction::Instruction(std::string key, YAML::Node config)
+CPUDescription::Instruction::Instruction(std::string key, YAML::Node config)
 {
     name = key;
     description = config["description"].as<std::string>("");
@@ -97,7 +97,7 @@ Description::Instruction::Instruction(std::string key, YAML::Node config)
     auto instr = config["instructions"];
     for (auto i = 0ul; i < instr.size(); i++)
     {
-        expressions.push_back(Expression(instr[i].as<std::string>(), code));
+        expressions.push_back(Expression(instr[i].as<std::string>()));
     }
 
     auto con = config["conditions"];

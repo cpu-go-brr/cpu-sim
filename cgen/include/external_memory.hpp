@@ -6,7 +6,7 @@
 #include <regex>
 #include "matheval.hpp"
 
-namespace Description
+namespace CPUDescription
 {
 
     class ExternalMemory
