@@ -13,11 +13,12 @@ namespace CPUDescription
     class Instruction
     {
     public:
+        //set name of instruction and config
         Instruction(std::string name, YAML::Node config);
         Instruction() = default;
 
         std::string getCode(std::string classname); //get whole Function
-        std::vector<std::string> getOPCodes();
+        std::vector<std::string> getOPCodes(); //get all possible instruction codes (replace all parameter with 0 or 1)
 
         std::size_t getSizeOfOPCode();
         std::string getName();
