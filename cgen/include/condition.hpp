@@ -14,6 +14,6 @@ namespace CPUDescription
         std::string getCode();
 
     private:
-        std::string condition;
+        const std::string condition;
     };
 }

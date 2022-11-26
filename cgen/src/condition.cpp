@@ -1,21 +1,19 @@
 #include "condition.hpp"
 #include <regex>
-#include <iostream>
 
-CPUDescription::Condition::Condition(std::string cond)
+CPUDescription::Condition::Condition(std::string cond) : condition{std::regex_replace(cond, std::regex("\\s"), "")} // remove whitespace
 {
-    condition = cond;
 }
-
 
 std::string CPUDescription::Condition::getCode()
 {
-    condition = std::regex_replace(condition, std::regex("\\s"), "");
+    // Surround internal Memory with "get(..)"
     auto line = "bool " + std::regex_replace(condition, std::regex("[A-Z][A-Z\\[0-9\\]]+"), "get($&)") + ";\n";
 
-    auto equals = line.find('=')+1;
-    auto left = line.substr(0,equals);
+    // prefix all Parameter with bool"
+    auto equals = line.find('=') + 1;
+    auto left = line.substr(0, equals);
     auto right = std::regex_replace(line.substr(equals), std::regex("([A-Z])[&|^]"), "(bool)$&");
 
-    return left+right;
+    return left + right;
 }
