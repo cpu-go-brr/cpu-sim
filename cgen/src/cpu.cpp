@@ -239,8 +239,8 @@ std::string CPUDescription::CPU::generateDisplay()
     ret += "if(str == NULL)\n"
            "{\nstr = (char*)malloc(" +
            std::to_string(unescapedsize(display_str) - 2) + ");\n"
-                                                            "sprintf(str, " +
-           display_str + ");\n"
+                                                            "sprintf(str, \"" +
+           display_str + "\");\n"
                          "}\n";
     ret += params;
     ret += "#ifndef NO_PRINT\n";
