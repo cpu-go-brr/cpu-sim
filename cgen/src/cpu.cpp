@@ -169,7 +169,7 @@ std::string CPUDescription::CPU::generateClass()
 // returns stringsize -1 -3*count('\n')
 std::size_t unescapedsize(std::string s)
 {
-    std::size_t len = s.size() - 1;
+    std::size_t len = s.size();
     std::smatch m;
     std::regex e("\n"); // matches words beginning by "sub"
 
@@ -238,7 +238,7 @@ std::string CPUDescription::CPU::generateDisplay()
     ret += "{\n";
     ret += "if(str == NULL)\n"
            "{\nstr = (char*)malloc(" +
-           std::to_string(unescapedsize(display_str) - 2) + ");\n"
+           std::to_string(unescapedsize(display_str)+1) + ");\n"
                                                             "sprintf(str, \"" +
            display_str + "\");\n"
                          "}\n";
