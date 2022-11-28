@@ -1,10 +1,6 @@
 #include "Intel4004.hpp"
 #include <stdio.h>
 #include <stdlib.h>
-bitset Intel4004::get(AddressInfo info)
-{
-   return get_mem(&memory[0], info);
-}
 /* No Operation*/
 template <>
 void Intel4004::nop<0b00000000>()
@@ -3309,12 +3305,12 @@ set((get(PC)+1), PC);
 /* The content of the accumulator and carry/link are rotated left.
 */
 template <>
-void Intel4004::ral<0b11110110>()
+void Intel4004::ral<0b11110101>()
 {
-/* (CY,ACC) --> ACC,CY*/
+/* (ACC,CY) --> CY,ACC*/
 {
-const AddressInfo __addr_infos[2] = {ACC,CY};
-set(((get(CY),get(ACC))), 2,__addr_infos);
+const AddressInfo __addr_infos[2] = {CY,ACC};
+set(((get(ACC),get(CY))), 2,__addr_infos);
 }
 /* PC+1 --> PC*/
 set((get(PC)+1), PC);
@@ -3326,10 +3322,10 @@ set((get(PC)+1), PC);
 template <>
 void Intel4004::rar<0b11110110>()
 {
-/* (ACC,CY) --> CY,ACC*/
+/* (CY,ACC) --> ACC,CY*/
 {
-const AddressInfo __addr_infos[2] = {CY,ACC};
-set(((get(ACC),get(CY))), 2,__addr_infos);
+const AddressInfo __addr_infos[2] = {ACC,CY};
+set(((get(CY),get(ACC))), 2,__addr_infos);
 }
 /* PC+1 --> PC*/
 set((get(PC)+1), PC);
@@ -3697,7 +3693,7 @@ NULL,
 &Intel4004::iac<0b11110010>,
 &Intel4004::cmc<0b11110011>,
 &Intel4004::cma<0b11110100>,
-NULL,
+&Intel4004::ral<0b11110101>,
 &Intel4004::rar<0b11110110>,
 &Intel4004::tcc<0b11110111>,
 &Intel4004::dac<0b11111000>,
@@ -3738,36 +3734,37 @@ char* Intel4004::display()
 {
 if(str == NULL)
 {
-str = (char*)malloc(248);
+str = (char*)malloc(247);
 sprintf(str, "         STACK                REGISTERS\n\
      PC XXX          R0 R1 X X   R8 R9 X X\n\
 LEVEL 1 XXX          R2 R3 X X   RA RB X X\n\
-LEVEL 2 XXX          R4 R5 X X   RA RB X X\n\
-LEVEL 3 XXX          R6 R7 X X   RA RB X X\n\
+LEVEL 2 XXX          R4 R5 X X   RC RD X X\n\
+LEVEL 3 XXX          R6 R7 X X   RE RF X X\n\
 \n\
-ACCUMULATOR: XX [XXXX]  CARRY: X\n\n");
+ACCUMULATOR: XX [XXXX]  CARRY: X\n\
+");
 }
-hex(PC,str +48);
-hex(R0,str +67);
-hex(R1,str +69);
-hex(R8,str +79);
-hex(R9,str +81);
-hex(STACK0,str +91);
-hex(R2,str +110);
-hex(R3,str +112);
-hex(R10,str +122);
-hex(R11,str +124);
-hex(STACK1,str +134);
-hex(R4,str +153);
-hex(R5,str +155);
-hex(R12,str +165);
-hex(R13,str +167);
-hex(STACK2,str +177);
-hex(R6,str +196);
-hex(R7,str +198);
-hex(R14,str +208);
-hex(R15,str +210);
-dec(ACC, str+226);
+hex(PC, str +48);
+hex(R0, str +67);
+hex(R1, str +69);
+hex(R8, str +79);
+hex(R9, str +81);
+hex(STACK0, str +91);
+hex(R2, str +110);
+hex(R3, str +112);
+hex(R10, str +122);
+hex(R11, str +124);
+hex(STACK1, str +134);
+hex(R4, str +153);
+hex(R5, str +155);
+hex(R12, str +165);
+hex(R13, str +167);
+hex(STACK2, str +177);
+hex(R6, str +196);
+hex(R7, str +198);
+hex(R14, str +208);
+hex(R15, str +210);
+dec(ACC, str +226);
 bin(ACC, str +230);
 bin(CY, str +244);
 #ifndef NO_PRINT
@@ -3925,6 +3922,10 @@ for(size_t i = num; i --> 0;)
 set_mem(&memory[0], infos[i], data);
 data = data >> infos[i].length;
 }
+}
+bitset Intel4004::get(AddressInfo info)
+{
+   return get_mem(&memory[0], info);
 }
 #ifndef NO_CPPSTD
     std::string Intel4004::json()
