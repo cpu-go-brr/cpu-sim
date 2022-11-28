@@ -11,8 +11,8 @@ BALL_VEL_Y=15   ; SINGLE REGISTER
 START   ; Entrypoint
         JMS RESET ; RESET REGISTERS
 LOOP_1
-        JMS MOVE  ; MOVE BALL
-        ; JMS PEDAL_L ; MOVE PEDAL LEFT
+        ;JMS MOVE  ; MOVE BALL
+        JMS PEDAL_L ; MOVE PEDAL LEFT
         JUN LOOP_1
         JUN DONE
 
@@ -36,14 +36,14 @@ RESET   ; Reset Variables
         LDM 2
         WRM
 
-        ;DRAW REFT_PEDAL
-        LD PEDAL_POS_R
-        XCH 0
-        LDM 15
-        XCH 1
-        SRC 0
-        LDM 2
-        WRM
+        ;DRAW RIGHT_PEDAL
+        ;LD PEDAL_POS_R
+        ;XCH 0
+        ;LDM 15
+        ;XCH 1
+        ;SRC 0
+        ;LDM 2
+        ;WRM
 
         FIM 0, $00 ; RESET FIRST REGISTER
 
@@ -56,8 +56,8 @@ PEDAL_L
         RDR ;READ INPUT
         ;NOW LETS TEST IF UP IS PRESSED
         RAL
-        JCN %0010 NO_LEFT_PEDAL_UP
-
+        JCN %1010 NO_LEFT_PEDAL_UP
+        CLC
         ;WE ARE PRESSING UP
         ;ARE WE ALREADY AT TOP?
         LD PEDAL_POS_L
@@ -84,13 +84,15 @@ NO_LEFT_PEDAL_UP
 
         ;ARE WE DOWN?
         RAL
-        JCN %0010 NO_LEFT_PEDAL_DOWN
+        JCN %1010 NO_LEFT_PEDAL_DOWN
+        CLC
         ;YES WE ARE DOWN
         ;ARE WE ALREADY COMPLETELY DOWN?
         LDM 7
         SUB PEDAL_POS_L
         JCN %0100 NO_LEFT_PEDAL_DOWN
         ; REMOVE OLD PEDAL
+        LD PEDAL_POS_L
         XCH 0
         LDM 0
         XCH 1
