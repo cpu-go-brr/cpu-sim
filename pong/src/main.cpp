@@ -35,6 +35,10 @@ int main(int argc, char **argv)
     while (true)
     {
         cpu.rom_port(0).bin(rom_port);
+
+        while(cpu.get(R6).val() == 0)
+            cpu.simulate();
+
         cpu.simulate();
         cpu.display();
 
