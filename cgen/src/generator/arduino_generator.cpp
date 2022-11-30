@@ -23,28 +23,28 @@ void ArduinoGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path o
     std::ofstream main(out / "src/main.cpp", std::ios::trunc);
 
     main << ""
-            "#include <Arduino.h>"
+            "#include <Arduino.h>\n"
             "#include \"" +
-                cpu.getName() + ".hpp\""
-                           "void setup()"
-                           "{"
-                           "// put your setup code here, to run once:"
-                           "Serial.begin(9600);"
-                           "while(!Serial.available());"
-                           "}"
-                           "" +
-                cpu.getName() + " cpu{};"
+                cpu.getName() + ".hpp\"\n"
+                           "void setup()\n"
+                           "{\n"
+                           "// put your setup code here, to run once:\n"
+                           "Serial.begin(9600);\n"
+                           "while(!Serial.available());\n"
+                           "}\n"
+                           "\n" +
+                cpu.getName() + " cpu{};\n"
                            ""
-                           "void loop()"
-                           "{"
-                           "bitset prog[] = {0x00}; "
-                           "cpu.flash_rom(prog, sizeof(prog) / sizeof(bitset));"
-                           "cpu.simulate(1);"
-                           "cpu.display();"
-                           "    "
-                           "exit(0);"
-                           ""
-                           "}";
+                           "void loop()\n"
+                           "{\n"
+                           "bitset prog[] = {0x00}; \n"
+                           "cpu.flash_rom(prog, sizeof(prog) / sizeof(bitset));\n"
+                           "cpu.simulate();\n"
+                           "cpu.display();\n"
+                           "    \n"
+                           "exit(0);\n"
+                           "\n"
+                           "}\n";
     main.close();
 
     std::ofstream cmake(out / "CMakeLists.txt", std::ios::trunc);
