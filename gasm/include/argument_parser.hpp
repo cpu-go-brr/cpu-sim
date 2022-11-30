@@ -8,6 +8,7 @@ class ArgumentParser
     std::string getCode();
     std::string getCPU();
     std::string getOut();
+    std::string getFormat();
     void printHelp();
 
     private:

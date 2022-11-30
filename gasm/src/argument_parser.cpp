@@ -15,7 +15,9 @@ void ArgumentParser::printHelp()
     std::cout << "gasm - General Assembler\n"
     "Options:\n"
     "--file, -f\t\tLocation of the Code\n"
-    "--cpu, -c\t\tLocation of the CPU Description File\n";
+    "--cpu, -c\t\tLocation of the CPU Description File\n"
+    "--out, -o\t\tLocation of the Output File\n"
+    "--mode, -m\t\tOutput Mode (bin, c, hex)\n";
 
     exit(0);
 }
@@ -65,7 +67,18 @@ std::string ArgumentParser::getOut()
     if(cmdOptionExists("-o"))
         return getCmdOption("-o");
 
-    std::cerr << "No output file specified\n";
-    exit(0);
+    return "/dev/tty";
+}
+
+
+std::string ArgumentParser::getFormat()
+{
+    if(cmdOptionExists("--mode"))
+        return getCmdOption("--mode");
+
+    if(cmdOptionExists("-m"))
+        return getCmdOption("-m");
+
+    return "hex";
 }
 
