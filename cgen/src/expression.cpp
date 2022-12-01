@@ -5,118 +5,128 @@
 #include <iostream>
 #include "expression.hpp"
 
-std::string Description::Expression::getCode(std::map<std::string, std::string> params)
+std::tuple<std::string, std::string> split(const std::string &string, const std::string &seperator, bool keepright = false)
 {
-    std::string comment = "/* " + source + "*/\n";
+    auto p = string.find(seperator);
+    if (p == std::string::npos)
+        return {keepright ? "" : string, keepright ? string : ""};
 
-    // now we want to do the text substitution
-    std::smatch sm;
-    std::string source_nw = std::regex_replace(source, std::regex("\\s"), "");
-    source = source_nw;
+    return {string.substr(0, p), string.substr(p + seperator.size())};
+}
 
-    auto arrow = source.find("-->");
-    std::string left = source.substr(0, arrow);
-    std::string right = source.substr(arrow + 3);
-
-    if (arrow == std::string::npos)
-        right = "";
-    std::string condition = "";
-    auto cond = source.find("?");
-    if (cond != std::string::npos)
-    {
-        condition = left.substr(0, cond);
-        left = left.substr(cond + 1);
-    }
-
+void substituteBinaryNumbers(std::string &string)
+{
     const std::regex nums("[^A-Z0-9](0b[01]+)[^A-Z0-9]");
-    while (std::regex_search(left, sm, nums))
+    std::smatch sm;
+    while (std::regex_search(string, sm, nums))
     {
-        std::string number = std::to_string(std::strtoull(sm.str().substr(3).c_str(),NULL, 2));
-        std::string len = std::to_string(sm.str().size()-4);
-        left = sm.prefix().str() + sm.str().substr(0,1)+"bitset(" + number + "," + len + ")" +sm.str().substr(sm.str().size()-1) + sm.suffix().str();
-    }    
-    while (std::regex_search(right, sm, nums))
-    {
-        std::string number = std::to_string(std::strtoull(sm.str().substr(3).c_str(),NULL, 2));
-        std::string len = std::to_string(sm.str().size()-4);
-        right = sm.prefix().str() + sm.str().substr(0,1)+"bitset(" + number + "," + len + ")" +sm.str().substr(sm.str().size()-1) + sm.suffix().str();
+        std::string number = std::to_string(std::strtoull(sm.str().substr(3).c_str(), NULL, 2));
+        std::string len = std::to_string(sm.str().size() - 4);
+        string = sm.prefix().str() + sm.str().substr(0, 1) + "bitset(" + number + "," + len + ")" + sm.str().substr(sm.str().size() - 1) + sm.suffix().str();
     }
+}
 
-
+std::vector<std::pair<std::string, double>> convertParameter(const std::map<std::string, std::string> &params)
+{
     std::vector<std::pair<std::string, double>> vals;
     for (auto [key, val] : params)
     {
         auto res = std::stol(val, nullptr, 2);
         vals.push_back({key, (double)res});
     }
+    return vals;
+}
 
+void evaluateCurlyBrackets(std::string &string, std::vector<std::pair<std::string, double>> vals)
+{
     const std::regex replacements("[A-Z](\\{[^\\{\\}]*\\})");
-    while (std::regex_search(left, sm, replacements))
-    {
-        // std::cout << sm.str() << "\n";
-        std::string match = sm.str().substr(2, sm.length() - 3);
-        std::string res = std::to_string((std::size_t)eval(match, vals));
-        left = sm.prefix().str() + sm.str().substr(0,1) + res + sm.suffix().str();
-    }
+    std::smatch sm;
 
-    while (std::regex_search(right, sm, replacements))
+    while (std::regex_search(string, sm, replacements))
     {
-        // std::cout << sm.str() << "\n";
         std::string match = sm.str().substr(2, sm.length() - 3);
-        std::string res = std::to_string((std::size_t)eval(match, vals));
-        right = sm.prefix().str() + sm.str().substr(0,1)+ res + sm.suffix().str();
+        std::string res = std::to_string((std::size_t)MathExpression::eval(match, vals));
+        string = sm.prefix().str() + sm.str().substr(0, 1) + res + sm.suffix().str();
     }
+}
 
-    while (std::regex_search(condition, sm, replacements))
-    {
-        // std::cout << sm.str() << "\n";
-        std::string match = sm.str().substr(2, sm.length() - 3);
-        std::string res = std::to_string((std::size_t)eval(match, vals));
-        condition = sm.prefix().str() + sm.str().substr(0,1)+ res + sm.suffix().str();
-    }
-
+void wrapAddressInGetFunction(std::string &string)
+{
     const std::regex vars("([A-Z\\{\\[\\]\\}]+[0-9]+|[A-Z\\{\\[\\]\\}]{2,}[0-9]*)");
+    string = std::regex_replace(string, vars, "get($&)");
+}
 
-    left = std::regex_replace(left, vars, "get($&)");
-    condition = std::regex_replace(condition, vars, "get($&)");
+void wrapAddressInsideParenthesisInGetFunction(std::string &string)
+{
+    const std::regex rightvars("\\(([A-Z\\{\\[\\]\\}]+[0-9]+|[A-Z\\{\\[\\]\\}]{2,}[0-9]*)");
+    string = std::regex_replace(string, rightvars, "(get($1)");
+}
 
-        const std::regex rightvars("\\(([A-Z\\{\\[\\]\\}]+[0-9]+|[A-Z\\{\\[\\]\\}]{2,}[0-9]*)");
-
-    right = std::regex_replace(right, rightvars, "(get($1)");
-
+std::size_t getAddressCount(const std::string &string)
+{
     std::size_t commas = 0;
     int level = 0;
-    for(std::size_t p = 0; p < right.size(); p++)
+    for (std::size_t p = 0; p < string.size(); p++)
     {
-        if(right[p] == '(') level++;
-        if(right[p] == ')') level--;
-        if(level == 0 && right[p] == ',') commas++;
-        
+        if (string[p] == '(')
+            level++;
+        if (string[p] == ')')
+            level--;
+        if (level == 0 && string[p] == ',')
+            commas++;
     }
 
-    std::string prev = "", suff = "";
-    if(commas > 0)
-    {
-        prev = "{\nconst AddressInfo __addr_infos[" + std::to_string(commas+1) + "] = {" + right + "};\n";
-        right =  std::to_string(commas+1) + ",__addr_infos";
-        suff = "}\n";
-    }
+    return commas;
+}
+
+std::string assembleExpressionParts(std::string condition, std::string left, std::string right)
+{
 
     std::string ret = "";
     if (right != "")
-        ret = prev + "set((" + left + "), "+ right +");\n" + suff;
+    {
+        std::size_t commas = getAddressCount(right);
+        std::string prev = "", suff = "";
+        if (commas > 0)
+        {
+            prev = "{\nconst AddressInfo __addr_infos[" + std::to_string(commas + 1) + "] = {" + right + "};\n";
+            right = std::to_string(commas + 1) + ",__addr_infos";
+            suff = "}\n";
+        }
+
+        if (right != "")
+            ret = prev + "set((" + left + "), " + right + ");\n" + suff;
+    }
     else
         ret = "return " + left + ";\n";
 
+    // apply condition
     if (condition != "")
         ret = "if(" + condition + ")\n{\n" + ret + "}\n";
 
-    return comment + ret;
+    return ret;
 }
 
-Description::Expression::Expression(std::string source_, std::string code_)
+std::string CPUDescription::Expression::getCode(std::map<std::string, std::string> params)
 {
-    source = source_;
-    code = code_;
+    std::string comment = "/* " + source + "*/\n";
 
+    std::string condition = "", left = "", right = "", source_nw = std::regex_replace(source, std::regex("\\s"), "");
+
+    evaluateCurlyBrackets(source_nw, convertParameter(params));
+
+    std::tie(left, right) = split(source_nw, "-->");
+
+    wrapAddressInGetFunction(left);
+
+    std::tie(condition, left) = split(left, "?", true);
+
+    substituteBinaryNumbers(left);
+    substituteBinaryNumbers(right);
+
+    wrapAddressInsideParenthesisInGetFunction(right);
+
+    return comment + assembleExpressionParts(condition, left, right);
 }
+
+CPUDescription::Expression::Expression(std::string source_) : source{source_} {}

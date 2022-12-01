@@ -49,7 +49,7 @@ std::string getName(std::string name, std::vector<int> dimensions)
     while (std::regex_match(name, matches, r))
     {
         std::string match = matches[1].str(); // string we need to replace
-        std::string new_val = std::to_string((int)eval(match));
+        std::string new_val = std::to_string((std::size_t)MathExpression::eval(match));
 
         auto index = name.find("{" + match + "}");
         if (index == std::string::npos)
@@ -60,7 +60,7 @@ std::string getName(std::string name, std::vector<int> dimensions)
     return name;
 }
 
-std::string Description::InternalMemory::getJSONDescription()
+std::string CPUDescription::InternalMemory::getJSONDescription()
 {
     if(submemory.size() == 0)
     return "\"\\\"" + name + "\\\":{\\\"bits\\\":"+std::to_string(size)+",\\\"val\\\":\" + std::to_string(get("+name+").val()) + \"},\"";
@@ -73,47 +73,41 @@ std::string Description::InternalMemory::getJSONDescription()
     return ret +"\"},\"";
 }
 
-
-std::vector<uint8_t> Description::InternalMemory::getBitmask()
+std::size_t CPUDescription::InternalMemory::getSize() const
 {
-    assert(size > 0);
+    return size;
+}
 
-    std::vector<uint8_t> bytes((int)std::ceil(((double)size + (double)bitoffset) / 8.0), 0xFF);
-
-    int free_bytes = bytes.size() * 8 - (size + bitoffset);
-    uint8_t highest_byte_mask = ((1 << (8 - free_bytes)) - 1);
-    uint8_t lowest_byte_mask = ~((1 << (bitoffset)) - 1);
-
-    bytes[0] &= lowest_byte_mask;
-    bytes[bytes.size() - 1] &= highest_byte_mask;
-
-    return bytes;
+std::string CPUDescription::InternalMemory::getAddressInfo() const
+{
+    std::string ret = "const AddressInfo " + name + "{" + std::to_string(byteoffset) + ", " + std::to_string(bitoffset) + ", " + std::to_string(size) + "};\n";
+    for (auto mem : submemory)
+        ret += mem.getAddressInfo();
+    return ret;
 }
 
 
-std::map<std::string, std::size_t> Description::InternalMemory::address_lengths = {};
+std::map<std::string, std::size_t> CPUDescription::InternalMemory::address_lengths = {};
 
-Description::InternalMemory::InternalMemory(std::string key, YAML::Node config, int total_mem, std::vector<int> dimension)
+CPUDescription::InternalMemory::InternalMemory(std::string key, YAML::Node config, int total_mem, std::vector<int> dimension)
 {
     auto info = getDimension(key);
     name = getName(info.first, dimension);
     int dim = info.second;
 
     if (config.IsScalar())
-    {
         size = config.as<int>();
-    }
-
+    
     for (YAML::const_iterator it = config.begin(); it != config.end(); ++it)
     {
         for (int i = 0; i < dim; i++)
         {
             std::vector<int> copy(dimension);
             copy.push_back(i);
-            std::string n = getName(it->first.as<std::string>(), copy);
-            InternalMemory m(n, it->second, total_mem + size, copy);
-            size += m.size;
-            submemory.push_back(m);
+            std::string name = getName(it->first.as<std::string>(), copy);
+            InternalMemory mem(name, it->second, total_mem + size, copy);
+            size += mem.size;
+            submemory.push_back(mem);
         }
     }
 

@@ -19,7 +19,6 @@ int main(int argc, char **argv)
     else
     {
         exit(0);
-
     }
     std::vector<bitset> prog;
     for (const auto c : bytes)
@@ -31,11 +30,45 @@ int main(int argc, char **argv)
 
     std::ifstream tty("/dev/tty");
     char c;
+
+    char rom_port[5] = "XXXX";
     while (true)
     {
+        cpu.rom_port(0).bin(rom_port);
+
+        while(cpu.get(R6).val() == 0)
+            cpu.simulate();
+
         cpu.simulate();
         cpu.display();
-        tty.read(&c, 1);
+
+        for (int j = 0; j < 8; j++)
+        {
+            for (int i = 0; i < 16; i++)
+                std::cout << cpu.ram_mem[16*j +i].val();
+            std::cout << "\n";
+        }
+        std::cout << "rom_port: "<< rom_port << "\n"; 
+
+        //Player 1: wsx Player 2: ujm
+
+        while(tty.read(&c, 1))
+        {
+            if(c == '\n') break;
+            uint8_t val = cpu.rom_port(0).val();
+
+            if(c == 'w') cpu.set(0b1000 + (val & 0b11), cpu.rom_port(0));
+            if(c == 's') cpu.set(0b0000 + (val & 0b11), cpu.rom_port(0));
+            if(c == 'x') cpu.set(0b0100 + (val & 0b11), cpu.rom_port(0));
+
+
+            if(c == 'u') cpu.set(0b10 + (val & 0b1100), cpu.rom_port(0));
+            if(c == 'j') cpu.set(0b00 + (val & 0b1100), cpu.rom_port(0));
+            if(c == 'm') cpu.set(0b01 + (val & 0b1100), cpu.rom_port(0));
+
+        }
+
+
     }
     return 0;
 }

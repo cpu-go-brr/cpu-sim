@@ -1,9 +1,10 @@
-#include "generator/src_generator.hpp"
+#include "generator.hpp"
 #include <fstream>
 
-void srcGenerator::generate(Description::CPU cpu, std::filesystem::path out)
+ADD_GENERATOR(src);
+
+void srcGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path out)
 {
-    std::filesystem::create_directories(out);
 
     generateStandard(cpu, out);
     std::filesystem::copy("resources/abitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);

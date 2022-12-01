@@ -6,19 +6,23 @@
 #include <regex>
 #include "matheval.hpp"
 
-namespace Description
+namespace CPUDescription
 {
 
     class ExternalMemory
     {
-    private:
     public:
         ExternalMemory(std::string key, YAML::Node config);
+
+        std::string getInterfaceDeclaration(); //get code declaration for getter and setter Methods
+        std::string getInitCode();  //get code to initialize memory with 0 
+        std::string getInterfaceCode(const std::string& cpu); // get code for getter and setter Methods
+        std::string getName();
+        std::size_t getBits();
+        std::size_t getWords();
+        
+    private:
         std::string name = "";
         std::size_t words = 0, bits = 0;
-
-        std::string getDeclaration();
-        std::string getInit();
-        std::string getFunction(const std::string& cpu);
     };
 }

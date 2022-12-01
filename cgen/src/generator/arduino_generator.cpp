@@ -1,10 +1,10 @@
-#include "generator/arduino_generator.hpp"
+#include "generator.hpp"
 #include <fstream>
 
-void ArduinoGenerator::generate(Description::CPU cpu, std::filesystem::path out)
-{
-    std::filesystem::create_directories(out);
+ADD_GENERATOR(Arduino);
 
+void ArduinoGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path out)
+{
     generateStandard(cpu, out);
     std::filesystem::copy("resources/fbitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
     std::filesystem::copy("resources/scripts", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
@@ -23,28 +23,28 @@ void ArduinoGenerator::generate(Description::CPU cpu, std::filesystem::path out)
     std::ofstream main(out / "src/main.cpp", std::ios::trunc);
 
     main << ""
-            "#include <Arduino.h>"
+            "#include <Arduino.h>\n"
             "#include \"" +
-                cpu.name + ".hpp\""
-                           "void setup()"
-                           "{"
-                           "// put your setup code here, to run once:"
-                           "Serial.begin(9600);"
-                           "while(!Serial.available());"
-                           "}"
-                           "" +
-                cpu.name + " cpu{};"
+                cpu.getName() + ".hpp\"\n"
+                           "void setup()\n"
+                           "{\n"
+                           "// put your setup code here, to run once:\n"
+                           "Serial.begin(9600);\n"
+                           "while(!Serial.available());\n"
+                           "}\n"
+                           "\n" +
+                cpu.getName() + " cpu{};\n"
                            ""
-                           "void loop()"
-                           "{"
-                           "bitset prog[] = {0x00}; "
-                           "cpu.flash_rom(prog, sizeof(prog) / sizeof(bitset));"
-                           "cpu.simulate(1);"
-                           "cpu.display();"
-                           "    "
-                           "exit(0);"
-                           ""
-                           "}";
+                           "void loop()\n"
+                           "{\n"
+                           "bitset prog[] = {0x00}; \n"
+                           "cpu.flash_rom(prog, sizeof(prog) / sizeof(bitset));\n"
+                           "cpu.simulate();\n"
+                           "cpu.display();\n"
+                           "    \n"
+                           "exit(0);\n"
+                           "\n"
+                           "}\n";
     main.close();
 
     std::ofstream cmake(out / "CMakeLists.txt", std::ios::trunc);

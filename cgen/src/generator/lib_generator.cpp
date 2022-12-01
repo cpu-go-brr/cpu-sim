@@ -1,7 +1,9 @@
-#include "generator/library_generator.hpp"
+#include "generator.hpp"
 #include <fstream>
 
-void LibraryGenerator::generate(Description::CPU cpu, std::filesystem::path out)
+ADD_GENERATOR(Library);
+
+void LibraryGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path out)
 {
     std::filesystem::create_directories(out);
 
@@ -21,7 +23,7 @@ void LibraryGenerator::generate(Description::CPU cpu, std::filesystem::path out)
                 "// #define NO_CPPSTD\n";
     settings.close();
 
-    std::ofstream pcfile(out / (cpu.lowername() + ".pc.in"), std::ios::trunc);
+    std::ofstream pcfile(out / (cpu.getLowerName() + ".pc.in"), std::ios::trunc);
 
     pcfile << "prefix=@CMAKE_INSTALL_PREFIX@\n"
               "exec_prefix=@CMAKE_INSTALL_PREFIX@\n"
@@ -29,9 +31,9 @@ void LibraryGenerator::generate(Description::CPU cpu, std::filesystem::path out)
               "includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@\n"
               "\n"
               "Name: " +
-                  cpu.name + "\n"
+                  cpu.getName() + "\n"
                              "Description: " +
-                  cpu.description + "\n"
+                  cpu.getDescription() + "\n"
                                     "Version: 1.0.0\n"
                                     "\n"
                                     "Requires:\n"
@@ -41,7 +43,7 @@ void LibraryGenerator::generate(Description::CPU cpu, std::filesystem::path out)
     std::ofstream cmake(out / "CMakeLists.txt", std::ios::trunc);
 
     cmake << "cmake_minimum_required(VERSION 3.5)\n"
-             "project("+ cpu.lowername() +" VERSION 1.0.0 LANGUAGES CXX)\n"
+             "project("+ cpu.getLowerName() +" VERSION 1.0.0 LANGUAGES CXX)\n"
              "\n"
              "set(DEFAULT_BUILD_TYPE \"Release\")\n"
              "\n"

@@ -76,7 +76,6 @@ install(TARGETS gasm DESTINATION bin)
 # This is basically a repeat of the file copy instruction that copies the
 # resources in the build directory, but here we tell cmake that we want it
 # in the package.
-install(DIRECTORY resources DESTINATION bin)
 
 # Now comes everything we need, to create a package
 # there are a lot more variables you can set, and some

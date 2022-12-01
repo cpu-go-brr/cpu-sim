@@ -1,17 +1,13 @@
 #include "argument_parser.hpp"
 #include "generator.hpp"
 #include <iostream>
-ArgumentParser::ArgumentParser(int argc_, char **argv_)
+ArgumentParser::ArgumentParser(const int argc_, const char **argv_) : argc{argc_}, argv{argv_}
 {
-    argc = argc_;
-    argv = argv_;
-
     if(cmdOptionExists("--help") || cmdOptionExists("-h"))
-        printHelp();
-
+        printHelpAndExit();
 }
 
-void ArgumentParser::printHelp()
+void ArgumentParser::printHelpAndExit() const
 {
     std::cout << "cgen - CPU Emulation Generator\n"
     "Options:\n"
@@ -21,20 +17,20 @@ void ArgumentParser::printHelp()
     exit(0);
 }
 
-char* ArgumentParser::getCmdOption(const std::string &option)
+const char* ArgumentParser::getCmdOption(const std::string &option) const
 {
-    char ** itr = std::find(argv, argv + argc, option);
+    const char ** itr = std::find(argv, argv + argc, option);
     if (itr != argv + argc && ++itr != argv + argc)
     {
         return *itr;
     }
     return 0;
 }
-bool ArgumentParser::cmdOptionExists(const std::string &option)
+bool ArgumentParser::cmdOptionExists(const std::string &option) const
 {
     return std::find(argv, argv + argc, option) != argv + argc;
 }
-std::string ArgumentParser::getIn()
+std::string ArgumentParser::getInputPath() const
 {
     if(cmdOptionExists("--file"))
         return getCmdOption("--file");
@@ -46,7 +42,7 @@ std::string ArgumentParser::getIn()
     exit(0);
 }
 
-std::string ArgumentParser::getOut()
+std::string ArgumentParser::getOutputPath() const
 {
     if(cmdOptionExists("--out"))
         return getCmdOption("--out");
@@ -58,31 +54,28 @@ std::string ArgumentParser::getOut()
     exit(0);
 }
 
-std::string ArgumentParser::getMode()
+std::string ArgumentParser::getSelectedMode() const
 {
     std::string mode = "";
     if(cmdOptionExists("--mode"))
         mode =  getCmdOption("--mode");
 
     else if(cmdOptionExists("-m"))
-        mode =  getCmdOption("-");
+        mode =  getCmdOption("-m");
     
     if(mode == "")
     {
-        std::cerr << "No mode specified! Available Modes are:\n";
-        for(auto [key,pointer]: generators) std::cerr << "- "<< key << "\n";
+        std::cerr << "No mode specified! Available Modes are:" <<std::endl;
+        for(auto [key,pointer]: generators) std::cerr << "- "<< key << std::endl;
         exit(0);
     }
 
     if(!generators.contains(mode))
     {
-        std::cerr << "specified mode \""+mode+"\" does not exist! Available Modes are:\n";
-        for(auto [key,pointer]: generators) std::cerr << "- "<< key << "\n";
+        std::cerr << "specified mode \""+mode+"\" does not exist! Available Modes are:" <<std::endl;
+        for(auto [key,pointer]: generators) std::cerr << "- "<< key << std::endl;
         exit(0);
     }
 
     return mode;
-    
-
-
 }
