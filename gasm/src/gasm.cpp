@@ -64,11 +64,11 @@ std::string get_code_of_instruction(std::string inst_name)
         }
     }
     std::cout << "ERROR in get_code_of_instruction(). No instruction with name '" << inst_name << "'.\n";
+    return NULL;
 }
 
 int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variables)
 {
-    int res;
     int base = 10;
 
     if (arg[0] == '$')
@@ -76,8 +76,10 @@ int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variab
         arg = arg.substr(1, arg.length());
         for (size_t i = 0; i < arg.length(); i++)
         {
-            int current_acsii = int(arg[i]);
-            if (!(48 <= current_acsii <= 57) && !(65 <= current_acsii <= 70) && !(97 <= current_acsii <= 102))
+            int current_ascii = int(arg[i]);
+            if (!(48 <= current_ascii && current_ascii <= 57) &&
+                !(65 <= current_ascii && current_ascii <= 70) &&
+                !(97 <= current_ascii && current_ascii <= 102))
             {
                 arg = arg.substr(0, i);
                 break;
@@ -90,8 +92,8 @@ int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variab
         arg = arg.substr(1, arg.length());
         for (size_t i = 0; i < arg.length(); i++)
         {
-            int current_acsii = int(arg[i]);
-            if (!(48 <= current_acsii <= 49))
+            int current_ascii = int(arg[i]);
+            if (!(48 <= current_ascii && current_ascii <= 49))
             {
                 arg = arg.substr(0, i);
                 break;
@@ -99,12 +101,12 @@ int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variab
         }
         base = 2;
     }
-    else if ((48 <= arg[0] <= 57))
+    else if ((48 <= arg[0] && arg[0] <= 57))
     {
         for (size_t i = 0; i < arg.length(); i++)
         {
-            int current_acsii = int(arg[i]);
-            if (!(48 <= current_acsii <= 57))
+            int current_ascii = int(arg[i]);
+            if (!(48 <= current_ascii && current_ascii <= 57))
             {
                 arg = arg.substr(0, i);
                 break;
@@ -118,19 +120,15 @@ int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variab
     }
     catch (std::invalid_argument &exc)
     {
-        if (allow_lookup_of_other_variables)
+        transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
+        if (allow_lookup_of_other_variables && vars.find(arg) != vars.end())
         {
-            transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
-            if (vars.find(arg) != vars.end())
-            {
-                return vars[arg];
-            }
+            return vars[arg];
         }
-        else
-        {
-            std::cout << "ERROR in parse_value_from_argument(): " << exc.what() << "\n";
-            return 0;
-        }
+        std::stringstream ss;
+        ss << "ERROR in parse_value_from_argument(): " << exc.what();
+        throw std::invalid_argument(ss.str());
+        return 0;
     }
 }
 
@@ -164,7 +162,7 @@ std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yam
                 value_str.erase(std::remove_if(value_str.begin(), value_str.end(), ::isspace), value_str.end());
                 // std::cout << value_str << " ";
 
-                int value_str_length = (int)value_str.length() / 8;
+                uint value_str_length = (int)value_str.length() / 8;
 
                 while (res.size() < value_str_length)
                 {
@@ -173,7 +171,7 @@ std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yam
                 }
                 res[value_str_length - 1].insert({key_str, value_str});
             }
-            catch (const YAML::TypedBadConversion<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>> e)
+            catch (const YAML::TypedBadConversion<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>> &e)
             {
                 std::cout << "ERROR in parse_instruction_codes_from_yaml(). No 'asm' entry in '" << key_str << "' instruction"
                           << "\n";
@@ -206,7 +204,7 @@ std::vector<std::string> first_iteration(std::string asm_file_path)
     {
         line = line.substr(0, line.find(";"));
 
-        int pos_first_char = line.find_first_not_of(WHITESPACE);
+        uint pos_first_char = line.find_first_not_of(WHITESPACE);
         if (pos_first_char != std::string::npos && line[pos_first_char] == '$')
         {
             return cleaned_lines;
@@ -301,7 +299,7 @@ std::vector<std::string> first_iteration(std::string asm_file_path)
 
 std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
 {
-    int pos = 0;
+    uint pos = 0;
     std::vector<int> res = {};
     std::regex reg_set_pc("\\*[ \t]*=[ \t]*[^ ]+");
 
@@ -315,7 +313,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
         {
             std::string var_def = matches[0].str();
             std::string variable_value = trim(var_def.substr(var_def.find("=") + 1, var_def.size()));
-            int num = parse_value_from_argument(variable_value, false);
+            uint num = parse_value_from_argument(variable_value, false);
 
             if (pos < num)
             {
@@ -400,7 +398,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
 
             for (size_t j = (int)code.length() / 8; j > 0; j--)
             {
-                int val = ((current_value >> 8*(j-1)) & 0xff);
+                int val = ((current_value >> 8 * (j - 1)) & 0xff);
                 if (pos >= res.size())
                 {
                     res.push_back(val);
@@ -417,7 +415,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
     {
         res.push_back(0);
     }
-    
+
     return res;
 }
 
