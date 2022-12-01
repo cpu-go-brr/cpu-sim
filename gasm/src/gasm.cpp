@@ -2,6 +2,7 @@
 #include "yaml-cpp/yaml.h"
 #include <vector>
 #include <regex>
+#include <algorithm>
 
 const std::string WHITESPACE = " \n\r\t\f\v";
 std::map<std::string, int> vars;
@@ -67,11 +68,6 @@ std::string get_code_of_instruction(std::string inst_name)
 
 int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variables)
 {
-    if (arg.find(",") != std::string::npos)
-    {
-        arg = arg.substr(0, arg.find(","));
-    }
-
     int res;
     int base = 10;
 
@@ -311,6 +307,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
 
     for (size_t i = 0; i < cleand_lines.size(); i++)
     {
+        std::replace(cleand_lines[i].begin(), cleand_lines[i].end(), ',', ' ');
         std::vector<std::string> splitted_line = split(cleand_lines[i]);
 
         std::smatch matches;
