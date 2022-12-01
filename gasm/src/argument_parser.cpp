@@ -1,5 +1,7 @@
 #include "argument_parser.hpp"
 #include <iostream>
+#include <algorithm>
+
 ArgumentParser::ArgumentParser(int argc_, char **argv_)
 {
     argc = argc_;
