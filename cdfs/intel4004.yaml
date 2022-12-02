@@ -46,12 +46,14 @@ fetch:
 
 instructions:
   nop:
+    name: No Operation
+    description: No Operation
     code: 0000 0000
     asm: 00000000
-    description: No Operation
     instructions:
       - PC + 1 --> PC
   jcn:
+    name: Jump Conditional
     description: |
       If the designated condition code is true, program control is transferred to the instruction 
       located at the 8 bit address A2A2A2A2, A1A1A1A1 on the same page (ROM) where JCN is located.
@@ -75,6 +77,7 @@ instructions:
       - jump ? rom(PC+1) --> PM,PL
       - jump && nextpage ? PH +1 --> PH
   fim:
+    name: Fetch Immediate
     description: |
       Load 8-bits of data which are loaded into the designated index register pair from ROM.
     code: 0010 RRR0
@@ -83,6 +86,7 @@ instructions:
       - rom(PC+1) --> P{R}
       - PC+2 --> PC
   src:
+    name: Send Register Control
     description: |
       The 8 bit content of the designated index register pair is sent to 
       the RAM address register at X2 and X3. A subsequent read, write, 
@@ -100,6 +104,7 @@ instructions:
       - P{R} --> SRC
       - PC+1 --> PC
   fin:
+    name: Fetch Indirect
     description: |
       The 8 bit content of the 0 index register pair (0000) (0001) is sent out as 
       an address in the same page where the FIN instruction is located. The 8 bit 
@@ -113,6 +118,7 @@ instructions:
       - PC+1 --> PC
       - rom((PH, P0)) --> P{R}
   jin:
+    name: Jump Indircet
     description: |
       The 8 bit content of the designated index register pair is loaded 
       into the low order 8 positions of the program counter. Program control 
@@ -125,12 +131,14 @@ instructions:
       - R{2*R} --> PM
       - R{2*R+1} --> PL
   jun:
+    name: Jump Unconditional
     description: Jump unconditional
     code: 0100 AAAA
     asm: 0100AAAA AAAAAAAA
     instructions:
       - (A, rom(PC+1))--> PC
   jms:
+    name: Jump to Subroutine
     description: |
       The address of the next instruction in sequence following JMS (return address)
       is saved in the push down stack. Program control is transferred to the instruction 
@@ -147,6 +155,7 @@ instructions:
       - PC + 2 --> STACK0
       - (A, rom(PC+1))--> PC
   inc:
+    name: Increment
     description: |
       The 4 bit content of the designated index register is incremented by 1. 
       The index register is set to zero in case of overflow. The carry/link is unaffected.
@@ -156,6 +165,7 @@ instructions:
       - R{R} + 1 --> R{R}
       - PC +1 --> PC
   isz:
+    name: Increment and Skip
     description: |
       The content of the designated index register is incremented by 1. The accumulator and 
       carry/link are unaffected. If the result is zero, the next instruction after ISZ is 
@@ -169,6 +179,7 @@ instructions:
       - R{R} == 0 ? PC +2 --> PC
       - R{R} != 0 ? rom(PC+1) --> PM,PL
   add:
+    name: Add
     description: |
       The 4 bit content of the designated index register is added to the content of the 
       accumulator with carry. The result is stored in the accumulator. The carry/link is 
@@ -180,6 +191,7 @@ instructions:
       - R{R} + ACC + CY --> CY,ACC
       - PC +1 --> PC
   sub:
+    name: Subtract
     description: |
       The 4 bit content of the designated index register is complemented (ones complement) 
       and added to content of the accumulator with borrow and the result is stored in the 
@@ -191,6 +203,7 @@ instructions:
       - (~R{R} + ACC + ~CY) --> CY,ACC
       - PC +1 --> PC
   ld:
+    name: Load
     description: |
       The 4 bit content of the designated index register (RRRR) is loaded into 
       accumulator. The previous contents of the accumulator are lost. The 4 bit 
@@ -201,6 +214,7 @@ instructions:
       - R{R} --> ACC
       - PC+1 --> PC
   xch:
+    name: Exchange
     description: |
       The 4 bit content of designated index register is loaded into the accumulator. 
       The prior content of the accumulator is loaded into the designed register. 
@@ -211,6 +225,7 @@ instructions:
       - (ACC, R{R}) --> R{R}, ACC
       - PC +1 --> PC
   bbl:
+    name: Branch Back and Load
     description: |
       The program counter (address stack) is pushed down one level. Program control 
       transfers to the next instruction following the last jump to subroutine (JMS) 
@@ -227,6 +242,7 @@ instructions:
       - STACK2 --> STACK1
       - 0 --> STACK2
   ldm:
+    name: Load Immediate
     description: |
       The 4 bits of data, DDDD stored in the OPA field of instruction
       word are loaded into the accumulator. The previous contents of the
@@ -237,6 +253,7 @@ instructions:
       - D --> ACC
       - PC+1 --> PC
   wrm:
+    name: Write Main Memory
     description: |
       The accumulator content is written into the previously selected RAM 
       main memory character location. The accumulator and carry/link are unaffected.
@@ -246,6 +263,7 @@ instructions:
       - ACC --> ram((CM, SRC))
       - PC+1 --> PC
   wmp:
+    name: Write RAM Port
     description: |
       The content of the accumulator is transferred to the RAM output port 
       of the previously selected RAM chip. The data is available on the 
@@ -258,6 +276,7 @@ instructions:
       - ACC --> ram_port(CM)
       - PC+1 --> PC
   wrr:
+    name: Write ROM Port
     description: |
       The content of the accumulator is transferred to the ROM output port of 
       the previously selected ROM chip. The data is available on the output 
@@ -271,6 +290,7 @@ instructions:
       - ACC --> rom_port(X2)
       - PC+1 --> PC
   wr0:
+    name: Write Status Char 0 
     description: |
       The content of the accumulator is written into the RAM status character 
       0 of the previously selected RAM register. The accumulator and the carry/link 
@@ -281,6 +301,7 @@ instructions:
       - ACC --> ram_status((X2, 0b00))
       - PC +1 --> PC
   wr1:
+    name: Write Status Char 1
     description: |
       The content of the accumulator is written into the RAM status character 
       1 of the previously selected RAM register. The accumulator and the carry/link 
@@ -291,6 +312,7 @@ instructions:
       - ACC --> ram_status((X2, 0b01))
       - PC +1 --> PC
   wr2:
+    name: Write Status Char 2
     description: |
       The content of the accumulator is written into the RAM status character 
       2 of the previously selected RAM register. The accumulator and the carry/link 
@@ -301,6 +323,7 @@ instructions:
       - ACC --> ram_status((X2, 0b10))
       - PC +1 --> PC
   wr3:
+    name: Write Status Char 3
     description: |
       The content of the accumulator is written into the RAM status character 
       3 of the previously selected RAM register. The accumulator and the carry/link 
@@ -311,6 +334,7 @@ instructions:
       - ACC --> ram_status((X2, 0b11))
       - PC +1 --> PC
   sbm:
+    name: Subtract Main Memory
     description: |
       The content of the previously selected RAM character is subtracted from the 
       accumulator with borrow. The RAM character is unaffected.    
@@ -320,6 +344,7 @@ instructions:
       - (~ram((CM, SRC)) + ACC + ~CY) --> CY,ACC
       - PC +1 --> PC
   rdm:
+    name: Read Main Memory
     description: |
       The content of the previously selected RAM main memory character is transferred 
       to the accumulator. The carry/link is unaffected. The 4-bit data in memory is unaffected.
@@ -329,6 +354,7 @@ instructions:
       - ram((CM, SRC)) --> ACC
       - PC+1 --> PC
   rdr:
+    name: Read ROM Port
     description: |
       The data present at the input lines of the previously selected ROM chip is transferred to 
       the accumulator. The carry/link is unaffected. If the I/O option has both inputs and outputs 
@@ -340,6 +366,7 @@ instructions:
       - rom_port(X2) --> ACC
       - PC+1 --> PC
   adm:
+    name: Add Main Memory
     description: |
       The content of the previously selected RAM main memory character is added to the accumulator 
       with carry. The RAM character is unaffected.
@@ -349,6 +376,7 @@ instructions:
       - ram((CM, SRC)) + ACC + CY --> CY,ACC
       - PC +1 --> PC
   rd0:
+    name: Read Status Char 0
     description: |
       The 4-bits of status character 0 for the previously selected RAM register are transferred 
       to the accumulator. The carry/link and the status character are unaffected.    
@@ -358,6 +386,7 @@ instructions:
       - ram_status((X2, 0b00)) --> ACC 
       - PC +1 --> PC
   rd1:
+    name: Read Status Char 1
     description: |
       The 4-bits of status character 1 for the previously selected RAM register are transferred 
       to the accumulator. The carry/link and the status character are unaffected.    
@@ -367,6 +396,7 @@ instructions:
       - ram_status((X2, 0b01)) --> ACC 
       - PC +1 --> PC
   rd2:
+    name: Read Status Char 2
     description: |
       The 4-bits of status character 0 for the previously selected RAM register are transferred 
       to the accumulator. The carry/link and the status character are unaffected.    
@@ -376,6 +406,7 @@ instructions:
       - ram_status((X2, 0b10)) --> ACC 
       - PC +1 --> PC
   rd3:
+    name: Read Status Char 3
     description: |
       The 4-bits of status character 0 for the previously selected RAM register are transferred 
       to the accumulator. The carry/link and the status character are unaffected.    
@@ -385,6 +416,7 @@ instructions:
       - ram_status((X2, 0b11)) --> ACC 
       - PC +1 --> PC
   clb:
+    name: Clear Both
     description: Set accumulator and carry/link to 0.
     code: 1111 0000
     asm: 11110000
@@ -393,48 +425,39 @@ instructions:
       - 0 --> CY
       - PC+1 --> PC
   clc:
+    name: Clear Carry
     description: Clear Carry
     code: 1111 0001
     asm: 11110001
     instructions:
       - 0 --> CY
       - PC+1 --> PC
-  cmc:
-    description: Complement Carry
-    code: 1111 0011
-    asm: 11110011
-    instructions:
-      - ~CY --> CY
-      - PC+1 --> PC
-  stc:
-    description: Set Carry
-    code: 1111 1010
-    asm: 11111010
-    instructions:
-      - 1 --> CY
-      - PC+1 --> PC
-  cma:
-    description: Complement Accumulator
-    code: 1111 0100
-    asm: 11110100
-    instructions:
-      - ~ACC --> ACC
-      - PC+1 --> PC
   iac:
+    name: Increment Accumulator
     description: Increment Accumulator
     code: 1111 0010
     asm: 11110010
     instructions:
       - ACC+1 --> CY,ACC
       - PC+1 --> PC
-  dac:
-    description: Decrement Accumulator
-    code: 1111 1000
-    asm: 11111000
+  cmc:
+    name: Complement Carry
+    description: Complement Carry
+    code: 1111 0011
+    asm: 11110011
     instructions:
-      - ACC+0b1111 --> CY,ACC
+      - ~CY --> CY
+      - PC+1 --> PC
+  cma:
+    name: Complement Accumulator
+    description: Complement Accumulator
+    code: 1111 0100
+    asm: 11110100
+    instructions:
+      - ~ACC --> ACC
       - PC+1 --> PC
   ral:
+    name: Rotate Left
     description: |
       The content of the accumulator and carry/link are rotated left.
     code: 1111 0101
@@ -443,6 +466,7 @@ instructions:
       - (ACC,CY) --> CY,ACC
       - PC+1 --> PC
   rar:
+    name: Rotate Right
     description: |
       The content of the accumulator and carry/link are rotated right.
     code: 1111 0110
@@ -451,6 +475,7 @@ instructions:
       - (CY,ACC) --> ACC,CY
       - PC+1 --> PC
   tcc:
+    name: Transfer Carry and Clear
     description: |
       The accumulator is cleared. The least significant position of 
       the accumulator is set to the value of the carry/link.
@@ -462,19 +487,16 @@ instructions:
       - CY --> ACC
       - 0 --> CY
       - PC+1 --> PC
-  daa:
-    description: |
-      The accumulator is incremented by 6 if either the carry/link is 1 
-      or if the accumulator content is greater than 9.
-      The carry/link is set to a 1 if the result generates a carry, 
-      otherwise it is unaffected.
-    code: 1111 1011
-    asm: 11111011
-    conditions:
-      - inc = CY == 1 || ACC > 9
+  dac:
+    name: Decrement Accumulator
+    description: Decrement Accumulator
+    code: 1111 1000
+    asm: 11111000
     instructions:
-      - inc? ACC + 6 --> CY,ACC
+      - ACC+0b1111 --> CY,ACC
+      - PC+1 --> PC
   tcs:
+    name: Transfer Carry Subtract
     description: |
       The accumulator is set to 9 if the carry/link is 0.
       The accumulator is set to 10 if the carry/link is a 1.
@@ -486,7 +508,29 @@ instructions:
       - CY == 1 ? 0b1010 --> ACC
       - 0 --> CY
       - PC+1 --> PC
+  stc:
+    name: Set Carry
+    description: Set Carry
+    code: 1111 1010
+    asm: 11111010
+    instructions:
+      - 1 --> CY
+      - PC+1 --> PC
+  daa:
+    name: Decimal Adjust Accumulator
+    description: |
+      The accumulator is incremented by 6 if either the carry/link is 1 
+      or if the accumulator content is greater than 9.
+      The carry/link is set to a 1 if the result generates a carry, 
+      otherwise it is unaffected.
+    code: 1111 1011
+    asm: 11111011
+    conditions:
+      - inc = CY == 1 || ACC > 9
+    instructions:
+      - inc? ACC + 6 --> CY,ACC
   kbp:
+    name: Keyboard Process
     description: The Accumulator will be set to the position of the first bit. If
       more than one bit is set the Accumulator will be set to 15
     code: 1111 1100
@@ -502,6 +546,7 @@ instructions:
       - error ? 15 --> ACC
       - PC+1 --> PC
   dcl:
+    name: Designate Command Line
     description: | 
       The content of the three least significant accumulator bits is
       transferred to the CM-RAM output lines on the cpu.
