@@ -1,0 +1,9 @@
+{
+    "internal": [[{ "name": "PC", "size": 2 }, 2, { "name": "R0", "size": 2 }, { "name": "R1", "size": 2 }, 1, { "name": "R8", "size": 2 }, { "name": "R9", "size": 2 }],
+    [{ "name": "STACK0", "size": 2 }, 2, { "name": "R2", "size": 2 }, { "name": "R3", "size": 2 }, 1, { "name": "R10", "size": 2 }, { "name": "R11", "size": 2 }],
+    [{ "name": "STACK1", "size": 2 }, 2, { "name": "R4", "size": 2 }, { "name": "R5", "size": 2 }, 1, { "name": "R12", "size": 2 }, { "name": "R13", "size": 2 }],
+    [{ "name": "STACK2", "size": 2 }, 2, { "name": "R6", "size": 2 }, { "name": "R7", "size": 2 }, 1, { "name": "R14", "size": 2 }, { "name": "R15", "size": 2 }],
+    [],
+    [{ "name": "ACC", "size": 2 }, 2, { "name": "CY", "size": 1 }, 1, { "name": "TEST", "size": 1 }]],
+    "instructions": [{"value": "NOP", "meta": "No Operation"}]
+}
