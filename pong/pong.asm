@@ -146,7 +146,7 @@ PEDAL_L
         SRC 0
         LDM 2
         WRM
-        BBL0
+        BBL 0
 NO_LEFT_PEDAL_UP
 
         ;ARE WE DOWN?
