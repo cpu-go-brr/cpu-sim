@@ -1,5 +1,6 @@
 #include "generator.hpp"
 #include <fstream>
+#include <iostream>
 
 ADD_GENERATOR(Server);
 
@@ -8,9 +9,9 @@ void ServerGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path ou
     std::filesystem::create_directories(out);
 
     generateStandard(cpu, out);
-    std::filesystem::copy("resources/abitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
-    std::filesystem::copy("resources/server", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
-    std::filesystem::copy("resources/scripts", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::copy(getExecutablePath()/"resources/abitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::copy(getExecutablePath()/"resources/server", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::copy(getExecutablePath()/"resources/scripts", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
 
     std::ofstream settings(out / ("include/settings.hpp"), std::ios::trunc);
     settings << "#pragma once\n"

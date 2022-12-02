@@ -7,8 +7,8 @@ void srcGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path out)
 {
 
     generateStandard(cpu, out);
-    std::filesystem::copy("resources/abitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
-    std::filesystem::copy("resources/fbitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::copy(getExecutablePath()/"resources/abitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::copy(getExecutablePath()/"resources/fbitset", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
 
     std::ofstream settings(out / ("include/settings.hpp"), std::ios::trunc);
     settings << "#pragma once\n"

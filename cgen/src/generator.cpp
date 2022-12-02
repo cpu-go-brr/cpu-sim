@@ -5,11 +5,15 @@
 #include <cmath>
 
 
+std::filesystem::path getExecutablePath()
+{
+    return std::filesystem::canonical("/proc/self/exe").parent_path();
+}
 
 
 void generateStandard(CPUDescription::CPU cpu, std::filesystem::path out)
 {
-    std::filesystem::copy("resources/standard", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::copy(getExecutablePath()/"resources/standard", out, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
 
     std::ofstream hpp(out/("include/" + cpu.getName() + ".hpp"), std::ios::trunc);
     hpp << cpu.generateHpp();

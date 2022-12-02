@@ -11,7 +11,7 @@ inline std::map<std::string, Generator> generators = {};
 
 //a function to generate common files used in all generators
 void generateStandard(CPUDescription::CPU cpu, std::filesystem::path path);
-
+std::filesystem::path getExecutablePath();
 
 //Makro to automatically generate Generator class and add it into the generator Map
 #define ADD_GENERATOR(VAR)                                                        \
