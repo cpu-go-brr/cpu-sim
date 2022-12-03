@@ -5,5 +5,5 @@
     [{ "name": "STACK2", "size": 2 }, 2, { "name": "R6", "size": 2 }, { "name": "R7", "size": 2 }, 1, { "name": "R14", "size": 2 }, { "name": "R15", "size": 2 }],
     [],
     [{ "name": "ACC", "size": 2 }, 2, { "name": "CY", "size": 1 }, 1, { "name": "TEST", "size": 1 }]],
-    "instructions": [{"value": "NOP", "meta": "No Operation"}]
+    "instructions": [{"value": "NOP","score": 3, "meta": "No Operation"}]
 }
