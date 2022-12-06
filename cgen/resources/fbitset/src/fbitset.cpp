@@ -219,7 +219,7 @@ void fbitset::write(uint8_t *mem, const AddressInfo &info) const
 void fbitset::bin(char * str) const
 {
     storage_t cpy = data;
-    for(std::size_t i = 0; i < bits; i++)
+    for(size_t i = 0; i < bits; i++)
     {
         str[bits-1-i] = (cpy&1)?'1':'0';
         cpy >>= 1;
@@ -229,8 +229,8 @@ void fbitset::bin(char * str) const
 void fbitset::hex(char * str) const
 {
     storage_t cpy = data;
-    std::size_t chars = (bits / 4) + ((bits%4)?1:0);
-    for(std::size_t i = 0; i < chars; i++)
+    size_t chars = (bits / 4) + ((bits%4)?1:0);
+    for(size_t i = 0; i < chars; i++)
     {
         char val = cpy&0b1111;
         str[chars-i-1] = val + ((val <= 9)? '0': ('A'-10));
@@ -241,7 +241,7 @@ void fbitset::hex(char * str) const
 void fbitset::dec(char* str) const 
 {
     storage_t cpy = data;
-    std::size_t i = 0;
+    size_t i = 0;
     for(storage_t m = mask(); m > 0; m /= 10) i++;
 
     for(; i-->0;)
