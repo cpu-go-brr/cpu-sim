@@ -1,0 +1,1 @@
+emcc src/* -I include/ -o build/cpu.js -s NO_EXIT_RUNTIME=1 -s "EXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
