@@ -1,22 +1,21 @@
-*
-{
-    margin:0;
-    padding:0;
+* {
+    margin: 0;
+    padding: 0;
     font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    color: #F8F8F2;
 }
-body
-{
+
+body {
     display: flex;
     position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     overflow-x: hidden;
 }
 
-#code
-{
+#code {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -24,14 +23,13 @@ body
 
 }
 
-#code #editor
-{
+#code #editor {
     position: absolute;
     width: 100%;
     height: 100vh;
 }
-#cpu
-{
+
+#cpu {
     display: flex;
     flex-direction: column;
     resize: horizontal;
@@ -40,8 +38,7 @@ body
     height: 100%;
 }
 
-#cpu #up
-{
+#cpu #up {
     resize: vertical;
     overflow: auto;
 
@@ -50,92 +47,108 @@ body
 
     display: flex;
     flex-shrink: 0;
-    border-bottom: 1px solid #FFF;
+    border-bottom: 1px solid #F8F8F2;
 }
 
-#cpu #down
-{
-    background-color: #141414;
+#cpu #down {
+    background-color: #282A36;
     flex-grow: 1;
     /* height: 100px; */
     overflow-y: scroll;
 }
 
-#internal_memory
-{
-    background-color: #141414;
+#internal_memory {
+    background-color: #282A36;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
-#external_memory
-{
+
+#external_memory {
     width: 100%;
     height: 100%;
 }
 
 
-#control
-{
-    background-color: rgb(255, 0, 119);
+#control {
+    background-color: #282A36;
+    border-left: 1px solid #F8F8F2;
+
     width: 200px;
-    height: 100%;
+    padding: 1em;
+}
+
+#external_memory select {
+    background-color: #282A36;
+    border: 2px solid #44475A;
+    /* Green */
+    border-radius: 4px;
+    transition-duration: 0.2s;
 
 }
 
-#internal_memory_content
-{
+#control button {
+    background-color: #282A36;
+    border: 2px solid #44475A;
+    /* Green */
+    color: #F8F8F2;
+    border-radius: 4px;
+    transition-duration: 0.2s;
+
+}
+
+
+#control button:hover {
+    background-color: #F8F8F2;
+    color: #282A36;
+}
+#control button:active {
+    transform: translateY(1px);
+  }
+
+#internal_memory_content {
     flex-grow: 1;
     display: inline-grid;
 }
 
-.internal_memory_element
-{
+.internal_memory_element {
     background-color: #333;
     color: white;
     display: flex;
     max-height: 60px;
 }
-.internal_memory_element span 
-{
+
+.internal_memory_element span {
     margin: auto 0 auto 0;
     flex-grow: 1;
     flex-shrink: 0;
 }
 
-.internal_memory_element span:first-child
-{
+.internal_memory_element span:first-child {
     text-align: right;
     padding-right: 1em;
 }
 
-#external_memory_content
-{
-    /* font-family: monospace; */
-}
 
-#external_memory_content table
-{
+#external_memory_content table {
     width: 100%;
     border-collapse: collapse;
     text-align: center;
     color: #FFF;
 }
 
-#external_memory_content tr:first-child td
-{
+#external_memory_content tr:first-child td {
     border-bottom: 1px solid white;
     border-right: none !important;
 
 }
-#external_memory_content tr:last-child td
-{
+
+#external_memory_content tr:last-child td {
     border-bottom: 1px solid white;
 }
 
 
-#external_memory_content td:first-child
-{
+#external_memory_content td:first-child {
     border-right: 1px solid white;
     border-bottom: none !important;
 }

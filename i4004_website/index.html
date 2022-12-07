@@ -5,10 +5,14 @@
     <title>Intel 4004 simulator</title>
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <script src="js/jquery/jquery-3.6.1.min.js.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/ace/theme-twilight.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/ace/ext-language_tools.js"></script>
+    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8" defer></script>
+    <script src="js/ace/theme-twilight.js" type="text/javascript" charset="utf-8" defer></script>
+    <script src="js/ace/ext-language_tools.js" defer></script>
+    <!-- <script src="js/cpu_server.js" defer></script> -->
+    <script src="wa/build/cpu.js" defer></script>
+    <script src="wa/build/cpu_init.js" defer></script>
     <script src="js/main.js" defer></script>
+    <script src="js/setup_editor.js" defer></script>
 </head>
 
 <body>
@@ -19,9 +23,9 @@
             </div>
             <div id="control">
                 <h2>control</h2>
-                <button onclick="cpu_flash();">Flash</button>
-                <button onclick="cpu_simulate();">Step</button>
-                <button>Reset</button>
+                <button onclick="cpu_flash(); loadCPU();">Flash</button>
+                <button onclick="cpu_simulate(); loadCPU();">Step</button>
+                <button onclick="cpu_reset(); loadCPU();">Reset</button>
             </div>
         </div>
         <div id="down">
