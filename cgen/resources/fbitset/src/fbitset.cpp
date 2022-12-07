@@ -8,7 +8,7 @@
 //  0 -> 0; 1 -> 1; 2 -> 11; 3 -> 111...
 const fbitset::storage_t fbitset::mask() const
 {
-    return ((1ul << bits) - 1);
+    return ((1ull << bits) - 1);
 }
 
 const fbitset::storage_t fbitset::mask(bits_t b) const
