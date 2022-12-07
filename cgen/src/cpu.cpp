@@ -1,6 +1,5 @@
 #include "cpu.hpp"
 #include "matheval.hpp"
-#include <iostream>
 #include <assert.h>
 #include <regex>
 #include <cmath>
@@ -181,6 +180,24 @@ std::size_t unescapedsize(std::string s)
     return len;
 }
 
+std::tuple<std::size_t, std::string> getVariableInfo(std::string prefix, std::string variable)
+{
+    auto bits = CPUDescription::InternalMemory::address_lengths[variable];
+
+    
+    if (prefix == "0x")
+    {
+        return {(std::size_t)std::ceil(bits / 4.0), "hex"};
+    }
+    else if (prefix == "0b")
+    {
+        return {bits, "bin"};
+    }
+     
+    return {(std::size_t)std::ceil(std::log10(std::pow(2, bits))), "dec"};
+    
+}
+
 std::tuple<std::string, std::string> processDisplayInfo(const std::string &display)
 {
     std::string params = "", display_str = std::regex_replace(display, std::regex("\\n"), "\\n\\\n"); // escape \n
@@ -189,32 +206,114 @@ std::tuple<std::string, std::string> processDisplayInfo(const std::string &displ
     std::smatch sm;
     while (std::regex_search(display_str, sm, replacements))
     {
-        std::string prefix = sm[1].str(), address = sm[2].str();
-        auto bits = CPUDescription::InternalMemory::address_lengths[address];
-        auto characters = bits;
-        if (prefix == "")
-        {
-            characters = (std::size_t)std::ceil(std::log10(std::pow(2, bits)));
-            params += "dec";
-        }
-        else if (prefix == "0x")
-        {
-            characters = (std::size_t)std::ceil(bits / 4.0);
-            params += "hex";
-        }
-        else if (prefix == "0b")
-        {
-            params += "bin";
-        }
+        std::size_t characters;
+        std::string type;
+        std::tie(characters, type) = getVariableInfo(sm[1].str(), sm[2].str());
+
         std::string placeholder = "";
         for (std::size_t i = 0; i < characters; i++)
             placeholder += "X";
 
-        params += "(" + address + ", str +" + std::to_string(unescapedsize(sm.prefix().str())) + ");\n";
+        params += type + "(" + sm[2].str() + ", str +" + std::to_string(unescapedsize(sm.prefix().str())) + ");\n";
         display_str = sm.prefix().str() + placeholder + sm.suffix().str();
     }
 
     return {display_str, params};
+}
+
+std::string processPartToJSON(std::string part)
+{
+    std::smatch sm;
+    if(std::regex_match(part, std::regex("(0x|0b)?\\{[A-Z][A-Z0-9]+\\}")))
+    {
+        std::regex_match(part, sm, std::regex("(0x|0b)?\\{([A-Z][A-Z0-9]+)\\}"));
+        std::size_t size;
+        std::string type;
+        std::tie(size, type) = getVariableInfo(sm[1].str(), sm[2].str());
+        return "{\"name\":\"" + sm[2].str()+ "\", \"size\":" + std::to_string(size) + ",\"type\":\"" + type + "\"}";
+    }
+    else if (std::regex_match(part, std::regex("\\s+")))
+    {
+        return std::to_string(part.size());
+    }
+    else
+    {
+        return "\"" + std::regex_replace(part,std::regex("\""), "\"") + "\"";
+    }
+}
+
+std::string generateDisplayJSONInfoLine(const std::string& line)
+{
+    std::string ret = "[ ";
+    std::smatch m;
+    std::regex e ("((0x|0b)?\\{([A-Z][A-Z0-9]+)\\})|\\s+|\\S+");
+
+    std::string line_cpy = line;
+
+    while (std::regex_search (line_cpy,m,e)) 
+    {
+        ret += processPartToJSON(m[0].str()) + ",";
+        line_cpy = m.suffix().str();
+    }
+    ret = ret.substr(0,ret.length()-1);
+
+    return ret + "]";
+}
+
+std::string CPUDescription::CPU::generateSyntaxHightlighter()
+{
+    std::string instruction_string = "";
+    for(auto& ins : instructions)
+        instruction_string += ins.getUpperName() + "|";
+
+    instruction_string = instruction_string.substr(0,instruction_string.size()-1);
+    
+    std::string register_string = "";
+    for(const auto & m : internal_memory)
+    {
+        for(const auto & name : m.getNames())
+            register_string += name + "|";
+
+    }
+    register_string = register_string.substr(0,register_string.size()-1);
+
+
+    std::string ret = "define(\"ace/mode/general_assembly_highlight_rules\", [\"require\", \"exports\", \"module\", \"ace/lib/oop\", \"ace/mode/text_highlight_rules\"], function (e, t, n) {\n    \"use strict\"; var r = e(\"../lib/oop\"), i = e(\"./text_highlight_rules\").TextHighlightRules, s = function () {\n        this.$rules =\n    {\n        start: [\n            { token: \"keyword.control.assembly\", regex: \"\\\\b(?:";
+
+    ret += instruction_string;
+    ret += ")\\\\b\", caseInsensitive: !0 },\n { token: \"variable.parameter.register.assembly\", regex: \"\\\\b(?:";
+    ret += register_string;
+    ret += ")\\\\b\", caseInsensitive: !0 },\n            { token: \"constant.character.hexadecimal.assembly\", regex: \"\\\\$[A-F0-9]+\\\\b\", caseInsensitive: !0 },\n            { token: \"constant.character.binary.assembly\", regex: \"\\\\%[A-F0-9]+\\\\b\", caseInsensitive: !0 },\n            { token: \"constant.character.octal.assembly\", regex: \"O[A-F0-9]+\\\\b\", caseInsensitive: !0 },\n            { token: \"constant.character.decimal.assembly\", regex: \"\\\\b[0-9]+\\\\b\" },\n            { token: \"entity.name.function.assembly\", regex: \"^\\\\s*%%[\\\\w.]+?:$\" },\n            { token: \"entity.name.function.assembly\", regex: \"^\\\\s*%\\\\$[\\\\w.]+?:$\" },\n            { token: \"entity.name.function.assembly\", regex: \"^[\\\\w.]+?:\" },\n            { token: \"entity.name.function.assembly\", regex: \"^[\\\\w.]+?\\\\b\" },\n            { token: \"comment.assembly\", regex: \";.*$\" }]\n    }, this.normalizeRules()\n    };\n    s.metaData = { fileTypes: [\"asm\"], name: \"General Assembly\", scopeName: \"source.assembly\" }, r.inherits(s, i), t.GeneralAssemblyHighlightRules = s\n}), define(\"ace/mode/folding/coffee\", [\"require\", \"exports\", \"module\", \"ace/lib/oop\", \"ace/mode/folding/fold_mode\", \"ace/range\"], function (e, t, n) {\n    \"use strict\"; var r = e(\"../../lib/oop\"), i = e(\"./fold_mode\").FoldMode, s = e(\"../../range\").Range, o = t.FoldMode = function () { }; r.inherits(o, i), function () {\n        this.getFoldWidgetRange = function (e, t, n) {\n            var r = this.indentationBlock(e, n);\n            if (r) return r;\n            var i = /\\S/, o = e.getLine(n), u = o.search(i);\n            if (u == -1 || o[u] != \"#\") return;\n            var a = o.length, f = e.getLength(), l = n, c = n;\n            while (++n < f) { o = e.getLine(n);\n                var h = o.search(i); if (h == -1) continue;\n                if (o[h] != \"#\") break; c = n } if (c > l) { var p = e.getLine(c).length; return new s(l, a, c, p) }\n        }, this.getFoldWidget = function (e, t, n) { var r = e.getLine(n), i = r.search(/\\S/), s = e.getLine(n + 1), o = e.getLine(n - 1), u = o.search(/\\S/), a = s.search(/\\S/); if (i == -1) return e.foldWidgets[n - 1] = u != -1 && u < a ? \"start\" : \"\", \"\"; if (u == -1) { if (i == a && r[i] == \"#\" && s[i] == \"#\") return e.foldWidgets[n - 1] = \"\", e.foldWidgets[n + 1] = \"\", \"start\" } else if (u == i && r[i] == \"#\" && o[i] == \"#\" && e.getLine(n - 2).search(/\\S/) == -1) return e.foldWidgets[n - 1] = \"start\", e.foldWidgets[n + 1] = \"\", \"\"; return u != -1 && u < i ? e.foldWidgets[n - 1] = \"start\" : e.foldWidgets[n - 1] = \"\", i < a ? \"start\" : \"\" }\n    }.call(o.prototype)\n}), define(\"ace/mode/general_assembly\", [\"require\", \"exports\", \"module\", \"ace/lib/oop\", \"ace/mode/text\", \"ace/mode/general_assembly_highlight_rules\", \"ace/mode/folding/coffee\"], function (e, t, n) { \"use strict\"; var r = e(\"../lib/oop\"), i = e(\"./text\").Mode, s = e(\"./general_assembly_highlight_rules\").GeneralAssemblyHighlightRules, o = e(\"./folding/coffee\").FoldMode, u = function () { this.HighlightRules = s, this.foldingRules = new o, this.$behaviour = this.$defaultBehaviour }; r.inherits(u, i), function () { this.lineCommentStart = [\";\"], this.$id = \"ace/mode/general_assembly\" }.call(u.prototype), t.Mode = u }); (function () {\n    window.require([\"ace/mode/general_assembly\"], function (m) {\n        if (typeof module == \"object\" && typeof exports == \"object\" && module) {\n            module.exports = m;\n        }\n    });\n})();\n";
+
+    return ret;
+}
+
+std::string CPUDescription::CPU::generateDisplayJSONInfo()
+{
+    std::string ret = "{";
+
+    ret += "\"internal\": [ ";
+    
+    std::smatch m;
+    std::regex e ("\\n");
+
+    std::string display_cpy = display;
+
+    while (std::regex_search (display_cpy,m,e)) 
+    {
+        ret += generateDisplayJSONInfoLine(m.prefix().str()) + ",";
+        display_cpy = m.suffix().str();
+    }
+
+    ret = ret.substr(0,ret.length()-1);
+    
+    ret += "], \"instructions\":[";
+    for(const auto& instruction: instructions)
+        ret += "{\"value\":\"" + instruction.getUpperName() + "\",\"meta\":\"" + instruction.getFullName()  +"\",\"score\":3},";
+
+    ret = ret.substr(0,ret.length()-1);
+
+    return ret + "]}";
 }
 
 std::string CPUDescription::CPU::generateDisplay()

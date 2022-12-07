@@ -24,6 +24,8 @@ namespace CPUDescription
         std::string generateRunScript();       // generate Script to automatically build and Run the code
         std::string generateCpp();             // generate the CPU .cpp
         std::string generateHpp();             // generate the CPU .hpp
+        std::string generateDisplayJSONInfo();         // generate sourcecode able to display the cpu
+        std::string generateSyntaxHightlighter();         // generate sourcecode able to display the cpu
 
 
     private:

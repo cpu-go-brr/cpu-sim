@@ -60,6 +60,29 @@ std::string getName(std::string name, std::vector<int> dimensions)
     return name;
 }
 
+std::string CPUDescription::InternalMemory::getUpperName() const
+{
+    
+    std::string uppername = name;
+    std::for_each(uppername.begin(), uppername.end(), [](char &c)
+                  { c = std::toupper(c); });
+
+    return uppername;
+}
+
+std::vector<std::string> CPUDescription::InternalMemory::getNames() const
+{
+    std::vector<std::string> ret{getUpperName()};
+
+    for(auto& m : submemory)
+    {
+        auto names = m.getNames();
+        ret.insert(ret.end(),names.begin(), names.end());
+    }
+    return ret;
+}
+
+
 std::string CPUDescription::InternalMemory::getJSONDescription()
 {
     if(submemory.size() == 0)
@@ -72,6 +95,7 @@ std::string CPUDescription::InternalMemory::getJSONDescription()
     ret = ret.substr(0,ret.size()-3) + "\"\n";
     return ret +"\"},\"";
 }
+
 
 std::size_t CPUDescription::InternalMemory::getSize() const
 {

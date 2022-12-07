@@ -14,15 +14,33 @@ std::string CPUDescription::Instruction::getCode(std::string classname)
     return ret;
 }
 
-std::size_t CPUDescription::Instruction::getSizeOfOPCode()
+std::size_t CPUDescription::Instruction::getSizeOfOPCode() const 
 {
     return code.size();
 }
-std::string CPUDescription::Instruction::getName()
+std::string CPUDescription::Instruction::getName() const 
 {
     return name;
 }
-std::string CPUDescription::Instruction::getDescription()
+
+std::string CPUDescription::Instruction::getUpperName() const 
+{
+    std::string uppername = name;
+    std::for_each(uppername.begin(), uppername.end(), [](char &c)
+                  { c = std::toupper(c); });
+
+    return uppername;
+}
+
+
+
+
+std::string CPUDescription::Instruction::getFullName() const 
+{
+    return full_name;
+}
+
+std::string CPUDescription::Instruction::getDescription() const 
 {
     return description;
 }
@@ -92,10 +110,12 @@ std::vector<std::string> CPUDescription::Instruction::getOPCodes()
     return getPossibilities(code);
 }
 
+
 void CPUDescription::Instruction::initInfo(const std::string &name_, const YAML::Node &config)
 {
     name = name_;
-    description = config["description"].as<std::string>("");
+    full_name = config["name"].as<std::string>("");
+    description = config["description"].as<std::string>(full_name);
     code = std::regex_replace(config["code"].as<std::string>(""), std::regex("\\s"), "");
 }
 

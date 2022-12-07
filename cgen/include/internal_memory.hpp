@@ -17,6 +17,8 @@ namespace CPUDescription
 
         std::size_t getSize() const;
         std::string getAddressInfo() const;
+        std::string getUpperName() const;
+        std::vector<std::string> getNames() const;
         static std::map<std::string, std::size_t> address_lengths;
 
     private:
