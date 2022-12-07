@@ -42,12 +42,11 @@ memory:
 
 fetch:
   instructions:
-    - "rom(PC)"
+    - rom(PC)
 
 instructions:
   nop:
     name: No Operation
-    description: No Operation
     code: 0000 0000
     asm: 00000000
     instructions:
@@ -426,7 +425,6 @@ instructions:
       - PC+1 --> PC
   clc:
     name: Clear Carry
-    description: Clear Carry
     code: 1111 0001
     asm: 11110001
     instructions:
@@ -434,7 +432,6 @@ instructions:
       - PC+1 --> PC
   iac:
     name: Increment Accumulator
-    description: Increment Accumulator
     code: 1111 0010
     asm: 11110010
     instructions:
@@ -442,7 +439,6 @@ instructions:
       - PC+1 --> PC
   cmc:
     name: Complement Carry
-    description: Complement Carry
     code: 1111 0011
     asm: 11110011
     instructions:
@@ -489,7 +485,6 @@ instructions:
       - PC+1 --> PC
   dac:
     name: Decrement Accumulator
-    description: Decrement Accumulator
     code: 1111 1000
     asm: 11111000
     instructions:
@@ -510,7 +505,6 @@ instructions:
       - PC+1 --> PC
   stc:
     name: Set Carry
-    description: Set Carry
     code: 1111 1010
     asm: 11111010
     instructions:
