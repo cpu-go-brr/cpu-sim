@@ -5,17 +5,18 @@
 
 ## Vorgehen
 - [x] Intel 4004 bauen
-  - [/] Parsing von assembler-Datei und Konvertierung in object code (hex)
+  - [x] Parsing von assembler-Datei und Konvertierung in object code (hex)
   - [x] Instructions als Funktionen in `include/instructions.hpp` umsetzten
-    - Eine Instruction/Funktion verändert nur Werte in den privaten Variablen in `include/intel4004.hpp`
   - [x] RAM integrieren
-  - [/] komplexes Programm laufen lassen/entwickeln (Pong)
+  - [x] komplexes Programm laufen lassen/entwickeln (Pong)
   - [x] Server bauen
-  - [ ] Website um Zustand der CPU zu setzten bauen / erstmal recherche
-- [/] Generator bauen
+  - [x] Website um Zustand der CPU zu setzten bauen / erstmal recherche
+- [x] Generator bauen
   - Instruction Set erweitern (Intel 8008, AMD64 evtl. Config-only
-    - 6502
-    - Brainfuck
+    - [ ] 6502
+    - [x] Brainfuck
+- [ ] Pong auf Aurduino packen
+- [ ] Paper schreiben
 
 
 ## Installation
