@@ -25,18 +25,35 @@ std::string trim(const std::string &s)
     return rtrim(ltrim(s));
 }
 
-std::vector<std::string> split(std::string text)
+std::vector<std::string> split_line(std::string text)
 {
-    std::vector<std::string> res{};
+    std::vector<std::string> res;
     std::regex split_regex("[^\t ]+");
     std::smatch split_matches;
 
     while (std::regex_search(text, split_matches, split_regex))
     {
         for (auto x : split_matches)
+        {
             res.push_back(trim(x));
+        }
         text = split_matches.suffix().str();
     }
+    return res;
+}
+
+std::vector<std::string> splitstr(std::string str, std::string deli = " ")
+{
+    std::vector<std::string> res;
+    int start = 0;
+    int end = str.find(deli);
+    while (end != -1)
+    {
+        res.push_back(str.substr(start, end - start));
+        start = end + deli.size();
+        end = str.find(deli, start);
+    }
+    res.push_back(str.substr(start, end - start));
     return res;
 }
 
@@ -183,7 +200,25 @@ std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yam
     return res;
 }
 
-std::vector<std::string> first_iteration(std::string asm_file_path)
+std::vector<std::string> asm_string_to_vector(std::string asm_string)
+{
+    return splitstr(asm_string, "\n");
+}
+
+std::vector<std::string> asm_file_path_to_vector(std::string asm_file_path)
+{
+    std::vector<std::string> res;
+    std::string line;
+    std::ifstream file(asm_file_path);
+    while (getline(file, line))
+    {
+        res.push_back(line);
+    }
+    file.close();
+    return res;
+}
+
+std::vector<std::string> first_iteration(std::vector<std::string> asm_vector)
 {
     /*
         This function does the following:
@@ -192,19 +227,17 @@ std::vector<std::string> first_iteration(std::string asm_file_path)
             - cleaning up the remaining lines
                 - return thes lines
     */
-    std::string line;
     std::vector<std::string> cleaned_lines;
     int address_counter = 0;
 
-    std::ifstream file(asm_file_path);
     std::regex rgx_variabels("[A-Za-z][A-Za-z0-9_]*[ \t]*=[ \t]*[^ ]+");
     std::regex reg_set_pc("\\*[ \t]*=[ \t]*[^ ]+");
 
-    while (getline(file, line))
+    for (auto line : asm_vector)
     {
         line = line.substr(0, line.find(";"));
 
-        uint pos_first_char = line.find_first_not_of(WHITESPACE);
+        size_t pos_first_char = line.find_first_not_of(WHITESPACE);
         if (pos_first_char != std::string::npos && line[pos_first_char] == '$')
         {
             return cleaned_lines;
@@ -260,7 +293,7 @@ std::vector<std::string> first_iteration(std::string asm_file_path)
         }
         else
         {
-            std::vector<std::string> splitted_line = split(line);
+            std::vector<std::string> splitted_line = split_line(line);
 
             if (splitted_line.size() >= 1)
             {
@@ -293,7 +326,6 @@ std::vector<std::string> first_iteration(std::string asm_file_path)
             }
         }
     }
-    file.close();
     return cleaned_lines;
 }
 
@@ -306,7 +338,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
     for (size_t i = 0; i < cleand_lines.size(); i++)
     {
         std::replace(cleand_lines[i].begin(), cleand_lines[i].end(), ',', ' ');
-        std::vector<std::string> splitted_line = split(cleand_lines[i]);
+        std::vector<std::string> splitted_line = split_line(cleand_lines[i]);
 
         std::smatch matches;
         if (std::regex_search(cleand_lines[i], matches, reg_set_pc))
@@ -419,7 +451,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
     return res;
 }
 
-std::vector<int> GeneralAssembler::assemble(std::string asm_file_path, std::string yaml_file_path)
+std::vector<int> GenericAssembler::assemble_file(std::string asm_file_path, std::string yaml_file_path)
 {
     /*
         Notes:
@@ -478,8 +510,48 @@ std::vector<int> GeneralAssembler::assemble(std::string asm_file_path, std::stri
     */
 
     instruction_codes = parse_instruction_codes_from_yaml(yaml_file_path);
-    std::vector<std::string> cleand_lines = first_iteration(asm_file_path);
+    std::vector<std::string> asm_vector = asm_file_path_to_vector(asm_file_path);
+    std::vector<std::string> cleand_lines = first_iteration(asm_vector);
     std::vector<int> res = second_iteration(cleand_lines);
 
     return res;
+}
+
+std::vector<int> GenericAssembler::assemble_file(std::string asm_file_path)
+{
+    if(instruction_codes.empty()){
+        return {-1};
+    }
+    std::vector<std::string> asm_vector = asm_file_path_to_vector(asm_file_path);
+    std::vector<std::string> cleand_lines = first_iteration(asm_vector);
+    std::vector<int> res = second_iteration(cleand_lines);
+
+    return res;
+}
+
+std::vector<int> GenericAssembler::assemble_string(std::string asm_string, std::string yaml_file_path)
+{
+    instruction_codes = parse_instruction_codes_from_yaml(yaml_file_path);
+    std::vector<std::string> asm_vector = asm_string_to_vector(asm_string);
+    std::vector<std::string> cleand_lines = first_iteration(asm_vector);
+    std::vector<int> res = second_iteration(cleand_lines);
+
+    return res;
+}
+
+std::vector<int> GenericAssembler::assemble_string(std::string asm_string)
+{
+    if(instruction_codes.empty()){
+        return {-1};
+    }
+    std::vector<std::string> asm_vector = asm_string_to_vector(asm_string);
+    std::vector<std::string> cleand_lines = first_iteration(asm_vector);
+    std::vector<int> res = second_iteration(cleand_lines);
+
+    return res;
+}
+
+void GenericAssembler::load_yaml(std::string yaml_file_path)
+{
+    instruction_codes = parse_instruction_codes_from_yaml(yaml_file_path);
 }
