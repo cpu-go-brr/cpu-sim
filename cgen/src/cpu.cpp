@@ -83,7 +83,7 @@ std::string CPUDescription::CPU::generateHppInstructions()
                      i.getName() + "();\n";
     }
     auto array_size = (unsigned int)std::pow(2, max_bits);                            // calculate space needed o accommodate all instructions
-    functions += "\nstatic Intel4004::op ops[" + std::to_string(array_size) + "];\n"; // add array for instruction pointer
+    functions += "\nstatic " + name +"::op ops[" + std::to_string(array_size) + "];\n"; // add array for instruction pointer
     return functions + "\n";
 }
 
@@ -260,7 +260,7 @@ std::string generateDisplayJSONInfoLine(const std::string& line)
     return ret + "]";
 }
 
-std::string CPUDescription::CPU::generateSyntaxHightlighter()
+std::string CPUDescription::CPU::generateSyntaxHighlighter()
 {
     std::string instruction_string = "";
     for(auto& ins : instructions)
@@ -422,7 +422,7 @@ std::string CPUDescription::CPU::generateInstructionJumpTableCpp()
 {    
     auto array_size = (unsigned int)std::pow(2, getOpCodeMaxLength());
     auto instruction_map = generateInstructionMap();
-    std::string ret = "Intel4004::op " + name + "::" + "ops[" + std::to_string(array_size) + "] = {\n";
+    std::string ret = name + "::op " + name + "::" + "ops[" + std::to_string(array_size) + "] = {\n";
 
     for (auto i = 0u; i < array_size; i++)
     {
@@ -514,7 +514,7 @@ std::string CPUDescription::CPU::generateMemorySetAndGetCpp()
 std::string CPUDescription::CPU::generateJSONCpp()
 {
     std::string ret = "#ifndef NO_CPPSTD\n"
-                      "    std::string Intel4004::json()\n"
+                      "    std::string "+name+"::json()\n"
                       "{\n"
                       "std::string json = \"{\\\"internal\\\":{\"\n";
     for (auto m : internal_memory)

@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${exec_prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: ${CPU_NAME}
+Description: ${CPU_DESCRIPTION}
+Version: 1.0.0
+
+Requires:
+Cflags: -I${includedir} -std=c++2a -Wall -Wfloat-conversion

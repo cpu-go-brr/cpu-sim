@@ -1,6 +1,6 @@
 json = Module.cwrap('json', 'string');
 simulate = Module.cwrap('simulate');
-clear = Module.cwrap('clear');
+reset = Module.cwrap('reset');
 
 function cpu_json()
 {
@@ -12,7 +12,12 @@ function cpu_simulate()
   simulate();
 }
 
-function cpu_clear()
+function cpu_reset()
 {
-  clear();
+  reset();
+}
+
+function cpu_flash()
+{
+  reset();
 }

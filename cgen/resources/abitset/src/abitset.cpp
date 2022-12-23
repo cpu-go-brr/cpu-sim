@@ -249,7 +249,7 @@ abitset abitset::operator>>(const abitset c_)
 {
 
     const std::size_t c = c_.val();
-
+    if(c == 0) return *this;
     std::vector<uint8_t> ret;
 
     std::size_t byte_diff = c / 8;
@@ -290,6 +290,7 @@ abitset abitset::operator>>(const abitset c_)
 abitset abitset::operator<<(const abitset c_)
 {
     const std::size_t c = c_.val();
+    if(c == 0) return *this;
     std::vector<uint8_t> ret;
 
     for (std::size_t i = 0; i < bytes(); i++)
