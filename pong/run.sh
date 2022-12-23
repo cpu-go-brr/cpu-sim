@@ -1,2 +1,2 @@
 ./build.sh
-./build/intel4004
+./build/pong

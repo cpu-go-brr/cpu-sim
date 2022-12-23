@@ -4,10 +4,13 @@
 #include <fstream>
 #include <vector>
 
-class GeneralAssembler{
+class GenericAssembler{
 
     public:
-        GeneralAssembler(){};
+        GenericAssembler(){};
         std::vector<int> assemble_file(std::string asm_file_path, std::string yaml_file_path);
-        std::vector<int> assemble(std::string assembler, std::string yaml_file_path);
+        std::vector<int> assemble_file(std::string asm_file_path);
+        std::vector<int> assemble_string(std::string asm_string, std::string yaml_file_path);
+        std::vector<int> assemble_string(std::string asm_string);
+        void load_yaml(std::string yaml_file_path);
 };
