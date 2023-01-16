@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "instruction.hpp"
 #include "internal_memory.hpp"
@@ -26,7 +27,7 @@ namespace CPUDescription
         std::string generateHpp();             // generate the CPU .hpp
         std::string generateDisplayJSONInfo();         // generate sourcecode able to display the cpu
         std::string generateSyntaxHighlighter();         // generate sourcecode able to display the cpu
-
+        std::filesystem::path getPath();
 
     private:
         std::string generateHppInstructions(); // generate the CPU instructions
@@ -50,6 +51,7 @@ namespace CPUDescription
         void initInstructions(const YAML::Node &config);
 
         std::string name, description, display;      // name description and display description of the cpu
+        std::filesystem::path cpu_path;
         std::vector<InternalMemory> internal_memory; // registers, pc etc.
         std::vector<ExternalMemory> external_memory; // rom, ram etc.
         std::vector<Instruction> instructions;       // nop, fim etc.

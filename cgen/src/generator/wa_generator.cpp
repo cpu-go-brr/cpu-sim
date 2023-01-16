@@ -8,6 +8,8 @@ void WebAssemblyGenerator::generate(CPUDescription::CPU cpu, std::filesystem::pa
 
     generateStandard(cpu, out/"wa");
 
+    std::filesystem::copy(cpu.getPath(), out/"wa/cpu.yaml");
+    copyResource("gasm", out/"wa");
     copyResource("abitset", out/"wa");
     copyResource("fbitset", out/"wa");
 

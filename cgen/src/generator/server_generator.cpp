@@ -10,6 +10,9 @@ void ServerGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path ou
     std::filesystem::create_directories(out/"server");
     std::filesystem::create_directories(out/"website");
 
+    std::filesystem::copy(cpu.getPath(), out/"server/cpu.yaml");
+    copyResource("gasm", out/"server");
+
     generateStandard(cpu, out/"server");
     copyResource("abitset", out/"server");
     copyResource("server", out/"server", {{"\\$\\{CPU_NAME\\}", cpu.getName()}});
@@ -30,11 +33,6 @@ void ServerGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path ou
             {"\\$\\{NO_PRINT_COMMENT\\}", "//"},
             {"\\$\\{NO_CPPSTD_COMMENT\\}", ""}
         });
-
-    copyResource("website_common", out/"website", 
-    {
-        {"\\$\\{BACKEND_SCRIPTS\\}", "<script src=\"js/cpu_server.js\" defer></script>"}
-    });
 
     createFile(out / "server/CMakeLists.txt", cpu.generateCMakeFile());
 }

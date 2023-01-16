@@ -47,6 +47,7 @@ void CPUDescription::CPU::initInstructions(const YAML::Node &config)
 
 CPUDescription::CPU::CPU(std::string path)
 {
+    cpu_path = path;
     auto file = YAML::LoadFile(path);
     initInfo(file);
     initInternalMemory(file);
@@ -258,6 +259,11 @@ std::string generateDisplayJSONInfoLine(const std::string& line)
     ret = ret.substr(0,ret.length()-1);
 
     return ret + "]";
+}
+
+std::filesystem::path CPUDescription::CPU::getPath()
+{
+    return cpu_path;
 }
 
 std::string CPUDescription::CPU::generateSyntaxHighlighter()
