@@ -9,13 +9,16 @@ void WebAssemblyGenerator::generate(CPUDescription::CPU cpu, std::filesystem::pa
     generateStandard(cpu, out/"wa");
 
     std::filesystem::copy(cpu.getPath(), out/"wa/cpu.yaml");
-    copyResource("gasm", out/"wa");
+    copyResource("gasm", out/"wa", 
+        {
+            {"\\$\\{INSTRUCTION_CODES\\}", cpu.generateInstructionCodeMap()}
+        });
     copyResource("abitset", out/"wa");
     copyResource("fbitset", out/"wa");
 
     copyResource("settings", out/"wa",
         {
-            {"\\$\\{BITSET\\}", "ABITSET"}, 
+            {"\\$\\{BITSET\\}", "FBITSET"}, 
             {"\\$\\{NO_PRINT_COMMENT\\}", "//"},
             {"\\$\\{NO_CPPSTD_COMMENT\\}", "//"}
         });

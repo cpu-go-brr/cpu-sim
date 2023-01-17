@@ -1,12 +1,15 @@
 #include "../include/gasm.hpp"
-#include "yaml-cpp/yaml.h"
 #include <vector>
 #include <regex>
 #include <algorithm>
+#include <map>
+#include <string>
+#include <sstream>
+#include <cstdint>
 
 const std::string WHITESPACE = " \n\r\t\f\v";
 std::map<std::string, int> vars;
-std::vector<std::map<std::string, std::string>> instruction_codes;
+std::vector<std::map<std::string, std::string>> instruction_codes = ${INSTRUCTION_CODES}
 
 std::string ltrim(const std::string &s)
 {
@@ -133,15 +136,15 @@ int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variab
 
     try
     {
-        return std::stoi(arg, nullptr, base);
-    }
-    catch (std::invalid_argument &exc)
-    {
         transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
         if (allow_lookup_of_other_variables && vars.find(arg) != vars.end())
         {
             return vars[arg];
         }
+        return std::stoi(arg, nullptr, base);
+    }
+    catch (std::invalid_argument &exc)
+    {
         std::stringstream ss;
         ss << "ERROR in parse_value_from_argument(): " << exc.what();
         throw std::invalid_argument(ss.str());
@@ -149,56 +152,6 @@ int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variab
     }
 }
 
-std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yaml(std::string yaml_file_path)
-{
-    auto file = YAML::LoadFile(yaml_file_path);
-    auto ins = file["instructions"];
-
-    std::vector<std::map<std::string, std::string>> res = {};
-
-    for (auto it = ins.begin(); it != ins.end(); ++it)
-    {
-        YAML::Node key = it->first;
-        YAML::Node value = it->second;
-
-        std::string key_str;
-        std::string value_str;
-
-        if (key.Type() == YAML::NodeType::Scalar)
-        {
-            key_str = key.as<std::string>();
-            transform(key_str.begin(), key_str.end(), key_str.begin(), ::tolower);
-
-            // std::cout << key_str << ": ";
-        }
-        if (value.Type() == YAML::NodeType::Map)
-        {
-            try
-            {
-                value_str = value["asm"].as<std::string>();
-                value_str.erase(std::remove_if(value_str.begin(), value_str.end(), ::isspace), value_str.end());
-                // std::cout << value_str << " ";
-
-                uint value_str_length = (int)value_str.length() / 8;
-
-                while (res.size() < value_str_length)
-                {
-                    std::map<std::string, std::string> tmp = {};
-                    res.push_back(tmp);
-                }
-                res[value_str_length - 1].insert({key_str, value_str});
-            }
-            catch (const YAML::TypedBadConversion<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>> &e)
-            {
-                std::cout << "ERROR in parse_instruction_codes_from_yaml(). No 'asm' entry in '" << key_str << "' instruction"
-                          << "\n";
-                return res;
-            }
-        }
-        // std::cout << "\n";
-    }
-    return res;
-}
 
 std::vector<std::string> asm_string_to_vector(std::string asm_string)
 {
@@ -331,7 +284,7 @@ std::vector<std::string> first_iteration(std::vector<std::string> asm_vector)
 
 std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
 {
-    uint pos = 0;
+    unsigned int pos = 0;
     std::vector<int> res = {};
     std::regex reg_set_pc("\\*[ \t]*=[ \t]*[^ ]+");
 
@@ -345,7 +298,7 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
         {
             std::string var_def = matches[0].str();
             std::string variable_value = trim(var_def.substr(var_def.find("=") + 1, var_def.size()));
-            uint num = parse_value_from_argument(variable_value, false);
+            unsigned int num = parse_value_from_argument(variable_value, false);
 
             if (pos < num)
             {
@@ -395,7 +348,8 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
             std::string tmp_code = "";
             for (size_t j = 0; j < code.length(); j++)
             {
-                char last_char = tmp_code[tmp_code.length() - 1];
+                char last_char = (tmp_code.length() > 0)? tmp_code[tmp_code.length() - 1]:'%'; //why? no one knows
+
                 if (((last_char == '0' || last_char == '1') && (code[j] == '0' || code[j] == '1')) ||
                     (!(last_char == '0' || last_char == '1') && !(code[j] == '0' || code[j] == '1') && last_char == code[j]) ||
                     tmp_code == "")
@@ -451,93 +405,6 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
     return res;
 }
 
-std::vector<int> GenericAssembler::assemble_file(std::string asm_file_path, std::string yaml_file_path)
-{
-    /*
-        Notes:
-            1. yaml einlesen
-                - Funktion, die einen Vector von maps zurückgibt (std::vector<std::map<std::string, std::string>>)
-                    - Die map vec[0] repräsentiert die instructions mit 1 Byte Länge
-                    - Die map vec[1] repräsentiert die instructions mit 2 Byte Länge
-                    - usw.
-                    - Eintrag in den maps sieht wie folgt aus:
-                        - "JCN": "0001CCCCAAAAAAAA"
-                        - "JUN": "0100AAAAAAAAAAAA"
-                        - "FIM": "0010RRR0DDDDDDDD"
-                        - "JMS": "0101AAAA"
-            2. asm einlesen
-                - Erstes iterieren:
-                    - Kommentare entfernen
-                    - Variablen entfernen
-                    - Label entfernen
-                    - Aktuelle Adresse mitschreiben
-                    - Label mit addresse in vars (auf *=NUM achten)
-                    - Variablen mit Wert in vars (auf VAR=* achten)
-                    - Namen von Labels/Variablen mit Instruction-Namen gegen checken
-                        - Generelle regex für Namen von Labels und Variablen: "^[A-Za-z][A-Za-z0-9_]*$"
-                        - Groß- / Kleinschreibung ist egal bei Variablen und Labels
-                            - START == start == sTaRt
-                - Zweites iterieren:
-                    - Instruction-Name übersetzen mit Argumenten
-                        - Anzahl von Argumenten aus Code parsen
-                            - "JCN": "0001CCCCAAAAAAAA" => 2 Argumente C (4-bit) und A (8-bit)
-                        - Argumente parsen
-                            - Argumente sind so zu formatieren:
-                                - hex: $ff
-                                - bin: %11111111
-                                - dec: 255
-                            - Zusätzliche Buchstaben sind nur hinter den Werten erlaubt (alles, was nicht in das Zahlenformat passt, wird ignoriert):
-                                - $ffR0 => 255
-                                - %00001111P4 => 15
-                            - Mehrere Argumente müssen durch WHITESPACE getrennt sein (Komma ist optional)
-                                - JCN 12, 34 -> OK
-                                - JCN 12 34 -> OK
-                                - JCN 12,34 -> NICHT OK
-                        - Placeholder (A und C im Code) ersetzen
-                    - Auf *=NUM Achten
-                        if (NUM > pos){
-                            while (pos < NUM){
-                                if (pos >= res.size()){
-                                    res.push_back(0);
-                                }else{
-                                    res[pos] = 0;
-                                }
-                                pos++;
-                            }
-                        }else{
-                            pos = NUM;
-                        }
-    */
-
-    instruction_codes = parse_instruction_codes_from_yaml(yaml_file_path);
-    std::vector<std::string> asm_vector = asm_file_path_to_vector(asm_file_path);
-    std::vector<std::string> cleand_lines = first_iteration(asm_vector);
-    std::vector<int> res = second_iteration(cleand_lines);
-
-    return res;
-}
-
-std::vector<int> GenericAssembler::assemble_file(std::string asm_file_path)
-{
-    if(instruction_codes.empty()){
-        return {-1};
-    }
-    std::vector<std::string> asm_vector = asm_file_path_to_vector(asm_file_path);
-    std::vector<std::string> cleand_lines = first_iteration(asm_vector);
-    std::vector<int> res = second_iteration(cleand_lines);
-
-    return res;
-}
-
-std::vector<int> GenericAssembler::assemble_string(std::string asm_string, std::string yaml_file_path)
-{
-    instruction_codes = parse_instruction_codes_from_yaml(yaml_file_path);
-    std::vector<std::string> asm_vector = asm_string_to_vector(asm_string);
-    std::vector<std::string> cleand_lines = first_iteration(asm_vector);
-    std::vector<int> res = second_iteration(cleand_lines);
-
-    return res;
-}
 
 std::vector<int> GenericAssembler::assemble_string(std::string asm_string)
 {
@@ -549,9 +416,4 @@ std::vector<int> GenericAssembler::assemble_string(std::string asm_string)
     std::vector<int> res = second_iteration(cleand_lines);
 
     return res;
-}
-
-void GenericAssembler::load_yaml(std::string yaml_file_path)
-{
-    instruction_codes = parse_instruction_codes_from_yaml(yaml_file_path);
 }

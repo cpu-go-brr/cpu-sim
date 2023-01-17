@@ -18,6 +18,11 @@ std::size_t CPUDescription::Instruction::getSizeOfOPCode() const
 {
     return code.size();
 }
+
+std::size_t CPUDescription::Instruction::getByteSizeOfOPCode() const 
+{
+    return (std::size_t) std::ceil(asm_code.size() / 8.0);
+}
 std::string CPUDescription::Instruction::getName() const 
 {
     return name;
@@ -44,6 +49,12 @@ std::string CPUDescription::Instruction::getDescription() const
 {
     return description;
 }
+
+std::string CPUDescription::Instruction::getOPCode() const 
+{
+    return asm_code;
+}
+
 
 std::map<std::string, std::string> getParameter(const std::string &code, const std::string &opcode)
 {
@@ -117,6 +128,7 @@ void CPUDescription::Instruction::initInfo(const std::string &name_, const YAML:
     full_name = config["name"].as<std::string>("");
     description = config["description"].as<std::string>(full_name);
     code = std::regex_replace(config["code"].as<std::string>(""), std::regex("\\s"), "");
+    asm_code = std::regex_replace(config["asm"].as<std::string>(code), std::regex("\\s"), "");;
 }
 
 void CPUDescription::Instruction::initInstructions(YAML::Node &config)

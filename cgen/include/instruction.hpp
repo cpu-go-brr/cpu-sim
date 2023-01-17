@@ -21,9 +21,12 @@ namespace CPUDescription
         std::vector<std::string> getOPCodes(); //get all possible instruction codes (replace all parameter with 0 or 1)
 
         std::size_t getSizeOfOPCode() const;
+        std::size_t getByteSizeOfOPCode() const;
+        
         std::string getName() const;
         std::string getFullName() const;
         std::string getUpperName() const;            // get Name of the CPU lowercase
+        std::string getOPCode() const;            // get Name of the CPU lowercase
 
         std::string getDescription() const;
         std::string generateFunction(std::string opcode); //get only function body
@@ -34,7 +37,7 @@ namespace CPUDescription
         void initInstructions(YAML::Node& config);
         void initConditions(YAML::Node& config);
 
-        std::string name = "", full_name = "", description = "", code = "";
+        std::string name = "", full_name = "", description = "", code = "", asm_code = "";
         std::vector<Expression> expressions;
         std::vector<Condition> conditions;
 

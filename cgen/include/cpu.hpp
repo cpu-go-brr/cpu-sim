@@ -27,6 +27,7 @@ namespace CPUDescription
         std::string generateHpp();             // generate the CPU .hpp
         std::string generateDisplayJSONInfo();         // generate sourcecode able to display the cpu
         std::string generateSyntaxHighlighter();         // generate sourcecode able to display the cpu
+        std::string generateInstructionCodeMap();         // generate sourcecode able to display the cpu
         std::filesystem::path getPath();
 
     private:

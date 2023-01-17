@@ -265,6 +265,38 @@ std::filesystem::path CPUDescription::CPU::getPath()
 {
     return cpu_path;
 }
+#include <iostream>
+std::string CPUDescription::CPU::generateInstructionCodeMap()
+{
+    std::map<int, std::vector<Instruction>> instructions_by_bytelength;
+
+    for(const auto& instruction : instructions)
+    {
+        instructions_by_bytelength[instruction.getByteSizeOfOPCode()].push_back(instruction);
+    }
+
+    int max_byte_length = 0;
+    for(const auto& [byte_length, _] : instructions_by_bytelength)
+        max_byte_length = std::max(byte_length, max_byte_length);
+    
+
+    std::string res = "{";
+
+    for(int byte_length = 1; byte_length <= max_byte_length; byte_length++)
+    {
+        res += "{";
+        for(const auto& instruction : instructions_by_bytelength[byte_length])
+            res += "{\"" + instruction.getName() + "\",\"" + instruction.getOPCode() + "\"},";
+
+        res = res.substr(0,res.length() -1);
+
+        res += "},";
+    }
+    res = res.substr(0,res.length() -1);
+
+    return res + "};";
+
+}
 
 std::string CPUDescription::CPU::generateSyntaxHighlighter()
 {

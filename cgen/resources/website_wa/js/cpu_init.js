@@ -1,6 +1,7 @@
 json = Module.cwrap('json', 'string');
 simulate = Module.cwrap('simulate');
 reset = Module.cwrap('reset');
+assemble = Module.cwrap('assemble',null, 'string');
 
 function cpu_json()
 {
@@ -17,7 +18,9 @@ function cpu_reset()
   reset();
 }
 
-function cpu_flash()
+function cpu_flash(code)
 {
-  reset();
+  var ptr  = allocateUTF8(code);
+  assemble(ptr);
+  _free(ptr);
 }
