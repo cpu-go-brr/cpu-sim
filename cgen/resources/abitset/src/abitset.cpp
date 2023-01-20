@@ -337,6 +337,50 @@ abitset operator^(abitset a, abitset const &b)
     return a;
 }
 
+abitset operator&(abitset a, abitset const &b)
+{
+    std::size_t res_bits = std::max(a.size(), b.size());
+    std::size_t res_bytes = (std::size_t)std::ceil(res_bits / 8.0);
+    std::vector<uint8_t> bytes{};
+    bytes.reserve(res_bytes);
+
+    for (std::size_t i = 0; i < res_bytes; i++)
+    {
+        uint8_t byte_a = (a.bytes() > i) ? a[i] : 0;
+        uint8_t byte_b = (b.bytes() > i) ? b[i] : 0;
+
+        if (a.bytes() - 1 == i && (a.length % 8) != 0)
+            byte_a &= (1 << (a.length % 8)) - 1;
+        if (b.bytes() - 1 == i && (b.length % 8) != 0)
+            byte_b &= (1 << (b.length % 8)) - 1;
+
+        bytes.push_back(byte_a & byte_b);
+    }
+    return abitset(bytes, res_bits);
+}
+
+abitset operator|(abitset a, abitset const &b)
+{
+    std::size_t res_bits = std::max(a.size(), b.size());
+    std::size_t res_bytes = (std::size_t)std::ceil(res_bits / 8.0);
+    std::vector<uint8_t> bytes{};
+    bytes.reserve(res_bytes);
+
+    for (std::size_t i = 0; i < res_bytes; i++)
+    {
+        uint8_t byte_a = (a.bytes() > i) ? a[i] : 0;
+        uint8_t byte_b = (b.bytes() > i) ? b[i] : 0;
+
+        if (a.bytes() - 1 == i && (a.length % 8) != 0)
+            byte_a &= (1 << (a.length % 8)) - 1;
+        if (b.bytes() - 1 == i && (b.length % 8) != 0)
+            byte_b &= (1 << (b.length % 8)) - 1;
+
+        bytes.push_back(byte_a | byte_b);
+    }
+    return abitset(bytes, res_bits);
+}
+
 abitset operator+(abitset a, abitset const &b)
 {
     bool overflow = 0;

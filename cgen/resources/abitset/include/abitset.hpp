@@ -34,6 +34,8 @@ public:
     void write(uint8_t* addr, const AddressInfo& info) const;
 
     friend abitset operator+(abitset a, abitset const &b);
+    friend abitset operator&(abitset a, abitset const &b);
+    friend abitset operator|(abitset a, abitset const &b);
     friend abitset operator~(abitset a);
     friend abitset operator,(abitset a, abitset const &b);
     friend abitset operator^(abitset a, abitset const &b);

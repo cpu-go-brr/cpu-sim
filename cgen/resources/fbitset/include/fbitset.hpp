@@ -46,6 +46,8 @@ public:
     fbitset operator+(fbitset const &b);
     fbitset operator,(fbitset const &b);
     fbitset operator^(fbitset const &b);
+    fbitset operator|(fbitset const &b);
+    fbitset operator&(fbitset const &b);
     fbitset operator~();
     explicit operator bool() const;
 

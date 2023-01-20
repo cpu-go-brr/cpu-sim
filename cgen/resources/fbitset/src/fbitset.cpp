@@ -80,6 +80,16 @@ fbitset fbitset::operator+(fbitset const &b)
     return fbitset(data + b.data, max(bits, b.bits) + 1);
 }
 
+fbitset fbitset::operator|(fbitset const &b)
+{
+    return fbitset(data | b.data, max(bits, b.bits));
+}
+
+fbitset fbitset::operator&(fbitset const &b)
+{
+    return fbitset(data & b.data, max(bits, b.bits));
+}
+
 fbitset fbitset::operator,(fbitset const &b)
 {
     return fbitset((data << b.bits) + b.data, bits + b.bits);
