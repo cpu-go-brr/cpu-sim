@@ -8,37 +8,24 @@ memory:
     XX: 8
     YY: 8
     SR:
-      N: 1
-      V: 1
+      NF: 1
+      VF: 1
       IGF: 1
       BF:	1
       DF:	1
       IF:	1
       ZF:	1
       CF:	1
-
     SP: 8
   external:
-    rom:
-      words: 4096
+    mem:
+      words: 65536
       bits: 8
-    ram:
-      words: 2048
-      bits: 4
-    ram_status:
-      words: 512
-      bits: 4
-    ram_port:
-      words: 32
-      bits: 4
-    rom_port:
-      words: 16
-      bits: 4
 
 fetch:
   conditions:
   instructions:
-    - "rom(PC)"
+    - "mem(PC)"
 
 instructions:
   # ORA
@@ -46,7 +33,7 @@ instructions:
     code: 00001001
     asm: 00001001 AAAAAAAA
     instructions:
-      - AC | rom(PC+1) --> AC
+      - AC | mem(PC+1) --> AC
       - PC+2 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -54,60 +41,297 @@ instructions:
     code: 00000101
     asm: 00000101 AAAAAAAA
     instructions:
-      - A | rom(rom(PC+1)) --> A
+      - AC | mem(mem(PC+1)) --> AC
       - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
   ora_zeropage_x:
     code: 00010101
     asm: 00010101 AAAAAAAA
     instructions:
-      - A | rom(rom(PC+1)+XX) --> A
-      - PC+2 -->
+      - AC | mem(mem(PC+1)+XX) --> AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
   ora_absolute:
     code: 00001101
     asm: 00001101 AAAAAAAA AAAAAAAA
     instructions:
-      - A | (rom(PC+2),rom(PC+1)) --> A
+      - AC | (mem(PC+2),mem(PC+1)) --> AC
       - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
   ora_absolute_x:
     code: 00011101
     asm: 00011101 AAAAAAAA AAAAAAAA
     instructions:
-      - A | (rom(rom(PC+2)+XX),rom(rom(PC+1)+XX)) --> A
+      - AC | ((mem(PC+2),mem(PC+1))+XX) --> AC
       - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
   ora_absolute_y:
     code: 00011001
     asm: 00011001 AAAAAAAA AAAAAAAA
     instructions:
-      - A | (rom(rom(PC+2)+YY),rom(rom(PC+1)+YY)) --> A
+      - AC | (mem(mem(PC+2)+YY),mem(mem(PC+1)+YY)) --> AC
       - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
   ora_indirect_x:
     code: 00000001
     asm: 00000001 AAAAAAAA
     instructions:
-      - A | (rom(rom(rom(PC+2)+XX)),rom(rom(rom(PC+1)+XX)) --> A
+      - AC | (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) --> AC
       - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
   ora_indirect_y:
     code: 00010001
     asm: 00010001 AAAAAAAA
     instructions:
-      - A | (rom(rom(rom(PC+2)+YY)),rom(rom(rom(PC+1)+YY)) --> A
+      - AC | (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) --> AC
       - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
 
   # ADC
-  ora_immediate:
+  adc_immediate:
     code: 01101001
     asm: 01101001 AAAAAAAA
     instructions:
-      - A + M + C -> A, C
+      - AC + mem(PC+1) + CF --> CF, AC
       - PC+2 --> PC
-  # ora_zeropage
-  # ora_zeropage_x
-  # ora_absolute
-  # ora_absolute_x
-  # ora_absolute_y
-  # ora_indirect_x
-  # ora_indirect_y
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+      # VF Overflow
+  adc_zeropage:
+    code: 01100101
+    asm: 01100101 AAAAAAAA
+    instructions:
+      - AC + mem(mem(PC+1)) + CF --> CF, AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+      # VF Overflow
+  adc_zeropage_x:
+    code: 01110101
+    asm: 01110101 AAAAAAAA
+    instructions:
+      - AC + mem(mem(PC+1)+XX) + CF --> CF, AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+      # VF Overflow
+  adc_absolute:
+    code: 01101101
+    asm: 01101101 AAAAAAAA AAAAAAAA
+    instructions:
+      - AC + (mem(PC+2),mem(PC+1)) + CF --> CF, AC
+      - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+      # VF Overflow
+  adc_absolute_x: 
+    code: 01111101
+    asm: 01111101 AAAAAAAA AAAAAAAA
+    instructions:
+      - AC + ((mem(PC+2),mem(PC+1))+XX) + CF --> CF, AC
+      - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+      # VF Overflow
+  adc_absolute_y:
+    code: 01111001
+    asm: 01111001 AAAAAAAA AAAAAAAA
+    instructions:
+      - AC + ((mem(PC+2),mem(PC+1))+YY) + CF --> CF, AC
+      - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+      # VF Overflow
+  adc_indirect_x:
+    code: 01100001
+    asm: 01100001 AAAAAAAA AAAAAAAA
+    instructions:
+      - AC + (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) + CF --> CF, AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+      # VF Overflow
+  adc_indirect_y:
+    code: 01110001
+    asm: 01110001 AAAAAAAA AAAAAAAA
+    instructions:
+      - AC + (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) + CF --> CF, AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+      # VF Overflow
 
+  # ASL
+  asl_accumulator:
+    code: 00001010
+    asm: 00001010
+    instructions:
+      - (AC,0) --> CF, AC
+      - PC+1 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  asl_zeropage:
+    code: 00000110
+    asm: 00000110 AAAAAAAA
+    instructions:
+      - (mem(mem(PC+1)),0) --> CF, AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  asl_zeropage_x:
+    code: 00010110
+    asm: 00010110 AAAAAAAA
+    instructions:
+      - (mem(mem(PC+1)+XX),0) --> CF, AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  asl_absolute:
+    code: 00001110
+    asm: 00001110 AAAAAAAA AAAAAAAA
+    instructions:
+      - ((mem(PC+2),mem(PC+1)),0) --> CF, AC
+      - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  asl_absolute_x:
+    code: 00011110
+    asm: 00011110 AAAAAAAA AAAAAAAA
+    instructions:
+      - (((mem(PC+2),mem(PC+1))+XX),0) --> CF, AC
+      - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  
+  # LSR
+  lsr_accumulator:
+    code: 01001010 # 4a
+    asm: 01001010
+    instructions:
+      - (0,AC) --> AC, CF
+      - PC+1 --> PC
+      - (AC == 0) --> ZF
+  lsr_zeropage:
+    code: 01000110 # 46
+    asm: 01000110 AAAAAAAA
+    instructions:
+      - (0,mem(mem(PC+1))) --> AC, CF
+      - PC+2 --> PC
+      - (AC == 0) --> ZF
+  lsr_zeropage_x:
+    code: 01010110 # 56
+    asm: 01010110 AAAAAAAA
+    instructions:
+      - (0,mem(mem(PC+1)+XX)) --> AC, CF
+      - PC+2 --> PC
+      - (AC == 0) --> ZF
+  lsr_absolute:
+    code: 01001110 # 4e
+    asm: 01001110 AAAAAAAA AAAAAAAA
+    instructions:
+      - (0,(mem(PC+2),mem(PC+1))) --> AC, CF
+      - PC+3 --> PC
+      - (AC == 0) --> ZF
+  lsr_absolute_x:
+    code: 01011110 # 5e
+    asm: 00011110 AAAAAAAA AAAAAAAA
+    instructions:
+      - (0,((mem(PC+2),mem(PC+1))+XX)) --> AC, CF
+      - PC+3 --> PC
+      - (AC == 0) --> ZF
+  
+  # ROL
+  rol_accumulator:
+    code: 00101010 # 2a
+    asm: 00101010
+    instructions:
+      - (AC,CF) --> CF, AC
+      - PC+1 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  rol_zeropage:
+    code: 00100110 # 26
+    asm: 00100110 AAAAAAAA
+    instructions:
+      - (mem(mem(PC+1)),CF) --> CF, AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  rol_zeropage_x:
+    code: 00110110 # 36
+    asm: 00110110 AAAAAAAA
+    instructions:
+      - (mem(mem(PC+1)+XX),CF) --> CF, AC
+      - PC+2 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  rol_absolute:
+    code: 00101110 # 2e
+    asm: 00101110 AAAAAAAA AAAAAAAA
+    instructions:
+      - ((mem(PC+2),mem(PC+1)),CF) --> CF, AC
+      - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+  rol_absolute_x:
+    code: 00111110 # 3e
+    asm: 00111110 AAAAAAAA AAAAAAAA
+    instructions:
+      - (((mem(PC+2),mem(PC+1))+XX),CF) --> CF, AC
+      - PC+3 --> PC
+      - (AC & 128) > 0 --> NF
+      - (AC == 0) --> ZF
+
+  # ROR
+  ror_accumulator:
+    code: 01101010 # 6a
+    asm: 01101010
+    instructions:
+      - (CF,AC) --> AC, CF
+      - PC+1 --> PC
+      - (AC == 0) --> ZF
+  ror_zeropage:
+    code: 01100110 # 66
+    asm: 01100110 AAAAAAAA
+    instructions:
+      - (CF,mem(mem(PC+1))) --> AC, CF
+      - PC+2 --> PC
+      - (AC == 0) --> ZF
+  ror_zeropage_x:
+    code: 01110110 # 76
+    asm: 01110110 AAAAAAAA
+    instructions:
+      - (CF,mem(mem(PC+1)+XX)) --> AC, CF
+      - PC+2 --> PC
+      - (AC == 0) --> ZF
+  ror_absolute:
+    code: 01101110 # 6e
+    asm: 01101110 AAAAAAAA AAAAAAAA
+    instructions:
+      - (CF,(mem(PC+2),mem(PC+1))) --> AC, CF
+      - PC+3 --> PC
+      - (AC == 0) --> ZF
+  ror_absolute_x:
+    code: 01111110 # 7e
+    asm: 01111110 AAAAAAAA AAAAAAAA
+    instructions:
+      - (CF,((mem(PC+2),mem(PC+1))+XX)) --> AC, CF
+      - PC+3 --> PC
+      - (AC == 0) --> ZF
+  
+  # BCS
+  bcs_relative:
+    code: 10110000 # b0
+    asm: 10110000 AAAAAAAA
+    instructions:
+      - (CF == 1) ? PC+mem(PC+1) --> PC
 
 
 # display: |
