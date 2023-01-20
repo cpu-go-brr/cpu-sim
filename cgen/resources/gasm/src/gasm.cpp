@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <cstdint>
+#include <cmath>
 
 const std::string WHITESPACE = " \n\r\t\f\v";
 std::map<std::string, int> vars;

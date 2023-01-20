@@ -19,7 +19,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE void simulate()
 
 extern "C" EMSCRIPTEN_KEEPALIVE void assemble(char * source) 
 {
-    auto ints = ga.assemble_string(std::string(source));
+    auto ints = ga.assemble_string(req.get_param_value("code"));
     std::vector<bitset> bitsets;
     for(auto i : ints)
         bitsets.push_back(i);

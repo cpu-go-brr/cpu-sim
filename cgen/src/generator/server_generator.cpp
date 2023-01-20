@@ -11,12 +11,15 @@ void ServerGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path ou
     std::filesystem::create_directories(out/"website");
 
     std::filesystem::copy(cpu.getPath(), out/"server/cpu.yaml");
-    copyResource("gasm", out/"server");
+    copyResource("gasm", out/"server", 
+        {
+            {"\\$\\{INSTRUCTION_CODES\\}", cpu.generateInstructionCodeMap()}
+        });
 
     generateStandard(cpu, out/"server");
     copyResource("abitset", out/"server");
     copyResource("server", out/"server", {{"\\$\\{CPU_NAME\\}", cpu.getName()}});
-    copyResource("scripts", out,{{"\\$\\{CPU_NAME\\}", cpu.getLowerName()}});
+    copyResource("scripts", out/"server",{{"\\$\\{CPU_NAME\\}", cpu.getLowerName()}});
     copyResource("website_common", out/"website", 
     {
         {"\\$\\{CPU_NAME\\}", cpu.getName()}, 
