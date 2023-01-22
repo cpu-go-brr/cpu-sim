@@ -3,59 +3,10 @@
 #include <vector>
 #include <regex>
 #include <algorithm>
+#include "../include/gasm_helper.hpp"
 
-const std::string WHITESPACE = " \n\r\t\f\v";
 std::map<std::string, int> vars;
 std::vector<std::map<std::string, std::string>> instruction_codes;
-
-std::string ltrim(const std::string &s)
-{
-    size_t start = s.find_first_not_of(WHITESPACE);
-    return (start == std::string::npos) ? "" : s.substr(start);
-}
-
-std::string rtrim(const std::string &s)
-{
-    size_t end = s.find_last_not_of(WHITESPACE);
-    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
-}
-
-std::string trim(const std::string &s)
-{
-    return rtrim(ltrim(s));
-}
-
-std::vector<std::string> split_line(std::string text)
-{
-    std::vector<std::string> res;
-    std::regex split_regex("[^\t ]+");
-    std::smatch split_matches;
-
-    while (std::regex_search(text, split_matches, split_regex))
-    {
-        for (auto x : split_matches)
-        {
-            res.push_back(trim(x));
-        }
-        text = split_matches.suffix().str();
-    }
-    return res;
-}
-
-std::vector<std::string> splitstr(std::string str, std::string deli = " ")
-{
-    std::vector<std::string> res;
-    int start = 0;
-    int end = str.find(deli);
-    while (end != -1)
-    {
-        res.push_back(str.substr(start, end - start));
-        start = end + deli.size();
-        end = str.find(deli, start);
-    }
-    res.push_back(str.substr(start, end - start));
-    return res;
-}
 
 int get_length_of_instruction(std::string inst_name)
 {
@@ -91,44 +42,18 @@ int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variab
     if (arg[0] == '$')
     {
         arg = arg.substr(1, arg.length());
-        for (size_t i = 0; i < arg.length(); i++)
-        {
-            int current_ascii = int(arg[i]);
-            if (!(48 <= current_ascii && current_ascii <= 57) &&
-                !(65 <= current_ascii && current_ascii <= 70) &&
-                !(97 <= current_ascii && current_ascii <= 102))
-            {
-                arg = arg.substr(0, i);
-                break;
-            }
-        }
+        arg = get_hex_part_from_string(arg);
         base = 16;
     }
     else if (arg[0] == '%')
     {
         arg = arg.substr(1, arg.length());
-        for (size_t i = 0; i < arg.length(); i++)
-        {
-            int current_ascii = int(arg[i]);
-            if (!(48 <= current_ascii && current_ascii <= 49))
-            {
-                arg = arg.substr(0, i);
-                break;
-            }
-        }
+        arg = get_binary_part_from_string(arg);
         base = 2;
     }
     else if ((48 <= arg[0] && arg[0] <= 57))
     {
-        for (size_t i = 0; i < arg.length(); i++)
-        {
-            int current_ascii = int(arg[i]);
-            if (!(48 <= current_ascii && current_ascii <= 57))
-            {
-                arg = arg.substr(0, i);
-                break;
-            }
-        }
+        arg = get_decimal_part_from_string(arg);
     }
 
     try
@@ -143,10 +68,49 @@ int parse_value_from_argument(std::string arg, bool allow_lookup_of_other_variab
             return vars[arg];
         }
         std::stringstream ss;
-        ss << "ERROR in parse_value_from_argument(): " << exc.what();
+        ss << "ERROR in parse_value_from_argument(): "
+           << "stoi('" << arg << "')";
         throw std::invalid_argument(ss.str());
         return 0;
     }
+}
+
+int parse_key_and_value_from_yaml_entry(YAML::Node key, YAML::Node value, std::vector<std::map<std::string, std::string>> &res)
+{
+    std::string key_str;
+    std::string value_str;
+    if (key.Type() == YAML::NodeType::Scalar)
+    {
+        key_str = key.as<std::string>();
+        transform(key_str.begin(), key_str.end(), key_str.begin(), ::tolower);
+
+        // std::cout << key_str << ": ";
+    }
+    if (value.Type() == YAML::NodeType::Map)
+    {
+        try
+        {
+            value_str = value["asm"].as<std::string>();
+            value_str.erase(std::remove_if(value_str.begin(), value_str.end(), ::isspace), value_str.end());
+            // std::cout << value_str << " ";
+
+            uint value_str_length = (int)value_str.length() / 8;
+
+            while (res.size() < value_str_length)
+            {
+                std::map<std::string, std::string> tmp = {};
+                res.push_back(tmp);
+            }
+            res[value_str_length - 1].insert({key_str, value_str});
+        }
+        catch (const YAML::TypedBadConversion<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>> &e)
+        {
+            std::cout << "ERROR in parse_instruction_codes_from_yaml(). No 'asm' entry in '" << key_str << "' instruction"
+                      << "\n";
+            return 1;
+        }
+    }
+    return 0;
 }
 
 std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yaml(std::string yaml_file_path)
@@ -161,61 +125,85 @@ std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yam
         YAML::Node key = it->first;
         YAML::Node value = it->second;
 
-        std::string key_str;
-        std::string value_str;
-
-        if (key.Type() == YAML::NodeType::Scalar)
+        int return_value = parse_key_and_value_from_yaml_entry(key, value, res);
+        if (return_value)
         {
-            key_str = key.as<std::string>();
-            transform(key_str.begin(), key_str.end(), key_str.begin(), ::tolower);
-
-            // std::cout << key_str << ": ";
+            return res;
         }
-        if (value.Type() == YAML::NodeType::Map)
-        {
-            try
-            {
-                value_str = value["asm"].as<std::string>();
-                value_str.erase(std::remove_if(value_str.begin(), value_str.end(), ::isspace), value_str.end());
-                // std::cout << value_str << " ";
 
-                uint value_str_length = (int)value_str.length() / 8;
-
-                while (res.size() < value_str_length)
-                {
-                    std::map<std::string, std::string> tmp = {};
-                    res.push_back(tmp);
-                }
-                res[value_str_length - 1].insert({key_str, value_str});
-            }
-            catch (const YAML::TypedBadConversion<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>> &e)
-            {
-                std::cout << "ERROR in parse_instruction_codes_from_yaml(). No 'asm' entry in '" << key_str << "' instruction"
-                          << "\n";
-                return res;
-            }
-        }
         // std::cout << "\n";
     }
     return res;
 }
 
-std::vector<std::string> asm_string_to_vector(std::string asm_string)
+void parse_line_with_variables(std::smatch &matches, int &address_counter)
 {
-    return splitstr(asm_string, "\n");
+    std::string var_def = matches[0].str();
+
+    std::string variable_name = trim(var_def.substr(0, var_def.find("=")));
+    transform(variable_name.begin(), variable_name.end(), variable_name.begin(), ::tolower);
+    std::string variable_value = trim(var_def.substr(var_def.find("=") + 1, var_def.size()));
+
+    // std::cout << "|" << variable_name << "|" << variable_value << "|" << "\n";
+
+    int variable_value_int;
+    if (variable_value == "*")
+    {
+        variable_value_int = address_counter;
+    }
+    else
+    {
+        variable_value_int = parse_value_from_argument(variable_value, false);
+    }
+
+    if (vars.find(variable_name) == vars.end())
+    {
+        vars.insert({variable_name, variable_value_int});
+    }
+    else
+    {
+        vars[variable_name] = variable_value_int;
+    }
 }
 
-std::vector<std::string> asm_file_path_to_vector(std::string asm_file_path)
+void parse_labels_and_instructions_from_line(std::string &line, int &address_counter, std::vector<std::string> &cleaned_lines)
 {
-    std::vector<std::string> res;
-    std::string line;
-    std::ifstream file(asm_file_path);
-    while (getline(file, line))
+    std::vector<std::string> splitted_line = split_line(line);
+
+    if (splitted_line.size() >= 1)
     {
-        res.push_back(line);
+        int instruction_length = get_length_of_instruction(splitted_line[0]);
+        if (instruction_length == -1)
+        {
+            parse_line_with_label(splitted_line, address_counter, line, cleaned_lines);
+        }
+        else
+        {
+            address_counter += get_length_of_instruction(splitted_line[0]);
+            cleaned_lines.push_back(trim(line));
+        }
     }
-    file.close();
-    return res;
+}
+
+void parse_line_with_label(std::vector<std::string> &splitted_line, int &address_counter, std::string &line, std::vector<std::string> &cleaned_lines)
+{
+    std::string label_name = splitted_line[0];
+    transform(label_name.begin(), label_name.end(), label_name.begin(), ::tolower);
+    if (vars.find(label_name) == vars.end())
+    {
+        vars.insert({label_name, address_counter});
+    }
+    else
+    {
+        vars[label_name] = address_counter;
+    }
+
+    if (splitted_line.size() >= 2 && get_length_of_instruction(splitted_line[1]) != -1)
+    {
+        address_counter += get_length_of_instruction(splitted_line[1]);
+        std::string new_line = line.substr(line.find(splitted_line[0]) + splitted_line[0].length(), line.length());
+        cleaned_lines.push_back(trim(new_line));
+    }
 }
 
 std::vector<std::string> first_iteration(std::vector<std::string> asm_vector)
@@ -248,37 +236,14 @@ std::vector<std::string> first_iteration(std::vector<std::string> asm_vector)
             return cleaned_lines;
         }
 
-        // parse variables from line
         std::smatch matches;
+
+        // parse variables from line
         if (std::regex_search(line, matches, rgx_variabels))
         {
-            std::string var_def = matches[0].str();
-
-            std::string variable_name = trim(var_def.substr(0, var_def.find("=")));
-            transform(variable_name.begin(), variable_name.end(), variable_name.begin(), ::tolower);
-            std::string variable_value = trim(var_def.substr(var_def.find("=") + 1, var_def.size()));
-
-            // std::cout << "|" << variable_name << "|" << variable_value << "|" << "\n";
-
-            int variable_value_int;
-            if (variable_value == "*")
-            {
-                variable_value_int = address_counter;
-            }
-            else
-            {
-                variable_value_int = parse_value_from_argument(variable_value, false);
-            }
-
-            if (vars.find(variable_name) == vars.end())
-            {
-                vars.insert({variable_name, variable_value_int});
-            }
-            else
-            {
-                vars[variable_name] = variable_value_int;
-            }
+            parse_line_with_variables(matches, address_counter);
         }
+        // parse setting of pc
         else if (std::regex_search(line, matches, reg_set_pc))
         {
             std::string var_def = matches[0].str();
@@ -286,47 +251,149 @@ std::vector<std::string> first_iteration(std::vector<std::string> asm_vector)
             address_counter = parse_value_from_argument(variable_value, false);
             cleaned_lines.push_back(line);
         }
+        // parse byte pragma
         else if (line.find(".BYTE") != std::string::npos)
         {
             cleaned_lines.push_back(trim(line));
             address_counter++;
         }
+        // parse instructions and labels
         else
         {
-            std::vector<std::string> splitted_line = split_line(line);
-
-            if (splitted_line.size() >= 1)
-            {
-                int instruction_length = get_length_of_instruction(splitted_line[0]);
-                if (instruction_length == -1)
-                {
-                    std::string label_name = splitted_line[0];
-                    transform(label_name.begin(), label_name.end(), label_name.begin(), ::tolower);
-                    if (vars.find(label_name) == vars.end())
-                    {
-                        vars.insert({label_name, address_counter});
-                    }
-                    else
-                    {
-                        vars[label_name] = address_counter;
-                    }
-
-                    if (splitted_line.size() >= 2 && get_length_of_instruction(splitted_line[1]) != -1)
-                    {
-                        address_counter += get_length_of_instruction(splitted_line[1]);
-                        std::string new_line = line.substr(line.find(splitted_line[0]) + splitted_line[0].length(), line.length());
-                        cleaned_lines.push_back(trim(new_line));
-                    }
-                }
-                else
-                {
-                    address_counter += get_length_of_instruction(splitted_line[0]);
-                    cleaned_lines.push_back(trim(line));
-                }
-            }
+            parse_labels_and_instructions_from_line(line, address_counter, cleaned_lines);
         }
     }
     return cleaned_lines;
+}
+
+void set_pos_to_pc(std::smatch &matches, uint &pos, std::vector<int> &res)
+{
+    std::string var_def = matches[0].str();
+    std::string variable_value = trim(var_def.substr(var_def.find("=") + 1, var_def.size()));
+    uint num = parse_value_from_argument(variable_value, false);
+
+    if (pos < num)
+    {
+        while (pos < num)
+        {
+            if (pos >= res.size())
+            {
+                res.push_back(0);
+            }
+            else
+            {
+                res[pos] = 0;
+            }
+            pos++;
+        }
+    }
+    else
+    {
+        pos = num;
+    }
+}
+
+void insert_byte_from_byte_pragma(std::vector<std::string> &splitted_line, uint &pos, std::vector<int> &res)
+{
+    int val = (parse_value_from_argument(splitted_line[1], true) & 0xff);
+    if (pos >= res.size())
+    {
+        res.push_back(val);
+    }
+    else
+    {
+        res[pos] = val;
+    }
+    pos++;
+}
+
+void divide_instruction_code_into_segments(std::string &code, std::vector<std::string> &code_segments, std::vector<int> &code_segments_length)
+{
+    std::string tmp_code = "";
+    for (size_t j = 0; j < code.length(); j++)
+    {
+        char last_char = tmp_code.length() > 0 ? tmp_code[tmp_code.length() - 1] : '_';
+        if (((last_char == '0' || last_char == '1') && (code[j] == '0' || code[j] == '1')) ||
+            (!(last_char == '0' || last_char == '1') && !(code[j] == '0' || code[j] == '1') && last_char == code[j]) ||
+            tmp_code == "")
+        {
+            tmp_code += code[j];
+        }
+        else
+        {
+            code_segments.push_back(tmp_code);
+            code_segments_length.push_back(j);
+            tmp_code = code[j];
+        }
+    }
+    code_segments.push_back(tmp_code);
+    code_segments_length.push_back(code.length());
+}
+
+void get_value_of_current_instruction_with_arguments(std::string &code,
+                                                     std::vector<std::string> &code_segments,
+                                                     std::vector<int> &code_segments_length,
+                                                     std::vector<int> &args,
+                                                     int &current_argument,
+                                                     int &current_value,
+                                                     uint &pos,
+                                                     std::vector<int> &res)
+{
+    for (size_t j = 0; j < code_segments.size(); j++)
+    {
+        if (code_segments[j][0] != '0' && code_segments[j][0] != '1' && args.size() >= 1)
+        {
+            int argument_value = (args[current_argument] & (int)(pow(2, code_segments[j].length()) - 1));
+            current_value += (argument_value << (code.length() - code_segments_length[j]));
+            current_argument++;
+        }
+        else
+        {
+            current_value += (std::stoi(code_segments[j], nullptr, 2) << (code.length() - code_segments_length[j]));
+        }
+    }
+}
+
+void append_last_byte_of_value_to_result(std::string code, int current_value, uint &pos, std::vector<int> &res)
+{
+    for (size_t j = (int)code.length() / 8; j > 0; j--)
+    {
+        int val = ((current_value >> 8 * (j - 1)) & 0xff);
+        if (pos >= res.size())
+        {
+            res.push_back(val);
+        }
+        else
+        {
+            res[pos] = val;
+        }
+        pos++;
+    }
+}
+
+void construct_binary_from_splitted_line(std::vector<std::string> &splitted_line, uint &pos, std::vector<int> &res)
+{
+    std::string code = get_code_of_instruction(splitted_line[0]);
+
+    // get arguments for instructions in vector
+    std::vector<int> args = {};
+    for (size_t j = 1; j < splitted_line.size(); j++)
+    {
+        args.push_back(parse_value_from_argument(splitted_line[j], true));
+    }
+
+    // divide instruction code into segments
+    std::vector<std::string> code_segments = {};
+    std::vector<int> code_segments_length = {};
+    divide_instruction_code_into_segments(code, code_segments, code_segments_length);
+
+    // get total value of current instruction
+    int current_argument = 0;
+    int current_value = 0;
+    get_value_of_current_instruction_with_arguments(code, code_segments, code_segments_length, args, current_argument, current_value, pos, res);
+
+    // append of insert total value of current instruction in res
+    append_last_byte_of_value_to_result(code, current_value, pos, res);
 }
 
 std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
@@ -341,108 +408,24 @@ std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
         std::vector<std::string> splitted_line = split_line(cleand_lines[i]);
 
         std::smatch matches;
+        // set pos to pc
         if (std::regex_search(cleand_lines[i], matches, reg_set_pc))
         {
-            std::string var_def = matches[0].str();
-            std::string variable_value = trim(var_def.substr(var_def.find("=") + 1, var_def.size()));
-            uint num = parse_value_from_argument(variable_value, false);
-
-            if (pos < num)
-            {
-                while (pos < num)
-                {
-                    if (pos >= res.size())
-                    {
-                        res.push_back(0);
-                    }
-                    else
-                    {
-                        res[pos] = 0;
-                    }
-                    pos++;
-                }
-            }
-            else
-            {
-                pos = num;
-            }
+            set_pos_to_pc(matches, pos, res);
         }
+        // insert byte from byte pragma
         else if (splitted_line[0] == ".BYTE")
         {
-            int val = (parse_value_from_argument(splitted_line[1], true) & 0xff);
-            if (pos >= res.size())
-            {
-                res.push_back(val);
-            }
-            else
-            {
-                res[pos] = val;
-            }
-            pos++;
+            insert_byte_from_byte_pragma(splitted_line, pos, res);
         }
+        // constructing the binary
         else
         {
-            // constructing the binary
-            std::string code = get_code_of_instruction(splitted_line[0]);
-            std::vector<int> args = {};
-            for (size_t j = 1; j < splitted_line.size(); j++)
-            {
-                args.push_back(parse_value_from_argument(splitted_line[j], true));
-            }
-
-            std::vector<std::string> code_segments = {};
-            std::vector<int> code_segments_length = {};
-            std::string tmp_code = "";
-            for (size_t j = 0; j < code.length(); j++)
-            {
-                char last_char = tmp_code[tmp_code.length() - 1];
-                if (((last_char == '0' || last_char == '1') && (code[j] == '0' || code[j] == '1')) ||
-                    (!(last_char == '0' || last_char == '1') && !(code[j] == '0' || code[j] == '1') && last_char == code[j]) ||
-                    tmp_code == "")
-                {
-                    tmp_code += code[j];
-                }
-                else
-                {
-                    code_segments.push_back(tmp_code);
-                    code_segments_length.push_back(j);
-                    tmp_code = code[j];
-                }
-            }
-            code_segments.push_back(tmp_code);
-            code_segments_length.push_back(code.length());
-
-            int current_argument = 0;
-            int current_value = 0;
-            for (size_t j = 0; j < code_segments.size(); j++)
-            {
-                if (code_segments[j][0] != '0' && code_segments[j][0] != '1' && args.size() >= 1)
-                {
-                    int argument_value = (args[current_argument] & (int)(pow(2, code_segments[j].length()) - 1));
-                    current_value += (argument_value << (code.length() - code_segments_length[j]));
-                    current_argument++;
-                }
-                else
-                {
-                    current_value += (std::stoi(code_segments[j], nullptr, 2) << (code.length() - code_segments_length[j]));
-                }
-            }
-
-            for (size_t j = (int)code.length() / 8; j > 0; j--)
-            {
-                int val = ((current_value >> 8 * (j - 1)) & 0xff);
-                if (pos >= res.size())
-                {
-                    res.push_back(val);
-                }
-                else
-                {
-                    res[pos] = val;
-                }
-                pos++;
-            }
+            construct_binary_from_splitted_line(splitted_line, pos, res);
         }
     }
+
+    // padding
     for (size_t i = 0; i < res.size() % 8; i++)
     {
         res.push_back(0);
@@ -519,7 +502,8 @@ std::vector<int> GenericAssembler::assemble_file(std::string asm_file_path, std:
 
 std::vector<int> GenericAssembler::assemble_file(std::string asm_file_path)
 {
-    if(instruction_codes.empty()){
+    if (instruction_codes.empty())
+    {
         return {-1};
     }
     std::vector<std::string> asm_vector = asm_file_path_to_vector(asm_file_path);
@@ -541,7 +525,8 @@ std::vector<int> GenericAssembler::assemble_string(std::string asm_string, std::
 
 std::vector<int> GenericAssembler::assemble_string(std::string asm_string)
 {
-    if(instruction_codes.empty()){
+    if (instruction_codes.empty())
+    {
         return {-1};
     }
     std::vector<std::string> asm_vector = asm_string_to_vector(asm_string);
