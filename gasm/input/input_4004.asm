@@ -1,4 +1,3 @@
-
 ; four bit "AND" routine on the Intel 4004
 ;
 START	FIM 4P, 0	; LOAD ROM PORT 0 ADDRESS
