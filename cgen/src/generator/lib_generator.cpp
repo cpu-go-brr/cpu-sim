@@ -24,4 +24,7 @@ void LibraryGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path o
         });
 
     copyFile("lib/CMakeLists", out/"CMakeLists",{{"\\$\\{CPU_NAME\\}", cpu.getLowerName()}});
+
+    std::filesystem::permissions(out / "build.sh",std::filesystem::perms::owner_exec,std::filesystem::perm_options::add);
+
 }

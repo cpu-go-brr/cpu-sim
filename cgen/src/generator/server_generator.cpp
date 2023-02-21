@@ -38,4 +38,9 @@ void ServerGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path ou
         });
 
     createFile(out / "server/CMakeLists.txt", cpu.generateCMakeFile());
+
+
+    std::filesystem::permissions(out / "server/run.sh",std::filesystem::perms::owner_exec,std::filesystem::perm_options::add);
+    std::filesystem::permissions(out / "server/build.sh",std::filesystem::perms::owner_exec,std::filesystem::perm_options::add);
+
 }

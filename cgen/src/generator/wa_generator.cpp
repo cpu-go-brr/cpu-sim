@@ -37,4 +37,5 @@ void WebAssemblyGenerator::generate(CPUDescription::CPU cpu, std::filesystem::pa
     createFile(out/"cpu.json", cpu.generateDisplayJSONInfo());
     createFile(out/"js/ace/mode-general_assembly.js", cpu.generateSyntaxHighlighter());
 
+    std::filesystem::permissions(out / "build.sh",std::filesystem::perms::owner_exec,std::filesystem::perm_options::add);
 }   

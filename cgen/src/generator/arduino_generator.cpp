@@ -19,4 +19,7 @@ void ArduinoGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path o
 
     createFile(out / "CMakeLists.txt", cpu.generateCMakeFile());
     createFile(out / "run.sh", cpu.generateRunScript());
+
+    std::filesystem::permissions(out / "run.sh",std::filesystem::perms::owner_exec,std::filesystem::perm_options::add);
+    std::filesystem::permissions(out / "build.sh",std::filesystem::perms::owner_exec,std::filesystem::perm_options::add);
 }
