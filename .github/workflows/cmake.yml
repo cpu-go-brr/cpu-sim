@@ -20,9 +20,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Install yamlcpp
-      run: sudo apt install libyaml-cpp-dev
-
+    - name: Install yamlcpp and Matheval
+      run: sudo apt install libyaml-cpp-dev libmatheval-dev
+      
     - name: Install Catch2
       run: git clone https://github.com/catchorg/Catch2.git && cd Catch2 && cmake -Bbuild -H. -DBUILD_TESTING=OFF && sudo cmake --build build/ --target install
 
