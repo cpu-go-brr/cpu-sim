@@ -13,9 +13,9 @@
   - [x] Website um Zustand der CPU zu setzten bauen / erstmal recherche
 - [x] Generator bauen
   - Instruction Set erweitern (Intel 8008, AMD64 evtl. Config-only
-    - [ ] 6502
+    - [x] 6502
     - [x] Brainfuck
-- [ ] Pong auf Aurduino packen
+- [x] Pong auf Aurduino packen
 - [ ] Paper schreiben
 
 
