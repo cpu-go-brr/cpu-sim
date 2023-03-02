@@ -6,13 +6,13 @@ inc
 inc
 inc
 inc
-lp
+LP1 lp
 right
 inc
 inc
 inc
 inc
-lp
+LP2 lp
 right
 inc
 inc
@@ -31,7 +31,7 @@ left
 left
 left
 dec
-rt
+rt LP2
 right
 inc
 right
@@ -41,12 +41,12 @@ dec
 right
 right
 inc
-lp
+LP3 lp
 left
-rt
+rt LP3
 left
 dec
-rt
+rt LP1
 right
 right
 prt

@@ -265,7 +265,7 @@ std::filesystem::path CPUDescription::CPU::getPath()
 {
     return cpu_path;
 }
-#include <iostream>
+
 std::string CPUDescription::CPU::generateInstructionCodeMap()
 {
     std::map<int, std::vector<Instruction>> instructions_by_bytelength;

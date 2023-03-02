@@ -33,7 +33,6 @@ std::string getName(std::string name, std::vector<int> dimensions)
     int i = 0;
 
     // replace all the $0 $1 ...
-
     for (const auto &dims : dimensions)
     {
         std::regex r("\\$" + std::to_string(i));
@@ -41,15 +40,17 @@ std::string getName(std::string name, std::vector<int> dimensions)
         i++;
     }
 
+
     // calculate all numbers in string
 
-    const std::regex r(".*\\{(.+)\\}");
+    const std::regex r(".*\\{(.+)\\}.*");
     std::smatch matches;
 
     while (std::regex_match(name, matches, r))
     {
         std::string match = matches[1].str(); // string we need to replace
         std::string new_val = std::to_string((std::size_t)MathExpression::eval(match));
+
 
         auto index = name.find("{" + match + "}");
         if (index == std::string::npos)

@@ -33,9 +33,11 @@ int main(int argc, char **argv)
     while (true)
     {
         cpu.simulate();
-        cpu.display();
+        // cpu.display();
 
-        tty.read(&c, 1);
+        // tty.read(&c, 1);
+
+        if(cpu.get(SEND)) std::cout << cpu.get(VAL);
     }
     return 0;
 }
