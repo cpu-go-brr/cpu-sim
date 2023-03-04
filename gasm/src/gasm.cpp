@@ -92,7 +92,11 @@ int parse_key_and_value_from_yaml_entry(YAML::Node key, YAML::Node value, std::v
         {
             value_str = value["asm"].as<std::string>();
             value_str.erase(std::remove_if(value_str.begin(), value_str.end(), ::isspace), value_str.end());
-            // std::cout << value_str << " ";
+
+            if ((int)value_str.length() % 8 != 0)
+            {
+                value_str.insert(0, 8 - (int)value_str.length() % 8, '0');
+            }
 
             uint value_str_length = (int)value_str.length() / 8;
 
@@ -124,6 +128,8 @@ std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yam
     {
         YAML::Node key = it->first;
         YAML::Node value = it->second;
+        // std::cout << key.as<std::string>() << "\n";
+        // std::cout << "hi" << "\n";
 
         int return_value = parse_key_and_value_from_yaml_entry(key, value, res);
         if (return_value)
