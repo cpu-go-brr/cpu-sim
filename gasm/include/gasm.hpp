@@ -26,7 +26,7 @@ void get_value_of_current_instruction_with_arguments(std::string &code,
                                                      int &current_value,
                                                      uint &pos,
                                                      std::vector<int> &res);
-void append_last_byte_of_value_to_result(std::string code, int current_value, uint &pos, std::vector<int> &res);
+void append_bytes_of_value_to_result(std::string code, int current_value, uint &pos, std::vector<int> &res);
 void construct_binary_from_splitted_line(std::vector<std::string> &splitted_line, uint &pos, std::vector<int> &res);
 std::vector<int> second_iteration(std::vector<std::string> cleand_lines);
 
