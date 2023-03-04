@@ -393,6 +393,11 @@ void construct_binary_from_splitted_line(std::vector<std::string> &splitted_line
     std::vector<int> code_segments_length = {};
     divide_instruction_code_into_segments(code, code_segments, code_segments_length);
 
+    // Error when invalid number of arguments
+    if (splitted_line.size() != code_segments.size()) {
+        throw std::invalid_argument("Instruction '" + splitted_line[0] + "' has invalid number of arguments");
+    }
+
     // get total value of current instruction
     int current_argument = 0;
     int current_value = 0;
