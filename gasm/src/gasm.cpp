@@ -360,7 +360,7 @@ void get_value_of_current_instruction_with_arguments(std::string &code,
     }
 }
 
-void append_last_byte_of_value_to_result(std::string code, int current_value, uint &pos, std::vector<int> &res)
+void append_bytes_of_value_to_result(std::string code, int current_value, uint &pos, std::vector<int> &res)
 {
     for (size_t j = (int)code.length() / 8; j > 0; j--)
     {
@@ -404,7 +404,7 @@ void construct_binary_from_splitted_line(std::vector<std::string> &splitted_line
     get_value_of_current_instruction_with_arguments(code, code_segments, code_segments_length, args, current_argument, current_value, pos, res);
 
     // append of insert total value of current instruction in res
-    append_last_byte_of_value_to_result(code, current_value, pos, res);
+    append_bytes_of_value_to_result(code, current_value, pos, res);
 }
 
 std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
