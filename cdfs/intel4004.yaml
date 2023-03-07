@@ -12,7 +12,7 @@ memory:
       PL: 4
       PM: 4
       PH: 4
-    CM: 4
+    CM: 3
     STACK[3]:
       STACK{$0}: 12
     SRC:
@@ -271,7 +271,7 @@ instructions:
     code: 1110 0001
     asm: 11100001
     instructions:
-      - ACC --> ram_port(CM)
+      - ACC --> ram_port(CM,SRC_CHIP)
       - PC+1 --> PC
   wrr:
     name: Write ROM Port
@@ -296,7 +296,7 @@ instructions:
     code: 1110 0100
     asm: 11100100
     instructions:
-      - ACC --> ram_status((X2, 0b00))
+      - ACC --> ram_status((CM, X2, 0b00))
       - PC +1 --> PC
   wr1:
     name: Write Status Char 1
@@ -307,7 +307,7 @@ instructions:
     code: 1110 0101
     asm: 11100101
     instructions:
-      - ACC --> ram_status((X2, 0b01))
+      - ACC --> ram_status((CM, X2, 0b01))
       - PC +1 --> PC
   wr2:
     name: Write Status Char 2
@@ -318,7 +318,7 @@ instructions:
     code: 1110 0110
     asm: 11100110
     instructions:
-      - ACC --> ram_status((X2, 0b10))
+      - ACC --> ram_status((CM, X2, 0b10))
       - PC +1 --> PC
   wr3:
     name: Write Status Char 3
@@ -329,7 +329,7 @@ instructions:
     code: 1110 0111
     asm: 11100111
     instructions:
-      - ACC --> ram_status((X2, 0b11))
+      - ACC --> ram_status((CM, X2, 0b11))
       - PC +1 --> PC
   sbm:
     name: Subtract Main Memory
@@ -381,7 +381,7 @@ instructions:
     code: 1110 1100
     asm: 11101100
     instructions:
-      - ram_status((X2, 0b00)) --> ACC 
+      - ram_status((CM, X2, 0b00)) --> ACC 
       - PC +1 --> PC
   rd1:
     name: Read Status Char 1
@@ -391,7 +391,7 @@ instructions:
     code: 1110 1101
     asm: 11101101
     instructions:
-      - ram_status((X2, 0b01)) --> ACC 
+      - ram_status((CM, X2, 0b01)) --> ACC 
       - PC +1 --> PC
   rd2:
     name: Read Status Char 2
@@ -401,7 +401,7 @@ instructions:
     code: 1110 1110
     asm: 11101110
     instructions:
-      - ram_status((X2, 0b10)) --> ACC 
+      - ram_status((CM, X2, 0b10)) --> ACC 
       - PC +1 --> PC
   rd3:
     name: Read Status Char 3
@@ -411,7 +411,7 @@ instructions:
     code: 1110 1111
     asm: 11101111
     instructions:
-      - ram_status((X2, 0b11)) --> ACC 
+      - ram_status((CM, X2, 0b11)) --> ACC 
       - PC +1 --> PC
   clb:
     name: Clear Both
@@ -522,6 +522,7 @@ instructions:
       - inc = CY == 1 || ACC > 9
     instructions:
       - inc? ACC + 6 --> CY,ACC
+      - PC+1 --> PC
   kbp:
     name: Keyboard Process
     description: The Accumulator will be set to the position of the first bit. If
@@ -550,8 +551,7 @@ instructions:
     code: 1111 1101
     asm: 11111101
     instructions:
-      - ACC == 0 ? 1 --> CM
-      - ACC != 0 ? (ACC, 0b0) --> CM
+      - ACC --> CM
       - PC+1 --> PC
       
 display: |2
