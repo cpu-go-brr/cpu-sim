@@ -11,7 +11,7 @@ memory:
   external:
     rom:
       words: 256
-      bits: 4
+      bits: 8
     band:
       words: 256
       bits: 8
@@ -24,70 +24,70 @@ fetch:
 
 instructions:
   nop:
-    code: 0000
-    asm: 0000
+    code: 0000 0000
+    asm: 0000 0000
     description: No Operation
     instructions:
   right:
-    code: 0001
-    asm: 0001
+    code: 0000 0001
+    asm: 0000 0001
     description: Increment the data pointer (to point to the next cell to the right). 
     instructions:
       - PTR + PTR --> PTR
       - PC + 1 --> PC
   left:
-    code: 0010
-    asm: 0010
+    code: 0000 0010
+    asm: 0000 0010
     description: Decrement the data pointer (to point to the next cell to the left). 
     instructions:
       - PTR + 254 --> PTR
       - PC + 1 --> PC 
   inc:
-    code: 0011
-    asm: 0011
+    code: 0000 0011
+    asm: 0000 0011
     description: Increment (increase by one) the byte at the data pointer. 
     instructions:
       - band(PTR) + 1 --> band(PTR)
       - PC + 1 --> PC
   dec:
-    code: 0100
-    asm: 0100
+    code: 0000 0100
+    asm: 0000 0100
     description: Decrement (decrease by one) the byte at the data pointer. 
     instructions:
-      - band(PTR) + 244 --> band(PTR)
+      - band(PTR) + 254 --> band(PTR)
       - PC + 1 --> PC
   prt:
-    code: 0101
-    asm: 0101
+    code: 0000 0101
+    asm: 0000 0101
     description: Output the byte at the data pointer. 
     instructions:
       - band(PTR) --> VAL
       - 1 --> SEND
       - PC + 1 --> PC
   red:
-    code: 0110
-    asm: 0110
+    code: 0000 0110
+    asm: 0000 0110
     description: Accept one byte of input, storing its value in the byte at the data pointer. 
     instructions:
       - VAL --> band(PTR)
       - 1 --> SEND
       - PC + 1 --> PC
   lp:
-    code: 0111
-    asm: 0111 AAAA AAAA
+    code: 0000 0111
+    asm: 0000 0111 AAAA AAAA
     description: If the byte at the data pointer is zero, then instead of moving the instruction pointer 
       forward to the next command, jump it forward to the command after the matching ] command. 
     instructions:
-      - band(PTR) == 0 ? (rom(PC +1), rom(PC+2))--> PC
-      - band(PTR) != 0 ? PC+3--> PC
+      - band(PTR) == 0 ? rom(PC +1) --> PC
+      - band(PTR) != 0 ? PC+2--> PC
   rt:
-    code: 1000
-    asm: 1000 AAAA AAAA
+    code: 0000 1000
+    asm: 0000 1000 AAAA AAAA
     description: If the byte at the data pointer is zero, then instead of moving the instruction pointer 
       forward to the next command, jump it forward to the command after the matching ] command. 
     instructions:
-      - band(PTR) != 0 ? (rom(PC +1), rom(PC+2))--> PC
-      - band(PTR) == 0 ? PC+3--> PC
+      - band(PTR) != 0 ? rom(PC +1) --> PC
+      - band(PTR) == 0 ? PC+2--> PC
 
 display: |2 
   PC 0x{PC}

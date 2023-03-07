@@ -1,2 +1,2 @@
 ./build.sh
-./build/bfcpu
+./build/bfcpu hello_world.hex

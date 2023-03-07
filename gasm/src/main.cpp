@@ -4,6 +4,8 @@
 #include "argument_parser.hpp"
 #include <fstream>
 #include <filesystem>
+#include <system_error>
+		
 
 int main(int argc, char **argv)
 {
@@ -26,7 +28,8 @@ int main(int argc, char **argv)
     // Load yaml and assemble string together
     // std::vector<int> assembled_code = gasm.assemble_string(s, cpu_file);
 
-    std::filesystem::create_directories(std::filesystem::path(out_file).parent_path());
+    std::error_code err;
+    std::filesystem::create_directories(std::filesystem::path(out_file).parent_path(), err);
     std::ofstream out(out_file);
 
     for (size_t i = 0; i < assembled_code.size(); i++)

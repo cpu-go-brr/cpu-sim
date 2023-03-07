@@ -69,7 +69,7 @@ std::string ArgumentParser::getOut()
     if(cmdOptionExists("-o"))
         return getCmdOption("-o");
 
-    return "/dev/tty";
+    return "/dev/stdout";
 }
 
 

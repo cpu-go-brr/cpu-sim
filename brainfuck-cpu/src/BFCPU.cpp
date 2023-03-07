@@ -172,6 +172,7 @@ void BFCPU::simulate(size_t i)
 for (;i-->0;)
 {
    auto val = fetch();
+
    if(ops[val.val()] == NULL)
    {
    #ifndef NO_PRINT

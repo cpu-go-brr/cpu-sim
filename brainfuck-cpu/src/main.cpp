@@ -32,12 +32,15 @@ int main(int argc, char **argv)
     char c;
     while (true)
     {
+        std::cout << "PC: " << (int)cpu.get(PC).val() << "\n";
+
+
         cpu.simulate();
         // cpu.display();
 
-        // tty.read(&c, 1);
+        tty.read(&c, 1);
 
-        if(cpu.get(SEND)) std::cout << cpu.get(VAL);
+        if(cpu.get(SEND)) std::cout << (char)cpu.get(VAL).val();
     }
     return 0;
 }
