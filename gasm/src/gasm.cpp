@@ -92,7 +92,11 @@ int parse_key_and_value_from_yaml_entry(YAML::Node key, YAML::Node value, std::v
         {
             value_str = value["asm"].as<std::string>();
             value_str.erase(std::remove_if(value_str.begin(), value_str.end(), ::isspace), value_str.end());
-            // std::cout << value_str << " ";
+
+            if ((int)value_str.length() % 8 != 0)
+            {
+                value_str.insert(0, 8 - (int)value_str.length() % 8, '0');
+            }
 
             uint value_str_length = (int)value_str.length() / 8;
 
@@ -124,6 +128,8 @@ std::vector<std::map<std::string, std::string>> parse_instruction_codes_from_yam
     {
         YAML::Node key = it->first;
         YAML::Node value = it->second;
+        // std::cout << key.as<std::string>() << "\n";
+        // std::cout << "hi" << "\n";
 
         int return_value = parse_key_and_value_from_yaml_entry(key, value, res);
         if (return_value)
@@ -354,7 +360,7 @@ void get_value_of_current_instruction_with_arguments(std::string &code,
     }
 }
 
-void append_last_byte_of_value_to_result(std::string code, int current_value, uint &pos, std::vector<int> &res)
+void append_bytes_of_value_to_result(std::string code, int current_value, uint &pos, std::vector<int> &res)
 {
     for (size_t j = (int)code.length() / 8; j > 0; j--)
     {
@@ -387,13 +393,18 @@ void construct_binary_from_splitted_line(std::vector<std::string> &splitted_line
     std::vector<int> code_segments_length = {};
     divide_instruction_code_into_segments(code, code_segments, code_segments_length);
 
+    // Error when invalid number of arguments
+    if (splitted_line.size() != code_segments.size()) {
+        throw std::invalid_argument("Instruction '" + splitted_line[0] + "' has invalid number of arguments");
+    }
+
     // get total value of current instruction
     int current_argument = 0;
     int current_value = 0;
     get_value_of_current_instruction_with_arguments(code, code_segments, code_segments_length, args, current_argument, current_value, pos, res);
 
     // append of insert total value of current instruction in res
-    append_last_byte_of_value_to_result(code, current_value, pos, res);
+    append_bytes_of_value_to_result(code, current_value, pos, res);
 }
 
 std::vector<int> second_iteration(std::vector<std::string> cleand_lines)
