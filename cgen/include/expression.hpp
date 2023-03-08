@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <map>
 #include "matheval.hpp"
 
 namespace CPUDescription
@@ -12,6 +13,10 @@ namespace CPUDescription
 
         //return code 
         std::string getCode(std::map<std::string, std::string> params);
+
+        static void wrapAddressInGetFunction(std::string &string);
+        static void wrapAddressInsideParenthesisInGetFunction(std::string &string);
+
     private:
         const std::string source;
     };

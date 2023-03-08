@@ -50,16 +50,28 @@ void evaluateCurlyBrackets(std::string &string, std::vector<std::pair<std::strin
     }
 }
 
-void wrapAddressInGetFunction(std::string &string)
+void CPUDescription::Expression::wrapAddressInGetFunction(std::string &string)
 {
-    const std::regex vars("([A-Z\\{\\[\\]\\}]+[0-9]+|[A-Z\\{\\[\\]\\}]{2,}[0-9]*)");
+    const std::regex vars("([A-Z_\\{\\[\\]\\}]+[0-9]+|[A-Z_\\{\\[\\]\\}]{2,}[0-9]*)");
     string = std::regex_replace(string, vars, "get($&)");
 }
 
-void wrapAddressInsideParenthesisInGetFunction(std::string &string)
+void CPUDescription::Expression::wrapAddressInsideParenthesisInGetFunction(std::string &string)
 {
-    const std::regex rightvars("\\(([A-Z\\{\\[\\]\\}]+[0-9]+|[A-Z\\{\\[\\]\\}]{2,}[0-9]*)");
-    string = std::regex_replace(string, rightvars, "(get($1)");
+    const std::regex function_parameters("[a-z_]+\\(+([^\\)]*)");
+    std::smatch m;
+
+    std::string input = string;
+    string = "";
+    while (std::regex_search (input,m,function_parameters)) 
+    {
+        std::string parameters = m[0];
+        wrapAddressInGetFunction(parameters);
+
+        string = m.prefix().str() + parameters;
+        input = m.suffix().str();
+    }
+    string +=input;
 }
 
 std::size_t getAddressCount(const std::string &string)

@@ -271,7 +271,7 @@ instructions:
     code: 1110 0001
     asm: 11100001
     instructions:
-      - ACC --> ram_port(CM,SRC_CHIP)
+      - ACC --> ram_port((CM, SRC_CHIP))
       - PC+1 --> PC
   wrr:
     name: Write ROM Port

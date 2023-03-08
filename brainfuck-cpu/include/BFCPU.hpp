@@ -74,6 +74,6 @@ void dec(AddressInfo info, char* addr);
    template <size_t C>
    void rt();
 
-static BFCPU::op ops[16];
+static BFCPU::op ops[256];
 
 char* str = NULL;};

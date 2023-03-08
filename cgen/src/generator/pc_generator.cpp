@@ -8,6 +8,7 @@ void PCGenerator::generate(CPUDescription::CPU cpu, std::filesystem::path out)
     generateStandard(cpu, out);
     
     copyResource("abitset", out);
+    copyResource("fbitset", out);
     copyResource("scripts", out,{{"\\$\\{CPU_NAME\\}", cpu.getLowerName()}});
 
     copyResource("settings", out,
