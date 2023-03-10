@@ -89,7 +89,7 @@ instructions:
       The 8 bit content of the designated index register pair is sent to 
       the RAM address register at X2 and X3. A subsequent read, write, 
       or I/O operation of the RAM will utilize this address. Specifically, 
-      the first 2 bits of the address designatea RAM chip; the second 2 bits 
+      the first 2 bits of the address designate a RAM chip; the second 2 bits 
       designate 1 out of 4 registers within the chip; the last 4 bits designate 
       1 out of 16 4-bit main memory characters within the register. This command 
       is also used to designate a ROM for a subsequent ROM I/O port operation. 
