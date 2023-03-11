@@ -12,7 +12,7 @@ void BFCPU::nop<0b00000000>()
 template <>
 void BFCPU::right<0b00000001>()
 {
-/* PTR + PTR --> PTR*/
+/* PTR + 1 --> PTR*/
 set((get(PTR)+1), PTR);
 /* PC + 1 --> PC*/
 set((get(PC)+1), PC);
@@ -23,7 +23,7 @@ set((get(PC)+1), PC);
 template <>
 void BFCPU::left<0b00000010>()
 {
-/* PTR + 254 --> PTR*/
+/* PTR + 255 --> PTR*/
 set((get(PTR)+255), PTR);
 /* PC + 1 --> PC*/
 set((get(PC)+1), PC);
@@ -45,7 +45,7 @@ set((get(PC)+1), PC);
 template <>
 void BFCPU::dec<0b00000100>()
 {
-/* band(PTR) + 254 --> band(PTR)*/
+/* band(PTR) + 255 --> band(PTR)*/
 set((band(get(PTR))+255), band(get(PTR)));
 /* PC + 1 --> PC*/
 set((get(PC)+1), PC);
@@ -54,7 +54,7 @@ set((get(PC)+1), PC);
 
 /* Output the byte at the data pointer.*/
 template <>
-void BFCPU::prt<0b00000101>()
+void BFCPU::print<0b00000101>()
 {
 /* band(PTR) --> VAL*/
 set((band(get(PTR))), VAL);
@@ -67,12 +67,12 @@ set((get(PC)+1), PC);
 
 /* Accept one byte of input, storing its value in the byte at the data pointer.*/
 template <>
-void BFCPU::red<0b00000110>()
+void BFCPU::read<0b00000110>()
 {
 /* VAL --> band(PTR)*/
 set((get(VAL)), band(get(PTR)));
-/* 1 --> SEND*/
-set((1), SEND);
+/* 1 --> READ*/
+set((1), READ);
 /* PC + 1 --> PC*/
 set((get(PC)+1), PC);
 }
@@ -80,7 +80,7 @@ set((get(PC)+1), PC);
 
 /* If the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command.*/
 template <>
-void BFCPU::lp<0b00000111>()
+void BFCPU::loop<0b00000111>()
 {
 /* band(PTR) == 0 ? rom(PC +1) --> PC*/
 if(band(get(PTR))==0)
@@ -95,20 +95,12 @@ set((get(PC)+2), PC);
 }
 
 
-/* If the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command.*/
+/* Return to the matching [ command.*/
 template <>
-void BFCPU::rt<0b00001000>()
+void BFCPU::ret<0b00001000>()
 {
-/* band(PTR) != 0 ? rom(PC +1) --> PC*/
-if(band(get(PTR))!=0)
-{
+/* rom(PC +1) --> PC*/
 set((rom(get(PC)+1)), PC);
-}
-/* band(PTR) == 0 ? PC+2--> PC*/
-if(band(get(PTR))==0)
-{
-set((get(PC)+2), PC);
-}
 }
 
 
@@ -118,10 +110,10 @@ BFCPU::op BFCPU::ops[256] = {
 &BFCPU::left<0b00000010>,
 &BFCPU::inc<0b00000011>,
 &BFCPU::dec<0b00000100>,
-&BFCPU::prt<0b00000101>,
-&BFCPU::red<0b00000110>,
-&BFCPU::lp<0b00000111>,
-&BFCPU::rt<0b00001000>,
+&BFCPU::print<0b00000101>,
+&BFCPU::read<0b00000110>,
+&BFCPU::loop<0b00000111>,
+&BFCPU::ret<0b00001000>,
 NULL,
 NULL,
 NULL,
@@ -393,8 +385,9 @@ char* BFCPU::display()
 {
 if(str == NULL)
 {
-str = (char*)malloc(32);
-sprintf(str, "PC: XX PTR: XX OUT: XXX SEND: X");
+str = (char*)malloc(33);
+sprintf(str, "PC: XX PTR: XX OUT: XXX SEND: X\n\
+");
 }
 hex(PC, str +4);
 hex(PTR, str +12);
@@ -470,6 +463,8 @@ bitset BFCPU::fetch()
 {
 /* 0 --> SEND*/
 set((0), SEND);
+/* 0 --> READ*/
+set((0), READ);
 /* 0 --> VAL*/
 set((0), VAL);
 /* rom(PC)*/
@@ -503,7 +498,8 @@ std::string json = "{\"internal\":{"
 "\"PTR\":{\"bits\":8,\"val\":" + std::to_string(get(PTR).val()) + "},"
 "\"OUT\":{"
 "\"VAL\":{\"bits\":8,\"val\":" + std::to_string(get(VAL).val()) + "},"
-"\"SEND\":{\"bits\":1,\"val\":" + std::to_string(get(SEND).val()) + "}"
+"\"SEND\":{\"bits\":1,\"val\":" + std::to_string(get(SEND).val()) + "},"
+"\"READ\":{\"bits\":1,\"val\":" + std::to_string(get(READ).val()) + "}"
 "}},\"external\":{"
 "\"rom\":{\"bits\":8,\"vals\":[";
 for(size_t i = 0; i < 256; i++) json += std::to_string(rom_mem[i].val()) + ",";

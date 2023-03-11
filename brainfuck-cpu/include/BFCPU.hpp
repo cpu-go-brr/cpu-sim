@@ -66,13 +66,13 @@ void dec(AddressInfo info, char* addr);
    template <size_t C>
    void dec();
    template <size_t C>
-   void prt();
+   void print();
    template <size_t C>
-   void red();
+   void read();
    template <size_t C>
-   void lp();
+   void loop();
    template <size_t C>
-   void rt();
+   void ret();
 
 static BFCPU::op ops[256];
 
