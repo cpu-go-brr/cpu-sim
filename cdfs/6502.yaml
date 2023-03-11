@@ -657,8 +657,8 @@ instructions:
     code: 10000101 # 85
     asm: 10000101
     instructions:
-      - AC --> ram(mem)
-      - PC+1 --> PC
+      - AC --> mem(mem(PC)+1)
+      - PC+2 --> PC
   # STX
   # STY
   # TAX
