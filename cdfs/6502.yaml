@@ -676,7 +676,10 @@ instructions:
   # TYA
 
 
-# display: |
+display: |2
+    "   PC       AC        XX        YY        SR        SP        NV-BDIZC\n\
+        0x{PC}   0x{AC}    0x{XX}    0x{YY}    0x{SR}    0x{SP}    0x{NF}0x{VF}0x{IGF}0x{BF}0x{DF}0x{IF}0x{ZF}0x{CF}\n
+    "
 #   "         STACK                REGISTERS\n\
 #        PC 0x{PC}          R0 R1 0x{R0} 0x{R1}   R8 R9 0x{R8} 0x{R9}\n\
 #   LEVEL 1 0x{STACK0}          R2 R3 0x{R2} 0x{R3}   RA RB 0x{R10} 0x{R11}\n\
