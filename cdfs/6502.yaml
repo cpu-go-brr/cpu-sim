@@ -659,6 +659,13 @@ instructions:
     instructions:
       - AC --> mem(mem(PC)+1)
       - PC+2 --> PC
+
+  sta_absolute:
+    code: 10001101 # 8d
+    asm: 10001101 AAAAAAAA AAAAAAAA
+    instructions:
+      - AC --> (mem(PC+2),mem(PC+1))
+      - PC+3 --> PC
   # STX
   # STY
   # TAX
