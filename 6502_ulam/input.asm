@@ -8,8 +8,8 @@ bcc_relative EVEN
 rol_accumulator
 sta_absolute $0800
 rol_accumulator
-adc_immediate $0800
-adc_immediate 1
+adc_absolute $0800
+adc_absolute 1
 
 EVEN
 inx_implied
