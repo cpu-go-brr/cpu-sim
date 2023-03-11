@@ -58,20 +58,24 @@ void CPUDescription::Expression::wrapAddressInGetFunction(std::string &string)
 
 void CPUDescription::Expression::wrapAddressInsideParenthesisInGetFunction(std::string &string)
 {
-    const std::regex function_parameters("[a-z_]+\\(+([^\\)]*)");
+
+    const std::regex function_parameters("[A-Z_]{2,}|[A-Z_]+[0-9]+");
+    const std::regex is_function("[a-z_]+\\(.*");
+
+    if(!std::regex_match(string, is_function)) 
+        return;
+
     std::smatch m;
 
     std::string input = string;
     string = "";
     while (std::regex_search (input,m,function_parameters)) 
-    {
+    {       
         std::string parameters = m[0];
-        wrapAddressInGetFunction(parameters);
-
-        string = m.prefix().str() + parameters;
+        string += m.prefix().str() + "get(" + parameters + ")";
         input = m.suffix().str();
     }
-    string +=input;
+    string += input;
 }
 
 std::size_t getAddressCount(const std::string &string)
