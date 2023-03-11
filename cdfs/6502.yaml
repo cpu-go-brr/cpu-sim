@@ -669,7 +669,7 @@ instructions:
     code: 10001101 # 8d
     asm: 10001101 AAAAAAAA AAAAAAAA
     instructions:
-      - AC --> mem((mem(PC+2)), mem(PC+1))
+      - AC --> mem((mem(PC+1), mem(PC+2)))
       - PC+3 --> PC
   # STX
   # STY

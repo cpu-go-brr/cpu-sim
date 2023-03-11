@@ -1311,8 +1311,8 @@ set(((get(AC)==0)), ZF);
 template <>
 void Intel6502::sta_absolute<0b10001101>()
 {
-/* AC --> mem((mem(PC+1)), mem(PC+2))*/
-set((get(AC)), mem(((mem(get(PC)+1)), mem(get(PC)+2))));
+/* AC --> mem((mem(PC+1), mem(PC+2)))*/
+set((get(AC)), mem((mem(get(PC)+1),mem(get(PC)+2))));
 /* PC+3 --> PC*/
 set((get(PC)+3), PC);
 }
@@ -1627,7 +1627,6 @@ void Intel6502::simulate(size_t i)
 for (;i-->0;)
 {
    auto val = fetch();
-   std::cout << "inst: " <<  std::hex << val.val() << "\n";
    if(ops[val.val()] == NULL)
    {
    #ifndef NO_PRINT
