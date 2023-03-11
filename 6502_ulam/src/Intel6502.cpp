@@ -59,10 +59,10 @@ set(((get(AC)==0)), ZF);
 template <>
 void Intel6502::adc_absolute<0b01101101>()
 {
-/* AC + (mem(PC+2),mem(PC+1)) + CF --> CF, AC*/
+/* AC + mem((mem(PC+1),mem(PC+2))) + CF --> CF, AC*/
 {
 const AddressInfo __addr_infos[2] = {CF,AC};
-set((get(AC)+(mem(get(PC)+2),mem(get(PC)+1))+get(CF)), 2,__addr_infos);
+set((get(AC)+mem((mem(get(PC)+1),mem(get(PC)+2)))+get(CF)), 2,__addr_infos);
 }
 /* PC+3 --> PC*/
 set((get(PC)+3), PC);
@@ -385,10 +385,10 @@ set((get(PC)+mem(get(PC)+1)), PC);
 template <>
 void Intel6502::beq_relative<0b11110000>()
 {
-/* (ZF == 1) ? PC+mem(PC+1)+(-128) --> PC*/
+/* (ZF == 1) ? PC+mem(PC+1) --> PC*/
 if((get(ZF)==1))
 {
-set((get(PC)+mem(get(PC)+1)+(-128)), PC);
+set((get(PC)+mem(get(PC)+1)), PC);
 }
 /* PC+2 --> PC*/
 set((get(PC)+2), PC);
@@ -542,10 +542,6 @@ set((1), CF);
 }
 /* PC+2 --> PC*/
 set((get(PC)+2), PC);
-/* (AC & 128) > 0 --> NF*/
-set(((get(AC)&128)>0), NF);
-/* (AC == 0) --> ZF*/
-set(((get(AC)==0)), ZF);
 }
 
 
@@ -1603,24 +1599,24 @@ char* Intel6502::display()
 {
 if(str == NULL)
 {
-str = (char*)malloc(113);
-sprintf(str, "     PC       AC        XX        YY        SP        NV-BDIZC\n\n\
+str = (char*)malloc(111);
+sprintf(str, "     PC       AC        XX        YY        SP        NV-BDIZC\n\
      XXXX   XX    XX    XX    XX    XXXXXXXX\n\n\
 ");
 }
-hex(PC, str +70);
-hex(AC, str +77);
-hex(XX, str +83);
-hex(YY, str +89);
-hex(SP, str +95);
-hex(NF, str +101);
-hex(VF, str +102);
-hex(IGF, str +103);
-hex(BF, str +104);
-hex(DF, str +105);
-hex(IF, str +106);
-hex(ZF, str +107);
-hex(CF, str +108);
+hex(PC, str +68);
+hex(AC, str +75);
+hex(XX, str +81);
+hex(YY, str +87);
+hex(SP, str +93);
+hex(NF, str +99);
+hex(VF, str +100);
+hex(IGF, str +101);
+hex(BF, str +102);
+hex(DF, str +103);
+hex(IF, str +104);
+hex(ZF, str +105);
+hex(CF, str +106);
 #ifndef NO_PRINT
 printf("%s",str);
 #endif
@@ -1631,6 +1627,7 @@ void Intel6502::simulate(size_t i)
 for (;i-->0;)
 {
    auto val = fetch();
+   std::cout << "inst: " <<  std::hex << val.val() << "\n";
    if(ops[val.val()] == NULL)
    {
    #ifndef NO_PRINT

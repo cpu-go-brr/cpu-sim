@@ -1,5 +1,5 @@
 ;INIT - LOAD VALUE
-lda_immediate 4
+lda_immediate 3
 
 LOOP; CYCLE
 clc_implied

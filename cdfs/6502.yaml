@@ -63,7 +63,7 @@ instructions:
     code: 01101101
     asm: 01101101 AAAAAAAA AAAAAAAA
     instructions:
-      - AC + (mem(PC+2),mem(PC+1)) + CF --> CF, AC
+      - AC + mem((mem(PC+1),mem(PC+2))) + CF --> CF, AC
       - PC+3 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -233,7 +233,7 @@ instructions:
     code: 11110000 # f0
     asm: 11110000 AAAAAAAA
     instructions:
-      - (ZF == 1) ? PC+mem(PC+1)+(-128) --> PC
+      - (ZF == 1) ? PC+mem(PC+1) --> PC
       - PC+2 --> PC
   
   # BIT
@@ -321,8 +321,8 @@ instructions:
       - (AC > mem(PC+1)) ? 0 --> ZF
       - (AC > mem(PC+1)) ? 1 --> CF
       - PC+2 --> PC
-      - (AC & 128) > 0 --> NF
-      - (AC == 0) --> ZF
+      # - (AC & 128) > 0 --> NF
+      # - (AC == 0) --> ZF
   cmp_zeropage:
     code: 11000101 # c5
     asm: 11000101 AAAAAAAA
@@ -669,7 +669,7 @@ instructions:
     code: 10001101 # 8d
     asm: 10001101 AAAAAAAA AAAAAAAA
     instructions:
-      - AC --> mem((mem(PC+1)), mem(PC+2))
+      - AC --> mem((mem(PC+2)), mem(PC+1))
       - PC+3 --> PC
   # STX
   # STY
