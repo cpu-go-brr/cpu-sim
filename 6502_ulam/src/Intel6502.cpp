@@ -359,11 +359,13 @@ set(((get(AC)==0)), ZF);
 template <>
 void Intel6502::bcc_relative<0b10010000>()
 {
-/* (CF == 0) ? PC+mem(PC+1)+(-128) --> PC*/
+/* (CF == 0) ? PC+mem(PC+1) --> PC*/
 if((get(CF)==0))
 {
-set((get(PC)+mem(get(PC)+1)+(-128)), PC);
+set((get(PC)+mem(get(PC)+1)), PC);
 }
+/* PC+2 --> PC*/
+set((get(PC)+2), PC);
 }
 
 
@@ -371,10 +373,10 @@ set((get(PC)+mem(get(PC)+1)+(-128)), PC);
 template <>
 void Intel6502::bcs_relative<0b10110000>()
 {
-/* (CF == 1) ? PC+mem(PC+1)+(-128) --> PC*/
+/* (CF == 1) ? PC+mem(PC+1) --> PC*/
 if((get(CF)==1))
 {
-set((get(PC)+mem(get(PC)+1)+(-128)), PC);
+set((get(PC)+mem(get(PC)+1)), PC);
 }
 }
 
@@ -388,6 +390,8 @@ if((get(ZF)==1))
 {
 set((get(PC)+mem(get(PC)+1)+(-128)), PC);
 }
+/* PC+2 --> PC*/
+set((get(PC)+2), PC);
 }
 
 
@@ -910,8 +914,8 @@ set((get(PC)+1), PC);
 template <>
 void Intel6502::jmp_absolute<0b1001100>()
 {
-/* mem(PC +1) --> PC*/
-set((mem(get(PC)+1)), PC);
+/* mem(PC + 1), mem(PC + 2) --> PC*/
+set((mem(get(PC)+1),mem(get(PC)+2)), PC);
 }
 
 
@@ -923,6 +927,17 @@ void Intel6502::lda_immediate<0b10101001>()
 set((mem(get(PC)+1)), AC);
 /* PC+2 --> PC*/
 set((get(PC)+2), PC);
+}
+
+
+/* */
+template <>
+void Intel6502::lda_absolute<0b10101101>()
+{
+/* mem(PC+2),mem(PC+1) --> AC*/
+set((mem(get(PC)+2),mem(get(PC)+1)), AC);
+/* PC+3 --> PC*/
+set((get(PC)+3), PC);
 }
 
 
@@ -1298,12 +1313,12 @@ set(((get(AC)==0)), ZF);
 
 /* */
 template <>
-void Intel6502::sta_zeropage<0b10000101>()
+void Intel6502::sta_absolute<0b10001101>()
 {
-/* AC --> mem(mem(PC)+1)*/
-set((get(AC)), mem(mem(get(PC))+1));
-/* PC+2 --> PC*/
-set((get(PC)+2), PC);
+/* AC --> mem((mem(PC+1)), mem(PC+2))*/
+set((get(AC)), mem(((mem(get(PC)+1)), mem(get(PC)+2))));
+/* PC+3 --> PC*/
+set((get(PC)+3), PC);
 }
 
 
@@ -1441,7 +1456,6 @@ NULL,
 NULL,
 NULL,
 NULL,
-&Intel6502::sta_zeropage<0b10000101>,
 NULL,
 NULL,
 NULL,
@@ -1450,6 +1464,7 @@ NULL,
 NULL,
 NULL,
 NULL,
+&Intel6502::sta_absolute<0b10001101>,
 NULL,
 NULL,
 &Intel6502::bcc_relative<0b10010000>,
@@ -1481,7 +1496,7 @@ NULL,
 NULL,
 NULL,
 NULL,
-NULL,
+&Intel6502::lda_absolute<0b10101101>,
 NULL,
 NULL,
 &Intel6502::bcs_relative<0b10110000>,
@@ -1568,6 +1583,8 @@ Intel6502::Intel6502()
 {
 for(auto i = 0ul; i < 65536; i ++)
 mem_mem[i] = bitset(0,8);
+for(auto i = 0ul; i < 2048; i ++)
+ram_mem[i] = bitset(0,4);
 
 }
 void Intel6502::bin(AddressInfo info, char* addr)
@@ -1586,9 +1603,24 @@ char* Intel6502::display()
 {
 if(str == NULL)
 {
-str = (char*)malloc(1);
-sprintf(str, "");
+str = (char*)malloc(113);
+sprintf(str, "     PC       AC        XX        YY        SP        NV-BDIZC\n\n\
+     XXXX   XX    XX    XX    XX    XXXXXXXX\n\n\
+");
 }
+hex(PC, str +70);
+hex(AC, str +77);
+hex(XX, str +83);
+hex(YY, str +89);
+hex(SP, str +95);
+hex(NF, str +101);
+hex(VF, str +102);
+hex(IGF, str +103);
+hex(BF, str +104);
+hex(DF, str +105);
+hex(IF, str +106);
+hex(ZF, str +107);
+hex(CF, str +108);
 #ifndef NO_PRINT
 printf("%s",str);
 #endif
@@ -1630,6 +1662,29 @@ void Intel6502::flash_mem(bitset* data, size_t len)
 {
 for(auto i = 0ul; i < len; i++)
 mem_mem[i] = bitset(data[i], 8);
+}
+
+bitset& Intel6502::ram(AddressInfo info)
+{
+return ram(get(info));
+}
+
+bitset& Intel6502::ram(bitset index)
+{
+return ram_mem[index.val()];
+}
+#ifndef NO_CPPSTD
+void Intel6502::flash_ram(std::vector<bitset> data)
+{
+for(auto i = 0ul; i < data.size(); i++)
+ram_mem[i] = bitset(data[i], 4);
+}
+
+#endif
+void Intel6502::flash_ram(bitset* data, size_t len)
+{
+for(auto i = 0ul; i < len; i++)
+ram_mem[i] = bitset(data[i], 4);
 }
 
 bitset Intel6502::fetch()
@@ -1678,6 +1733,10 @@ std::string json = "{\"internal\":{"
 "\"SP\":{\"bits\":8,\"val\":" + std::to_string(get(SP).val()) + "}},\"external\":{"
 "\"mem\":{\"bits\":8,\"vals\":[";
 for(size_t i = 0; i < 65536; i++) json += std::to_string(mem_mem[i].val()) + ",";
+json = json.substr(0,json.size()-1);
+json += "]},";
+json +="\"ram\":{\"bits\":4,\"vals\":[";
+for(size_t i = 0; i < 2048; i++) json += std::to_string(ram_mem[i].val()) + ",";
 json = json.substr(0,json.size()-1);
 json += "]"
 "}}";

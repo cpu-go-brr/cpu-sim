@@ -42,6 +42,15 @@ void flash_mem(std::vector<bitset> data);
 #endif
 void flash_mem(bitset* data, size_t length);
 
+/* ram */
+bitset ram_mem[2048];
+bitset& ram(AddressInfo info);
+bitset& ram(bitset index);
+#ifndef NO_CPPSTD
+void flash_ram(std::vector<bitset> data);
+#endif
+void flash_ram(bitset* data, size_t length);
+
 void bin(AddressInfo info, char* addr);
 void hex(AddressInfo info, char* addr);
 void dec(AddressInfo info, char* addr);
@@ -135,6 +144,8 @@ void dec(AddressInfo info, char* addr);
    template <size_t C>
    void lda_immediate();
    template <size_t C>
+   void lda_absolute();
+   template <size_t C>
    void lsr_accumulator();
    template <size_t C>
    void lsr_zeropage();
@@ -181,7 +192,7 @@ void dec(AddressInfo info, char* addr);
    template <size_t C>
    void ror_absolute_x();
    template <size_t C>
-   void sta_zeropage();
+   void sta_absolute();
 
 static Intel6502::op ops[256];
 

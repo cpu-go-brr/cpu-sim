@@ -1,10 +1,10 @@
 ;INIT - LOAD VALUE
-lda_immediate 3
+lda_immediate 4
 
 LOOP; CYCLE
 clc_implied
 ror_accumulator
-bcc_relative EVEN
+bcc_relative 10;EVEN
 rol_accumulator
 sta_absolute $0800
 rol_accumulator
@@ -15,7 +15,7 @@ EVEN
 inx_implied
 
 cmp_immediate 1
-beq_relative DONE
+beq_relative 3 ;DONE
 jmp_absolute LOOP
 
 DONE
