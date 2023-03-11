@@ -337,14 +337,14 @@ instructions:
     code: 11010101 # d5
     asm: 11010101 AAAAAAAA
     instructions:
-      - (AC < mem(mem(PC+1)+XX) ? 0 --> ZF
-      - (AC < mem(mem(PC+1)+XX) ? 0 --> CF
-      - (AC < mem(mem(PC+1)+XX) --> NF
-      - (AC == mem(mem(PC+1)+XX) ? 1 --> ZF
-      - (AC == mem(mem(PC+1)+XX) ? 1 --> CF
-      - (AC == mem(mem(PC+1)+XX) ? 0 --> NF
-      - (AC > mem(mem(PC+1)+XX) ? 0 --> ZF
-      - (AC > mem(mem(PC+1)+XX) ? 1 --> CF
+      - AC < mem(mem(PC+1)+XX) ? 0 --> ZF
+      - AC < mem(mem(PC+1)+XX) ? 0 --> CF
+      - AC < mem(mem(PC+1)+XX) --> NF
+      - AC == mem(mem(PC+1)+XX) ? 1 --> ZF
+      - AC == mem(mem(PC+1)+XX) ? 1 --> CF
+      - AC == mem(mem(PC+1)+XX) ? 0 --> NF
+      - AC > mem(mem(PC+1)+XX) ? 0 --> ZF
+      - AC > mem(mem(PC+1)+XX) ? 1 --> CF
       - PC+2 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -432,10 +432,28 @@ instructions:
   # EOR
   # INC
   # INX
+  inx_implied:
+    code: 11101000 # e8
+    asm: 11101000
+    instructions:
+      - XX + 1 --> XX
+      - PC+1 --> PC
   # INY
   # JMP
+  jmp_absolute:
+    code: 1001100 # 4c
+    asm: 1001100 AAAAAAAA
+    instructions:
+      - rom(PC +1) --> PC
   # JSR
   # LDA
+  lda_immediate:
+    code: 10101001 # a9
+    asm: 10101001 AAAAAAAA
+    instructions:
+      - rom(PC+1) --> AC
+      - PC+2 --> PC
+
   # LDX
   # LDY
 
@@ -635,6 +653,12 @@ instructions:
   # SED
   # SEI
   # STA
+  sta_zeropage:
+    code: 10000101 # 85
+    asm: 10000101
+    instructions:
+      - AC --> ram(mem)
+      - PC+1 --> PC
   # STX
   # STY
   # TAX
