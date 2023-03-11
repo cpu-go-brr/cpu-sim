@@ -8,6 +8,15 @@
 //Testbenamung dreiteilig Methode, Fall, Erwartung
 
 
+TEST_CASE("wrapAddressInsideParenthesisInGetFunction- multiple function values")
+{
+    std::string s{"mem((PC+1), (PC+2))"};
+    CPUDescription::Expression::wrapAddressInsideParenthesisInGetFunction(s);
+
+    std::cout << s << "\n";
+
+    REQUIRE((s == "set((get(AC)), mem(((mem(get(PC)+1)), mem(get(PC)+2)))"));
+}
 
 TEST_CASE("wrapAddressInsideParenthesisInGetFunction- - function value")
 {
