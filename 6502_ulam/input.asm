@@ -6,7 +6,7 @@ clc_implied
 ror_accumulator
 bcc_relative EVEN
 rol_accumulator
-sta_zeropage $0800
+sta_absolute $0800
 rol_accumulator
 adc_immediate $0800
 adc_immediate 1
