@@ -21,6 +21,9 @@ memory:
     mem:
       words: 65536
       bits: 8
+    ram:
+      words: 2048
+      bits: 4
 
 fetch:
   conditions:
@@ -60,7 +63,7 @@ instructions:
     code: 01101101
     asm: 01101101 AAAAAAAA AAAAAAAA
     instructions:
-      - AC + (mem(PC+2),mem(PC+1)) + CF --> CF, AC
+      - AC + mem((mem(PC+1),mem(PC+2))) + CF --> CF, AC
       - PC+3 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -215,21 +218,23 @@ instructions:
     code: 10010000 # 90
     asm: 10010000 AAAAAAAA
     instructions:
-      - (CF == 0) ? PC+mem(PC+1)+(-128) --> PC
+      - (CF == 0) ? PC+mem(PC+1) --> PC
+      - PC+2 --> PC
 
   # BCS
   bcs_relative:
     code: 10110000 # b0
     asm: 10110000 AAAAAAAA
     instructions:
-      - (CF == 1) ? PC+mem(PC+1)+(-128) --> PC
+      - (CF == 1) ? PC+mem(PC+1) --> PC
 
   # BEQ
   beq_relative:
     code: 11110000 # f0
     asm: 11110000 AAAAAAAA
     instructions:
-      - (ZF == 1) ? PC+mem(PC+1)+(-128) --> PC
+      - (ZF == 1) ? PC+mem(PC+1) --> PC
+      - PC+2 --> PC
   
   # BIT
 
@@ -316,8 +321,8 @@ instructions:
       - (AC > mem(PC+1)) ? 0 --> ZF
       - (AC > mem(PC+1)) ? 1 --> CF
       - PC+2 --> PC
-      - (AC & 128) > 0 --> NF
-      - (AC == 0) --> ZF
+      # - (AC & 128) > 0 --> NF
+      # - (AC == 0) --> ZF
   cmp_zeropage:
     code: 11000101 # c5
     asm: 11000101 AAAAAAAA
@@ -442,9 +447,9 @@ instructions:
   # JMP
   jmp_absolute:
     code: 1001100 # 4c
-    asm: 1001100 AAAAAAAA
+    asm: 1001100 AAAAAAAA AAAAAAAA
     instructions:
-      - mem(PC +1) --> PC
+      - mem(PC + 1), mem(PC + 2) --> PC
   # JSR
   # LDA
   lda_immediate:
@@ -453,6 +458,12 @@ instructions:
     instructions:
       - mem(PC+1) --> AC
       - PC+2 --> PC
+  lda_absolute:
+    code: 10101101 # ad
+    asm: 10101101 AAAAAAAA AAAAAAAA
+    instructions:
+      - mem(PC+2),mem(PC+1) --> AC
+      - PC+3 --> PC
 
   # LDX
   # LDY
@@ -653,12 +664,13 @@ instructions:
   # SED
   # SEI
   # STA
-  sta_zeropage:
-    code: 10000101 # 85
-    asm: 10000101
+
+  sta_absolute:
+    code: 10001101 # 8d
+    asm: 10001101 AAAAAAAA AAAAAAAA
     instructions:
-      - AC --> mem(mem(PC)+1)
-      - PC+2 --> PC
+      - AC --> mem((mem(PC+2)), mem(PC+1))
+      - PC+3 --> PC
   # STX
   # STY
   # TAX
@@ -669,7 +681,9 @@ instructions:
   # TYA
 
 
-# display: |
+display: |2
+       PC       AC        XX        YY        SP        NV-BDIZC
+       0x{PC}   0x{AC}    0x{XX}    0x{YY}    0x{SP}    0x{NF}0x{VF}0x{IGF}0x{BF}0x{DF}0x{IF}0x{ZF}0x{CF}\n
 #   "         STACK                REGISTERS\n\
 #        PC 0x{PC}          R0 R1 0x{R0} 0x{R1}   R8 R9 0x{R8} 0x{R9}\n\
 #   LEVEL 1 0x{STACK0}          R2 R3 0x{R2} 0x{R3}   RA RB 0x{R10} 0x{R11}\n\

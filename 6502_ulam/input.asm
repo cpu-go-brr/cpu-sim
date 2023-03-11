@@ -4,18 +4,18 @@ lda_immediate 3
 LOOP; CYCLE
 clc_implied
 ror_accumulator
-bcc_relative EVEN
+bcc_relative 10;EVEN
 rol_accumulator
-sta_zeropage $0800
+sta_absolute $0800
 rol_accumulator
-adc_immediate $0800
+adc_absolute $0800
 adc_immediate 1
 
 EVEN
 inx_implied
 
 cmp_immediate 1
-beq_relative DONE
+beq_relative 3 ;DONE
 jmp_absolute LOOP
 
 DONE
