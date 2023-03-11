@@ -44,6 +44,10 @@ public:
     bool operator>(const abitset &other);
     bool operator<(const abitset &other);
 
+    // bool operator>(abitset const&other);
+    // bool operator<(abitset const&other);
+
+
     bool operator<(const int &other);
     bool operator>(const int &other);
 

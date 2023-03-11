@@ -216,6 +216,29 @@ bool abitset::operator<(const abitset &other)
     return val() < other.val();
 }
 
+bool abitset::operator>(const abitset &other)
+{
+    return val() > other.val();
+}
+// bool abitset::operator>(abitset& other)
+// {
+//     return val() > other.val();
+// }
+// bool abitset::operator<(abitset& other)
+// {
+//     return val() < other.val();
+// }
+
+// bool abitset::operator>(abitset const&other)
+// {
+//     return val() > other.val();
+// }
+// bool abitset::operator<(abitset const&other)
+// {
+//     return val() < other.val();
+// }
+
+
 bool abitset::operator<=(const abitset &other)
 {
     return val() <= other.val();
