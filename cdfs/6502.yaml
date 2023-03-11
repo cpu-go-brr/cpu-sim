@@ -131,7 +131,7 @@ instructions:
     code: 00101101 # 2d
     asm: 00101101 AAAAAAAA AAAAAAAA
     instructions:
-      - (AC & (mem(PC+2),mem(PC+1)) --> AC
+      - (AC & (mem(PC+2),mem(PC+1))) --> AC
       - PC+3 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -139,7 +139,7 @@ instructions:
     code: 00111101 # 3d
     asm: 00111101 AAAAAAAA AAAAAAAA
     instructions:
-      - (AC & ((mem(PC+2),mem(PC+1))+XX) --> AC
+      - (AC & ((mem(PC+2),mem(PC+1))+XX)) --> AC
       - PC+3 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -147,7 +147,7 @@ instructions:
     code: 00111001 # 39
     asm: 00111001 AAAAAAAA AAAAAAAA
     instructions:
-      - (AC & ((mem(PC+2),mem(PC+1))+YY) --> AC
+      - (AC & ((mem(PC+2),mem(PC+1))+YY)) --> AC
       - PC+3 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -155,7 +155,7 @@ instructions:
     code: 00100001 # 21
     asm: 00100001 AAAAAAAA
     instructions:
-      - (AC & (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) --> AC
+      - (AC & (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX)) --> AC
       - PC+2 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -163,7 +163,7 @@ instructions:
     code: 00110001 # 31
     asm: 00110001 AAAAAAAA
     instructions:
-      - (AC & (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) --> AC
+      - (AC & (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY)) --> AC
       - PC+2 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -322,14 +322,14 @@ instructions:
     code: 11000101 # c5
     asm: 11000101 AAAAAAAA
     instructions:
-      - (AC < mem(mem(PC+1)) ? 0 --> ZF
-      - (AC < mem(mem(PC+1)) ? 0 --> CF
-      - (AC < mem(mem(PC+1)) --> NF
-      - (AC == mem(mem(PC+1)) ? 1 --> ZF
-      - (AC == mem(mem(PC+1)) ? 1 --> CF
-      - (AC == mem(mem(PC+1)) ? 0 --> NF
-      - (AC > mem(mem(PC+1)) ? 0 --> ZF
-      - (AC > mem(mem(PC+1)) ? 1 --> CF
+      - AC < mem(mem(PC+1)) ? 0 --> ZF
+      - AC < mem(mem(PC+1)) ? 0 --> CF
+      - AC < mem(mem(PC+1)) --> NF
+      - AC == mem(mem(PC+1)) ? 1 --> ZF
+      - AC == mem(mem(PC+1)) ? 1 --> CF
+      - AC == mem(mem(PC+1)) ? 0 --> NF
+      - AC > mem(mem(PC+1)) ? 0 --> ZF
+      - AC > mem(mem(PC+1)) ? 1 --> CF
       - PC+2 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -352,14 +352,14 @@ instructions:
     code: 11001101 # cd
     asm: 11001101 AAAAAAAA AAAAAAAA
     instructions:
-      - (AC < (mem(PC+2),mem(PC+1)) ? 0 --> ZF
-      - (AC < (mem(PC+2),mem(PC+1)) ? 0 --> CF
-      - (AC < (mem(PC+2),mem(PC+1)) --> NF
-      - (AC == (mem(PC+2),mem(PC+1)) ? 1 --> ZF
-      - (AC == (mem(PC+2),mem(PC+1)) ? 1 --> CF
-      - (AC == (mem(PC+2),mem(PC+1)) ? 0 --> NF
-      - (AC > (mem(PC+2),mem(PC+1)) ? 0 --> ZF
-      - (AC > (mem(PC+2),mem(PC+1)) ? 1 --> CF
+      - AC < (mem(PC+2),mem(PC+1)) ? 0 --> ZF
+      - AC < (mem(PC+2),mem(PC+1)) ? 0 --> CF
+      - AC < (mem(PC+2),mem(PC+1)) --> NF
+      - AC == (mem(PC+2),mem(PC+1)) ? 1 --> ZF
+      - AC == (mem(PC+2),mem(PC+1)) ? 1 --> CF
+      - AC == (mem(PC+2),mem(PC+1)) ? 0 --> NF
+      - AC > (mem(PC+2),mem(PC+1)) ? 0 --> ZF
+      - AC > (mem(PC+2),mem(PC+1)) ? 1 --> CF
       - PC+3 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -367,14 +367,14 @@ instructions:
     code: 11011101 # dd
     asm: 11011101 AAAAAAAA AAAAAAAA
     instructions:
-      - (AC < (mem(PC+2),mem(PC+1)+XX) ? 0 --> ZF
-      - (AC < (mem(PC+2),mem(PC+1)+XX) ? 0 --> CF
-      - (AC < (mem(PC+2),mem(PC+1)+XX) --> NF
-      - (AC == (mem(PC+2),mem(PC+1)+XX) ? 1 --> ZF
-      - (AC == (mem(PC+2),mem(PC+1)+XX) ? 1 --> CF
-      - (AC == (mem(PC+2),mem(PC+1)+XX) ? 0 --> NF
-      - (AC > (mem(PC+2),mem(PC+1)+XX) ? 0 --> ZF
-      - (AC > (mem(PC+2),mem(PC+1)+XX) ? 1 --> CF
+      - AC < (mem(PC+2),mem(PC+1)+XX) ? 0 --> ZF
+      - AC < (mem(PC+2),mem(PC+1)+XX) ? 0 --> CF
+      - AC < (mem(PC+2),mem(PC+1)+XX) --> NF
+      - AC == (mem(PC+2),mem(PC+1)+XX) ? 1 --> ZF
+      - AC == (mem(PC+2),mem(PC+1)+XX) ? 1 --> CF
+      - AC == (mem(PC+2),mem(PC+1)+XX) ? 0 --> NF
+      - AC > (mem(PC+2),mem(PC+1)+XX) ? 0 --> ZF
+      - AC > (mem(PC+2),mem(PC+1)+XX) ? 1 --> CF
       - PC+3 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -382,14 +382,14 @@ instructions:
     code: 11011001 # d9
     asm: 11011001 AAAAAAAA AAAAAAAA
     instructions:
-      - (AC < (mem(PC+2),mem(PC+1)+YY) ? 0 --> ZF
-      - (AC < (mem(PC+2),mem(PC+1)+YY) ? 0 --> CF
-      - (AC < (mem(PC+2),mem(PC+1)+YY) --> NF
-      - (AC == (mem(PC+2),mem(PC+1)+YY) ? 1 --> ZF
-      - (AC == (mem(PC+2),mem(PC+1)+YY) ? 1 --> CF
-      - (AC == (mem(PC+2),mem(PC+1)+YY) ? 0 --> NF
-      - (AC > (mem(PC+2),mem(PC+1)+YY) ? 0 --> ZF
-      - (AC > (mem(PC+2),mem(PC+1)+YY) ? 1 --> CF
+      - AC < (mem(PC+2),mem(PC+1)+YY) ? 0 --> ZF
+      - AC < (mem(PC+2),mem(PC+1)+YY) ? 0 --> CF
+      - AC < (mem(PC+2),mem(PC+1)+YY) --> NF
+      - AC == (mem(PC+2),mem(PC+1)+YY) ? 1 --> ZF
+      - AC == (mem(PC+2),mem(PC+1)+YY) ? 1 --> CF
+      - AC == (mem(PC+2),mem(PC+1)+YY) ? 0 --> NF
+      - AC > (mem(PC+2),mem(PC+1)+YY) ? 0 --> ZF
+      - AC > (mem(PC+2),mem(PC+1)+YY) ? 1 --> CF
       - PC+3 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -397,14 +397,14 @@ instructions:
     code: 11000001 # c1
     asm: 11000001 AAAAAAAA
     instructions:
-      - (AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 0 --> ZF
-      - (AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 0 --> CF
-      - (AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) --> NF
-      - (AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 1 --> ZF
-      - (AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 1 --> CF
-      - (AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 0 --> NF
-      - (AC > (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 0 --> ZF
-      - (AC > (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 1 --> CF
+      - AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 0 --> ZF
+      - AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 0 --> CF
+      - AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) --> NF
+      - AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 1 --> ZF
+      - AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 1 --> CF
+      - AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 0 --> NF
+      - AC > (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 0 --> ZF
+      - AC > (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+XX) ? 1 --> CF
       - PC+2 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -412,14 +412,14 @@ instructions:
     code: 11010001 # d1
     asm: 11010001 AAAAAAAA
     instructions:
-      - (AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 0 --> ZF
-      - (AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 0 --> CF
-      - (AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) --> NF
-      - (AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 1 --> ZF
-      - (AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 1 --> CF
-      - (AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 0 --> NF
-      - (AC > (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 0 --> ZF
-      - (AC > (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 1 --> CF
+      - AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 0 --> ZF
+      - AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 0 --> CF
+      - AC < (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) --> NF
+      - AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 1 --> ZF
+      - AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 1 --> CF
+      - AC == (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 0 --> NF
+      - AC > (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 0 --> ZF
+      - AC > (mem(mem(mem(PC+2))),mem(mem(mem(PC+1)))+YY) ? 1 --> CF
       - PC+2 --> PC
       - (AC & 128) > 0 --> NF
       - (AC == 0) --> ZF
@@ -444,14 +444,14 @@ instructions:
     code: 1001100 # 4c
     asm: 1001100 AAAAAAAA
     instructions:
-      - rom(PC +1) --> PC
+      - mem(PC +1) --> PC
   # JSR
   # LDA
   lda_immediate:
     code: 10101001 # a9
     asm: 10101001 AAAAAAAA
     instructions:
-      - rom(PC+1) --> AC
+      - mem(PC+1) --> AC
       - PC+2 --> PC
 
   # LDX
