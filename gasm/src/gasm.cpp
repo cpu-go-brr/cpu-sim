@@ -286,10 +286,6 @@ void set_pos_to_pc(std::smatch &matches, uint &pos, std::vector<int> &res)
             {
                 res.push_back(0);
             }
-            else
-            {
-                res[pos] = 0;
-            }
             pos++;
         }
     }
