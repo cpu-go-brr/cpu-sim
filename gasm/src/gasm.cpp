@@ -286,10 +286,6 @@ void set_pos_to_pc(std::smatch &matches, uint &pos, std::vector<int> &res)
             {
                 res.push_back(0);
             }
-            else
-            {
-                res[pos] = 0;
-            }
             pos++;
         }
     }
@@ -393,8 +389,15 @@ void construct_binary_from_splitted_line(std::vector<std::string> &splitted_line
     std::vector<int> code_segments_length = {};
     divide_instruction_code_into_segments(code, code_segments, code_segments_length);
 
+    uint num_of_arguments_to_take = 0;
+    for( auto code_segment: code_segments) {
+        if (code_segment[0] != '0' && code_segment[0] != '1') {
+            num_of_arguments_to_take++;
+        }
+    }
+
     // Error when invalid number of arguments
-    if (splitted_line.size() != code_segments.size()) {
+    if (splitted_line.size() -1 != num_of_arguments_to_take) {
         throw std::invalid_argument("Instruction '" + splitted_line[0] + "' has invalid number of arguments");
     }
 

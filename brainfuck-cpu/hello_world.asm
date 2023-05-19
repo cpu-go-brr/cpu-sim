@@ -6,13 +6,13 @@ inc
 inc
 inc
 inc
-LP1 lp END_LP1
+LP1 loop END_LP1
 right
 inc
 inc
 inc
 inc
-LP2 lp END_LP2
+LP2 loop END_LP2
 right
 inc
 inc
@@ -31,7 +31,7 @@ left
 left
 left
 dec
-rt LP2
+ret LP2
 END_LP2
 right
 inc
@@ -42,22 +42,22 @@ dec
 right
 right
 inc
-LP3 lp END_LP3
+LP3 loop END_LP3
 left
-rt LP3
+ret LP3
 END_LP3
 left
 dec
-rt LP1
+ret LP1
 END_LP1 
 right
 right
-prt
+print
 right
 dec
 dec
 dec
-prt
+print
 inc
 inc
 inc
@@ -65,31 +65,31 @@ inc
 inc
 inc
 inc
-prt
-prt
+print
+print
 inc
 inc
 inc
-prt
+print
 right
 right
-prt
+print
 left
 dec
-prt
+print
 left
-prt
+print
 inc
 inc
 inc
-prt
+print
 dec
 dec
 dec
 dec
 dec
 dec
-prt
+print
 dec
 dec
 dec
@@ -98,12 +98,12 @@ dec
 dec
 dec
 dec
-prt
+print
 right
 right
 inc
-prt
+print
 right
 inc
 inc
-prt
+print
