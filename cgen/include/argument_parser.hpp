@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+
+// A class for parsing the argument vector from the CLI
 class ArgumentParser
 {
 public:

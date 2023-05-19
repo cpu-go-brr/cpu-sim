@@ -38,21 +38,27 @@ namespace CPUDescription
         std::string generateJSONCpp();             // generate the CPU .hpp
         std::string generateMemorySetAndGetCpp();             // generate the CPU .hpp
         std::string generateFetchCpp();             // generate the CPU .hpp
-        std::string generateSimulateCpp();
-        std::string generateConstructorCpp();
-        std::string generateIncludesCpp();
-        std::string generateExternalMemoryCpp();
-        std::string generateInstructionsCpp();
-        std::string generateInstructionJumpTableCpp();
-        std::map<std::size_t, std::string> generateInstructionMap();
-        std::size_t getOpCodeMaxLength();
-        void initInfo(const YAML::Node &config);
+        std::string generateSimulateCpp();      //generate the simulate .cpp
+        std::string generateConstructorCpp();   //Generate the constructor
+        std::string generateIncludesCpp();      //generate the includes for the .cpp
+        std::string generateExternalMemoryCpp();    //generate the external memory
+        std::string generateInstructionsCpp();//generate the instructions memory
+        std::string generateInstructionJumpTableCpp();  //generate the jump table
+        std::map<std::size_t, std::string> generateInstructionMap();    //generate a map of the instruction map --> opcode to function name
+        std::size_t getOpCodeMaxLength();           //get the maximum opcode  length of an instruction
+
+
+        //init the cpu info
+        void initInfo(const YAML::Node &config);       
+        //init the internal Memory
         void initInternalMemory(const YAML::Node &config);
+        //init ine external Memory
         void initExternalMemory(const YAML::Node &config);
+        //init the instructions
         void initInstructions(const YAML::Node &config);
 
         std::string name, description, display;      // name description and display description of the cpu
-        std::filesystem::path cpu_path;
+        std::filesystem::path cpu_path;              // the path of the cpu file
         std::vector<InternalMemory> internal_memory; // registers, pc etc.
         std::vector<ExternalMemory> external_memory; // rom, ram etc.
         std::vector<Instruction> instructions;       // nop, fim etc.

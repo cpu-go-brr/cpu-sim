@@ -7,6 +7,7 @@
 
 void CPUDescription::CPU::initInfo(const YAML::Node &config)
 {
+    //set parameter from yaml config
     name = config["name"].as<std::string>();
     description = config["description"].as<std::string>("");
     display = config["display"].as<std::string>("");
@@ -14,9 +15,11 @@ void CPUDescription::CPU::initInfo(const YAML::Node &config)
 
 void CPUDescription::CPU::initInternalMemory(const YAML::Node &config)
 {
+    //set parameter from yaml config
     auto mem = config["memory"]["internal"];
     for (YAML::const_iterator it = mem.begin(); it != mem.end(); ++it)
     {
+        // init memory with name, size or children, and current memory index
         InternalMemory m(it->first.as<std::string>(), it->second, total_mem);
         total_mem += m.getSize();
         internal_memory.push_back(m);
@@ -25,9 +28,11 @@ void CPUDescription::CPU::initInternalMemory(const YAML::Node &config)
 
 void CPUDescription::CPU::initExternalMemory(const YAML::Node &config)
 {
+    // init external memory
     auto mem = config["memory"]["external"];
     for (YAML::const_iterator it = mem.begin(); it != mem.end(); ++it)
     {
+        // init external memory with name, wordsize size and wordcount
         ExternalMemory m(it->first.as<std::string>(), it->second);
         external_memory.push_back(m);
     }
@@ -35,18 +40,22 @@ void CPUDescription::CPU::initExternalMemory(const YAML::Node &config)
 
 void CPUDescription::CPU::initInstructions(const YAML::Node &config)
 {
+    //init instructions
     auto ins = config["instructions"];
     for (YAML::const_iterator it = ins.begin(); it != ins.end(); ++it)
     {
+        //init instructions with name and parameter
         Instruction m(it->first.as<std::string>(), it->second);
         instructions.push_back(m);
     }
 
+    //init the fetch instruction
     fetch = Instruction("fetch", config["fetch"]);
 }
 
 CPUDescription::CPU::CPU(std::string path)
 {
+    //init all fields
     cpu_path = path;
     auto file = YAML::LoadFile(path);
     initInfo(file);
@@ -98,6 +107,7 @@ std::string CPUDescription::CPU::generateAddressInfos()
 {
     std::string ret = "#pragma once\n#include \"AddressInfo.hpp\"\n";
 
+    //add a list of the adress infos
     for (auto m : internal_memory)
         ret += m.getAddressInfo();
 
@@ -183,18 +193,23 @@ std::size_t unescapedsize(std::string s)
 
 std::tuple<std::size_t, std::string> getVariableInfo(std::string prefix, std::string variable)
 {
+
+    //returns the display size and type of variable 
     auto bits = CPUDescription::InternalMemory::address_lengths[variable];
 
     
     if (prefix == "0x")
     {
+        //a character for very 4 bits
         return {(std::size_t)std::ceil(bits / 4.0), "hex"};
     }
     else if (prefix == "0b")
     {
+        //a character for very bit
         return {bits, "bin"};
     }
-     
+
+    //log10(2^bits) characters are needed
     return {(std::size_t)std::ceil(std::log10(std::pow(2, bits))), "dec"};
     
 }
@@ -203,19 +218,25 @@ std::tuple<std::string, std::string> processDisplayInfo(const std::string &displ
 {
     std::string params = "", display_str = std::regex_replace(display, std::regex("\\n"), "\\n\\\n"); // escape \n
 
-    std::regex replacements("(0x|0b)?\\{([A-Z][A-Z0-9]+)\\}"); // matchs 0x{PC} 0b{ACC} {R0} ..
+    std::regex replacements("(0x|0b)?\\{([A-Z][A-Z0-9]+)\\}"); // matches 0x{PC} 0b{ACC} {R0} ..
     std::smatch sm;
     while (std::regex_search(display_str, sm, replacements))
     {
         std::size_t characters;
         std::string type;
+
+        //get the infos for variable
         std::tie(characters, type) = getVariableInfo(sm[1].str(), sm[2].str());
 
+        //write placeholders
         std::string placeholder = "";
         for (std::size_t i = 0; i < characters; i++)
             placeholder += "X";
 
+        //write the function to replace the placeholder in the display function
         params += type + "(" + sm[2].str() + ", str +" + std::to_string(unescapedsize(sm.prefix().str())) + ");\n";
+
+        //replace the text with the placeholder
         display_str = sm.prefix().str() + placeholder + sm.suffix().str();
     }
 
@@ -225,16 +246,20 @@ std::tuple<std::string, std::string> processDisplayInfo(const std::string &displ
 std::string processPartToJSON(std::string part)
 {
     std::smatch sm;
+    //match the Memory Addresses
     if(std::regex_match(part, std::regex("(0x|0b)?\\{[A-Z][A-Z0-9]+\\}")))
     {
         std::regex_match(part, sm, std::regex("(0x|0b)?\\{([A-Z][A-Z0-9]+)\\}"));
         std::size_t size;
         std::string type;
         std::tie(size, type) = getVariableInfo(sm[1].str(), sm[2].str());
+
+        //add to the cpu.json description file
         return "{\"name\":\"" + sm[2].str()+ "\", \"size\":" + std::to_string(size) + ",\"type\":\"" + type + "\"}";
     }
     else if (std::regex_match(part, std::regex("\\s+")))
     {
+        //convert spaces to number
         return std::to_string(part.size());
     }
     else
@@ -245,19 +270,24 @@ std::string processPartToJSON(std::string part)
 
 std::string generateDisplayJSONInfoLine(const std::string& line)
 {
+    //takes a display line and converts it to json
     std::string ret = "[ ";
     std::smatch m;
     std::regex e ("((0x|0b)?\\{([A-Z][A-Z0-9]+)\\})|\\s+|\\S+");
 
     std::string line_cpy = line;
 
+    //split line into segments
     while (std::regex_search (line_cpy,m,e)) 
     {
+        //process and join segments
         ret += processPartToJSON(m[0].str()) + ",";
         line_cpy = m.suffix().str();
     }
+    //remove last commata
     ret = ret.substr(0,ret.length()-1);
 
+    //return line array
     return ret + "]";
 }
 
@@ -268,6 +298,7 @@ std::filesystem::path CPUDescription::CPU::getPath()
 
 std::string CPUDescription::CPU::generateInstructionCodeMap()
 {
+    //generate the map of instructions for websites
     std::map<int, std::vector<Instruction>> instructions_by_bytelength;
 
     for(const auto& instruction : instructions)
@@ -300,12 +331,17 @@ std::string CPUDescription::CPU::generateInstructionCodeMap()
 
 std::string CPUDescription::CPU::generateSyntaxHighlighter()
 {
+    //add our instruction set and memory addresses for highlighting
+
+    //concat instrucion names
     std::string instruction_string = "";
     for(auto& ins : instructions)
         instruction_string += ins.getUpperName() + "|";
 
+    //remove last |
     instruction_string = instruction_string.substr(0,instruction_string.size()-1);
     
+    //concat the registernames
     std::string register_string = "";
     for(const auto & m : internal_memory)
     {
@@ -315,7 +351,7 @@ std::string CPUDescription::CPU::generateSyntaxHighlighter()
     }
     register_string = register_string.substr(0,register_string.size()-1);
 
-
+//the body for the syntax highlighter
     std::string ret = "define(\"ace/mode/general_assembly_highlight_rules\", [\"require\", \"exports\", \"module\", \"ace/lib/oop\", \"ace/mode/text_highlight_rules\"], function (e, t, n) {\n    \"use strict\"; var r = e(\"../lib/oop\"), i = e(\"./text_highlight_rules\").TextHighlightRules, s = function () {\n        this.$rules =\n    {\n        start: [\n            { token: \"keyword.control.assembly\", regex: \"\\\\b(?:";
 
     ret += instruction_string;
@@ -328,6 +364,7 @@ std::string CPUDescription::CPU::generateSyntaxHighlighter()
 
 std::string CPUDescription::CPU::generateDisplayJSONInfo()
 {
+    //Generates the display info for websites
     std::string ret = "{";
 
     ret += "\"internal\": [ ";
@@ -356,6 +393,8 @@ std::string CPUDescription::CPU::generateDisplayJSONInfo()
 
 std::string CPUDescription::CPU::generateDisplay()
 {
+    //Generates the display functions
+
     std::string ret, display_str, params;
     std::tie(display_str, params) = processDisplayInfo(display);
 
@@ -390,6 +429,7 @@ std::string CPUDescription::CPU::generateDisplay()
 }
 std::string CPUDescription::CPU::generateCMakeFile()
 {
+    //Generates the cmake file
     std::string ret = ""
                       "cmake_minimum_required(VERSION 3.0) # setting this is required\n"
                       "project(" +
@@ -437,6 +477,7 @@ std::string CPUDescription::CPU::generateCpp()
 
 std::size_t CPUDescription::CPU::getOpCodeMaxLength()
 {
+    //get maximum of opcode
     std::size_t max_opcode_size = 0;
     for (auto &i : instructions)
         max_opcode_size = std::max(max_opcode_size, i.getSizeOfOPCode());
@@ -458,14 +499,17 @@ std::map<std::size_t, std::string> CPUDescription::CPU::generateInstructionMap()
 
 std::string CPUDescription::CPU::generateInstructionJumpTableCpp()
 {    
+    //create a map of function pointer
     auto array_size = (unsigned int)std::pow(2, getOpCodeMaxLength());
     auto instruction_map = generateInstructionMap();
     std::string ret = name + "::op " + name + "::" + "ops[" + std::to_string(array_size) + "] = {\n";
 
     for (auto i = 0u; i < array_size; i++)
     {
+        //Point to Null if opcode is not defined
         ret += instruction_map.contains(i)?instruction_map[i]:"NULL";
 
+        //Add trailing , if not the last
         if (i != array_size - 1)
             ret += ",\n";
     }
@@ -475,6 +519,7 @@ std::string CPUDescription::CPU::generateInstructionJumpTableCpp()
 
 std::string CPUDescription::CPU::generateInstructionsCpp()
 {
+    //generate the instructions + comment
     std::string ret = "";
     for (auto i : instructions)
     {
@@ -486,6 +531,7 @@ std::string CPUDescription::CPU::generateInstructionsCpp()
 
 std::string CPUDescription::CPU::generateExternalMemoryCpp()
 {
+    //generate the external memory
     std::string ret = "";
     for (auto &m : external_memory)
         ret += m.getInterfaceCode(name);
@@ -501,6 +547,8 @@ std::string CPUDescription::CPU::generateIncludesCpp()
 }
 std::string CPUDescription::CPU::generateConstructorCpp()
 {
+
+    //init the external memory constructor
     std::string ret = name + "::" + name + "()\n{\n";
     for (auto &m : external_memory)
     {

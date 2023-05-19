@@ -13,12 +13,18 @@ namespace CPUDescription
     {
     public:
         InternalMemory(std::string key, YAML::Node config, int total_mem, std::vector<int> dimension = std::vector<int>());
+        
+        //get a json description of the memory for web application
         std::string getJSONDescription();
 
+
+        //getter functions for private variables
         std::size_t getSize() const;
         std::string getAddressInfo() const;
         std::string getUpperName() const;
         std::vector<std::string> getNames() const;
+
+        //the length of specific adresses in bit
         static std::map<std::string, std::size_t> address_lengths;
 
     private:

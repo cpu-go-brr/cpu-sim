@@ -7,6 +7,7 @@
 
 CPUDescription::ExternalMemory::ExternalMemory(std::string key, YAML::Node config)
 {
+    //read in config
     name = key;
     words = config["words"].as<int>();
     bits = config["bits"].as<int>();

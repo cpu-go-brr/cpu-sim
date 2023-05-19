@@ -20,20 +20,23 @@ namespace CPUDescription
         std::string getCode(std::string classname); //get whole Function
         std::vector<std::string> getOPCodes(); //get all possible instruction codes (replace all parameter with 0 or 1)
 
+
+        //getter functions for private Variables
         std::size_t getSizeOfOPCode() const;
         std::size_t getByteSizeOfOPCode() const;
         
-        std::string getName() const;
+        std::string getName() const;  // get Name of the CPU lowercase
         std::string getFullName() const;
-        std::string getUpperName() const;            // get Name of the CPU lowercase
-        std::string getOPCode() const;            // get Name of the CPU lowercase
+        std::string getUpperName() const;            // get Name of the CPU upprcase
+        std::string getOPCode() const;            
 
         std::string getDescription() const;
         std::string generateFunction(std::string opcode); //get only function body
         
     private:
 
-        void initInfo(const std::string& name, const YAML::Node& config);
+        //init private variables
+        void initInfo(const std::string& name, const YAML::Node& config); 
         void initInstructions(YAML::Node& config);
         void initConditions(YAML::Node& config);
 

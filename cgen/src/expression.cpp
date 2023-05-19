@@ -7,6 +7,7 @@
 
 std::tuple<std::string, std::string> split(const std::string &string, const std::string &seperator, bool keepright = false)
 {
+    //split function by given seperator
     auto p = string.find(seperator);
     if (p == std::string::npos)
         return {keepright ? "" : string, keepright ? string : ""};
@@ -16,6 +17,7 @@ std::tuple<std::string, std::string> split(const std::string &string, const std:
 
 void substituteBinaryNumbers(std::string &string)
 {
+    //substitutes binary numbers with their bitset counterpart
     const std::regex nums("[^A-Z0-9](0b[01]+)[^A-Z0-9]");
     std::smatch sm;
     while (std::regex_search(string, sm, nums))
@@ -28,6 +30,7 @@ void substituteBinaryNumbers(std::string &string)
 
 std::vector<std::pair<std::string, double>> convertParameter(const std::map<std::string, std::string> &params)
 {
+    // convert parameter from (string, string) to (string, double)
     std::vector<std::pair<std::string, double>> vals;
     for (auto [key, val] : params)
     {
@@ -39,6 +42,7 @@ std::vector<std::pair<std::string, double>> convertParameter(const std::map<std:
 
 void evaluateCurlyBrackets(std::string &string, std::vector<std::pair<std::string, double>> vals)
 {
+    //calculate the mathematical equations inside the curly brackets
     const std::regex replacements("[A-Z](\\{[^\\{\\}]*\\})");
     std::smatch sm;
 
@@ -52,21 +56,26 @@ void evaluateCurlyBrackets(std::string &string, std::vector<std::pair<std::strin
 
 void CPUDescription::Expression::wrapAddressInGetFunction(std::string &string)
 {
+    //wrap Addresses in a get function
     const std::regex vars("([A-Z_\\{\\[\\]\\}]+[0-9]+|[A-Z_\\{\\[\\]\\}]{2,}[0-9]*)");
     string = std::regex_replace(string, vars, "get($&)");
 }
 
 void CPUDescription::Expression::wrapAddressInsideParenthesisInGetFunction(std::string &string)
 {
+    //wrap Addresses in a get function, even if they are in a function call
 
     const std::regex function_parameters("[A-Z_]{2,}|[A-Z_]+[0-9]+");
     const std::regex is_function("[a-z_]+\\(.*");
 
+    //return if string is not a function
     if(!std::regex_match(string, is_function)) 
         return;
 
     std::smatch m;
 
+
+    //loop over input string
     std::string input = string;
     string = "";
     while (std::regex_search (input,m,function_parameters)) 
@@ -80,6 +89,7 @@ void CPUDescription::Expression::wrapAddressInsideParenthesisInGetFunction(std::
 
 std::size_t getAddressCount(const std::string &string)
 {
+    //look how many addresses are in the first level of a parameter call
     std::size_t commas = 0;
     int level = 0;
     for (std::size_t p = 0; p < string.size(); p++)
@@ -101,6 +111,7 @@ std::string assembleExpressionParts(std::string condition, std::string left, std
     std::string ret = "";
     if (right != "")
     {
+        //if multiple arguments allocate address vector on stack
         std::size_t commas = getAddressCount(right);
         std::string prev = "", suff = "";
         if (commas > 0)
@@ -110,8 +121,7 @@ std::string assembleExpressionParts(std::string condition, std::string left, std
             suff = "}\n";
         }
 
-        if (right != "")
-            ret = prev + "set((" + left + "), " + right + ");\n" + suff;
+        ret = prev + "set((" + left + "), " + right + ");\n" + suff;
     }
     else
         ret = "return " + left + ";\n";
@@ -125,23 +135,32 @@ std::string assembleExpressionParts(std::string condition, std::string left, std
 
 std::string CPUDescription::Expression::getCode(std::map<std::string, std::string> params)
 {
+    //add comment to top
     std::string comment = "/* " + source + "*/\n";
 
+    //some initializations
     std::string condition = "", left = "", right = "", source_nw = std::regex_replace(source, std::regex("\\s"), "");
 
+    //evaluate all formulas in curly brackets
     evaluateCurlyBrackets(source_nw, convertParameter(params));
 
+    //split the argzment in two halves
     std::tie(left, right) = split(source_nw, "-->");
 
+    //wrap memory adresses
     wrapAddressInGetFunction(left);
 
+    //split the condition if it exists
     std::tie(condition, left) = split(left, "?", true);
 
+    //substituteBinaryNumbers
     substituteBinaryNumbers(left);
     substituteBinaryNumbers(right);
 
+    //wrap the adresses in the right portion of the function
     wrapAddressInsideParenthesisInGetFunction(right);
 
+    //add comment in front
     return comment + assembleExpressionParts(condition, left, right);
 }
 

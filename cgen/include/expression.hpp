@@ -14,6 +14,7 @@ namespace CPUDescription
         //return code 
         std::string getCode(std::map<std::string, std::string> params);
 
+        //helper functions for converting f.e. ACC to cpu.get(ACC)
         static void wrapAddressInGetFunction(std::string &string);
         static void wrapAddressInsideParenthesisInGetFunction(std::string &string);
 
